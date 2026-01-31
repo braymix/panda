@@ -2,55 +2,484 @@
 <html lang="it">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>PANDA Dashboard</title>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
-body { background: #0f0f1a; color: #e0e0e0; font-family: system-ui, sans-serif; padding: 20px; }
+body {
+    background: #0f0f1a;
+    color: #e0e0e0;
+    font-family: system-ui, -apple-system, sans-serif;
+    padding: 12px;
+    line-height: 1.5;
+    -webkit-tap-highlight-color: transparent;
+}
 .container { max-width: 1400px; margin: 0 auto; }
-header { background: linear-gradient(135deg, #1a1a2e, #16213e); padding: 25px; border-radius: 15px; text-align: center; margin-bottom: 20px; }
-h1 { font-size: 2.5em; }
-.subtitle { opacity: 0.7; margin-top: 5px; }
-.status-badge { display: inline-flex; align-items: center; gap: 8px; margin-top: 15px; padding: 10px 20px; background: rgba(0,0,0,0.3); border-radius: 20px; }
-.status-dot { width: 14px; height: 14px; border-radius: 50%; }
-.status-dot.running { background: #2ecc71; box-shadow: 0 0 10px #2ecc71; }
+
+/* Header */
+header {
+    background: linear-gradient(135deg, #1a1a2e, #16213e);
+    padding: 20px;
+    border-radius: 12px;
+    text-align: center;
+    margin-bottom: 16px;
+}
+h1 { font-size: 2em; }
+.subtitle { opacity: 0.7; margin-top: 4px; font-size: 0.9em; }
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 12px;
+    padding: 8px 16px;
+    background: rgba(0,0,0,0.3);
+    border-radius: 20px;
+    font-size: 0.95em;
+}
+.status-dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
+.status-dot.running { background: #2ecc71; box-shadow: 0 0 8px #2ecc71; animation: pulse 2s infinite; }
 .status-dot.stopped { background: #e74c3c; }
-.controls { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin: 20px 0; }
-button { padding: 12px 24px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 1em; transition: all 0.2s; }
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+
+/* Controls - distanziati per evitare click accidentali */
+.controls {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin: 16px 0;
+    padding: 0 8px;
+}
+button {
+    padding: 14px 28px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 1em;
+    transition: all 0.2s;
+    min-height: 48px; /* touch target minimo */
+    min-width: 100px;
+    touch-action: manipulation;
+}
 button:hover { transform: translateY(-2px); opacity: 0.9; }
+button:active { transform: translateY(0); }
 .btn-start { background: #2ecc71; color: white; }
 .btn-stop { background: #e74c3c; color: white; }
 .btn-restart { background: #f39c12; color: white; }
-.btn-add { background: #3498db; color: white; width: 100%; margin-top: 10px; }
-.btn-import { background: #9b59b6; color: white; width: 100%; margin-top: 10px; }
-.current-task { background: #16213e; border: 2px solid #3498db; padding: 20px; border-radius: 12px; margin-bottom: 20px; }
+.btn-add { background: #3498db; color: white; width: 100%; margin-top: 12px; }
+.btn-import { background: #9b59b6; color: white; width: 100%; margin-top: 12px; }
+.btn-secondary { background: #34495e; color: white; }
+
+/* Task corrente */
+.current-task {
+    background: #16213e;
+    border: 2px solid #3498db;
+    padding: 16px;
+    border-radius: 12px;
+    margin-bottom: 16px;
+}
 .current-task.idle { border-color: #444; }
-.current-label { font-size: 0.9em; opacity: 0.7; }
-.current-id { font-size: 1.4em; font-weight: bold; color: #3498db; margin-top: 5px; }
-.current-progress { font-style: italic; margin-top: 8px; color: #f39c12; }
-.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)); gap: 20px; }
-.card { background: #16213e; border-radius: 12px; padding: 20px; }
-.card h2 { font-size: 1.2em; margin-bottom: 15px; border-bottom: 1px solid #2c3e50; padding-bottom: 10px; }
-.count { background: #3498db; padding: 3px 12px; border-radius: 12px; font-size: 0.85em; margin-left: 10px; }
-.task-item { background: #1a1a2e; padding: 12px; border-radius: 8px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
-.task-info { flex: 1; }
-.task-id { font-weight: bold; color: #3498db; }
-.task-type { font-size: 0.75em; background: #2c3e50; padding: 3px 8px; border-radius: 4px; margin-left: 8px; text-transform: uppercase; }
-.task-prompt { font-size: 0.85em; opacity: 0.7; margin-top: 6px; }
-.priority { background: #f39c12; color: black; padding: 3px 10px; border-radius: 4px; font-size: 0.8em; font-weight: bold; margin-right: 10px; }
-.delete-btn { background: #e74c3c; border: none; color: white; width: 32px; height: 32px; border-radius: 6px; cursor: pointer; font-size: 1.1em; }
-input, select, textarea { background: #1a1a2e; border: 1px solid #2c3e50; color: #e0e0e0; padding: 12px; border-radius: 8px; width: 100%; margin-bottom: 12px; font-size: 1em; }
-input:focus, select:focus, textarea:focus { outline: none; border-color: #3498db; }
-textarea { min-height: 100px; resize: vertical; font-family: inherit; }
-label { display: block; font-size: 0.9em; margin-bottom: 5px; color: #aaa; }
-.form-row { display: grid; grid-template-columns: 2fr 1fr; gap: 12px; }
-.log-box { background: #0a0a0f; border-radius: 8px; padding: 15px; font-family: 'Courier New', monospace; font-size: 0.8em; height: 280px; overflow-y: auto; white-space: pre-wrap; color: #0f0; line-height: 1.4; }
-.hidden { display: none; }
-.guide { background: #1a2a3a; border-left: 4px solid #3498db; padding: 15px; border-radius: 0 8px 8px 0; margin-bottom: 15px; font-size: 0.9em; line-height: 1.6; }
-.guide h3 { color: #3498db; margin-bottom: 10px; }
-.guide ul { margin-left: 20px; }
-.guide li { margin: 5px 0; }
-.guide code { background: #0a0a0f; padding: 2px 6px; border-radius: 4px; font-family: monospace; }
+.current-label { font-size: 0.85em; opacity: 0.7; }
+.current-id { font-size: 1.2em; font-weight: bold; color: #3498db; margin-top: 4px; word-break: break-word; }
+.current-progress { font-style: italic; margin-top: 6px; color: #f39c12; font-size: 0.9em; }
+
+/* Grid responsivo */
+.grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+}
+@media (min-width: 768px) {
+    .grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (min-width: 1200px) {
+    .grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* Cards */
+.card {
+    background: #16213e;
+    border-radius: 12px;
+    padding: 16px;
+    overflow: hidden;
+}
+.card h2 {
+    font-size: 1.1em;
+    margin-bottom: 12px;
+    border-bottom: 1px solid #2c3e50;
+    padding-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+.count {
+    background: #3498db;
+    padding: 2px 10px;
+    border-radius: 10px;
+    font-size: 0.8em;
+}
+
+/* Task items - bottone delete più distanziato */
+.task-item {
+    background: #1a1a2e;
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+}
+.task-info { flex: 1; min-width: 0; }
+.task-header { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; }
+.task-id { font-weight: bold; color: #3498db; word-break: break-word; }
+.task-type {
+    font-size: 0.7em;
+    background: #2c3e50;
+    padding: 2px 6px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+.task-prompt {
+    font-size: 0.8em;
+    opacity: 0.7;
+    margin-top: 6px;
+    word-break: break-word;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+.priority {
+    background: #f39c12;
+    color: black;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.75em;
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+/* Delete button - più grande e distanziato per evitare click accidentali */
+.delete-btn {
+    background: transparent;
+    border: 2px solid #e74c3c;
+    color: #e74c3c;
+    min-width: 44px;
+    min-height: 44px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1.2em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.2s;
+}
+.delete-btn:hover {
+    background: #e74c3c;
+    color: white;
+}
+.delete-btn:active {
+    transform: scale(0.95);
+}
+
+/* Form inputs */
+input, select, textarea {
+    background: #1a1a2e;
+    border: 1px solid #2c3e50;
+    color: #e0e0e0;
+    padding: 14px;
+    border-radius: 8px;
+    width: 100%;
+    margin-bottom: 12px;
+    font-size: 16px; /* Previene zoom su iOS */
+    -webkit-appearance: none;
+}
+input:focus, select:focus, textarea:focus {
+    outline: none;
+    border-color: #3498db;
+    box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+}
+textarea {
+    min-height: 100px;
+    resize: vertical;
+    font-family: inherit;
+}
+label {
+    display: block;
+    font-size: 0.85em;
+    margin-bottom: 4px;
+    color: #aaa;
+}
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+@media (max-width: 400px) {
+    .form-row { grid-template-columns: 1fr; }
+}
+
+/* Log Box - MIGLIORATO */
+.log-container {
+    position: relative;
+}
+.log-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+.log-header h2 {
+    margin-bottom: 0;
+    border-bottom: none;
+    padding-bottom: 0;
+}
+.log-actions {
+    display: flex;
+    gap: 8px;
+}
+.log-btn {
+    padding: 8px 14px;
+    border: 1px solid #2c3e50;
+    background: #1a1a2e;
+    color: #e0e0e0;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.85em;
+    min-height: 40px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s;
+}
+.log-btn:hover {
+    background: #2c3e50;
+    border-color: #3498db;
+}
+.log-btn.active {
+    background: #3498db;
+    border-color: #3498db;
+    color: white;
+}
+.log-box {
+    background: #0a0a0f;
+    border-radius: 8px;
+    padding: 12px;
+    font-family: 'SF Mono', 'Consolas', 'Monaco', monospace;
+    font-size: 0.75em;
+    height: 350px;
+    overflow-y: auto;
+    overflow-x: auto;
+    color: #d4d4d4;
+    line-height: 1.6;
+    -webkit-overflow-scrolling: touch;
+    border: 1px solid #1a1a2e;
+    /* Permette selezione testo */
+    user-select: text;
+    -webkit-user-select: text;
+}
+/* Styling log lines */
+.log-line {
+    white-space: pre-wrap;
+    word-break: break-word;
+    padding: 2px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.03);
+}
+.log-line:last-child {
+    border-bottom: none;
+}
+.log-line.info { color: #4fc3f7; }
+.log-line.warn { color: #ffb74d; }
+.log-line.error { color: #ef5350; font-weight: 500; }
+.log-line.success { color: #81c784; }
+.log-line .timestamp { color: #888; }
+.log-line .level { font-weight: 600; }
+
+/* Toast notification per copia */
+.toast {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #2ecc71;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 500;
+    opacity: 0;
+    transition: opacity 0.3s;
+    z-index: 1000;
+    pointer-events: none;
+}
+.toast.show {
+    opacity: 1;
+}
+
+/* Guide collassabile su mobile */
+.guide {
+    background: #1a2a3a;
+    border-left: 4px solid #3498db;
+    padding: 12px;
+    border-radius: 0 8px 8px 0;
+    margin-bottom: 12px;
+    font-size: 0.85em;
+    line-height: 1.5;
+}
+.guide-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+}
+.guide h3 { color: #3498db; font-size: 0.95em; }
+.guide-toggle {
+    background: none;
+    border: none;
+    color: #3498db;
+    font-size: 1.2em;
+    cursor: pointer;
+    padding: 4px;
+    min-width: 32px;
+    min-height: 32px;
+}
+.guide-content {
+    margin-top: 10px;
+}
+.guide-content.collapsed {
+    display: none;
+}
+.guide ul { margin-left: 16px; }
+.guide li { margin: 4px 0; }
+.guide code {
+    background: #0a0a0f;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: monospace;
+    font-size: 0.9em;
+}
+
+.hidden { display: none !important; }
+
+/* Scrollbar custom per log */
+.log-box::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+.log-box::-webkit-scrollbar-track {
+    background: #1a1a2e;
+    border-radius: 4px;
+}
+.log-box::-webkit-scrollbar-thumb {
+    background: #3498db;
+    border-radius: 4px;
+}
+.log-box::-webkit-scrollbar-thumb:hover {
+    background: #2980b9;
+}
+
+/* Done list scrollable */
+.done-list {
+    max-height: 280px;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Pending list scrollable su mobile */
+.pending-list {
+    max-height: 400px;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Conferma modale per azioni pericolose */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 20px;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s;
+}
+.modal-overlay.show {
+    opacity: 1;
+    visibility: visible;
+}
+.modal {
+    background: #16213e;
+    border-radius: 12px;
+    padding: 24px;
+    max-width: 400px;
+    width: 100%;
+    text-align: center;
+}
+.modal h3 {
+    margin-bottom: 12px;
+    color: #f39c12;
+}
+.modal p {
+    margin-bottom: 20px;
+    opacity: 0.8;
+    font-size: 0.95em;
+}
+.modal-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+}
+.modal-actions button {
+    flex: 1;
+    max-width: 140px;
+}
+
+/* Empty state */
+.empty-state {
+    opacity: 0.5;
+    text-align: center;
+    padding: 24px;
+    font-size: 0.9em;
+}
+
+/* Log full width */
+.card.full-width {
+    grid-column: 1 / -1;
+}
+
+/* Mobile specific */
+@media (max-width: 600px) {
+    body { padding: 8px; }
+    header { padding: 16px; }
+    h1 { font-size: 1.6em; }
+    .controls { gap: 10px; }
+    button {
+        padding: 12px 20px;
+        font-size: 0.95em;
+        flex: 1;
+        min-width: 80px;
+    }
+    .card { padding: 14px; }
+    .log-box {
+        height: 300px;
+        font-size: 0.7em;
+    }
+    .task-prompt {
+        -webkit-line-clamp: 1;
+    }
+}
 </style>
 </head>
 <body>
@@ -65,9 +494,9 @@ label { display: block; font-size: 0.9em; margin-bottom: 5px; color: #aaa; }
 </header>
 
 <div class="controls">
-<button class="btn-start" onclick="control('start')">▶ Avvia</button>
-<button class="btn-stop" onclick="control('stop')">⏹ Ferma</button>
-<button class="btn-restart" onclick="control('restart')">⟳ Riavvia</button>
+<button class="btn-start" onclick="confirmAction('start', 'Avviare PANDA?')">▶ Avvia</button>
+<button class="btn-stop" onclick="confirmAction('stop', 'Fermare PANDA? I task in coda rimarranno.')">⏹ Ferma</button>
+<button class="btn-restart" onclick="confirmAction('restart', 'Riavviare PANDA?')">⟳ Riavvia</button>
 </div>
 
 <div class="current-task idle" id="currentTask">
@@ -80,13 +509,19 @@ label { display: block; font-size: 0.9em; margin-bottom: 5px; color: #aaa; }
 
 <div class="card">
 <h2>📋 Coda Task <span class="count" id="pendingCount">0</span></h2>
-<div id="pendingList"><p style="opacity:0.5">Nessun task in coda</p></div>
+<div class="pending-list" id="pendingList">
+<p class="empty-state">Nessun task in coda</p>
+</div>
 </div>
 
 <div class="card">
 <h2>➕ Crea Nuovo Task</h2>
 <div class="guide">
+<div class="guide-header" onclick="toggleGuide(this)">
 <h3>📖 Guida Tipi Task</h3>
+<button class="guide-toggle" aria-label="Espandi/Comprimi">▼</button>
+</div>
+<div class="guide-content">
 <ul>
 <li><code>prompt</code> - Domanda a Ollama, ricevi risposta testuale</li>
 <li><code>bash</code> - PANDA genera ed esegue un comando terminale</li>
@@ -94,15 +529,16 @@ label { display: block; font-size: 0.9em; margin-bottom: 5px; color: #aaa; }
 <li><code>file</code> - PANDA genera contenuto e lo salva (richiede filepath)</li>
 </ul>
 </div>
+</div>
 <form id="taskForm" onsubmit="addTask(event)">
 <div class="form-row">
 <div>
 <label>ID Task</label>
-<input type="text" id="taskId" placeholder="es: genera_report" required>
+<input type="text" id="taskId" placeholder="es: genera_report" required autocomplete="off">
 </div>
 <div>
 <label>Priorità (1=prima)</label>
-<input type="number" id="taskPriority" value="10" min="1" max="99">
+<input type="number" id="taskPriority" value="10" min="1" max="99" inputmode="numeric">
 </div>
 </div>
 <label>Tipo Task</label>
@@ -114,7 +550,7 @@ label { display: block; font-size: 0.9em; margin-bottom: 5px; color: #aaa; }
 </select>
 <div id="filepathRow" class="hidden">
 <label>Percorso File</label>
-<input type="text" id="taskFilepath" placeholder="es: ~/panda/output/script.py">
+<input type="text" id="taskFilepath" placeholder="es: ~/panda/output/script.py" autocomplete="off">
 </div>
 <label>Prompt</label>
 <textarea id="taskPrompt" placeholder="Descrivi cosa deve fare PANDA..." required></textarea>
@@ -125,10 +561,16 @@ label { display: block; font-size: 0.9em; margin-bottom: 5px; color: #aaa; }
 <div class="card">
 <h2>📥 Importa Task da JSON</h2>
 <div class="guide">
+<div class="guide-header" onclick="toggleGuide(this)">
 <h3>📖 Formato</h3>
-<code style="display:block;margin-top:8px;white-space:pre;font-size:0.8em">{"tasks":[
-  {"id":"nome","type":"bash","priority":1,"prompt":"..."}
+<button class="guide-toggle" aria-label="Espandi/Comprimi">▼</button>
+</div>
+<div class="guide-content">
+<code style="display:block;margin-top:8px;white-space:pre;font-size:0.85em">{"tasks":[
+  {"id":"nome","type":"bash",
+   "priority":1,"prompt":"..."}
 ]}</code>
+</div>
 </div>
 <textarea id="importJson" placeholder='{"tasks":[{"id":"test","type":"bash","priority":10,"prompt":"echo Ciao"}]}'></textarea>
 <button class="btn-import" onclick="importTasks()">📥 Importa Tasks</button>
@@ -136,18 +578,77 @@ label { display: block; font-size: 0.9em; margin-bottom: 5px; color: #aaa; }
 
 <div class="card">
 <h2>✅ Completati</h2>
-<div id="doneList" style="max-height:280px;overflow-y:auto"><p style="opacity:0.5">Nessun task completato</p></div>
+<div class="done-list" id="doneList">
+<p class="empty-state">Nessun task completato</p>
+</div>
 </div>
 
-<div class="card" style="grid-column: 1 / -1;">
-<h2>📜 Log in Tempo Reale</h2>
+<div class="card full-width log-container">
+<div class="log-header">
+<h2>📜 Log</h2>
+<div class="log-actions">
+<button class="log-btn" onclick="copyLogs()" title="Copia log">
+<span>📋</span> Copia
+</button>
+<button class="log-btn" id="autoScrollBtn" onclick="toggleAutoScroll()" title="Auto-scroll">
+<span>⬇️</span> Auto
+</button>
+<button class="log-btn" onclick="clearLogDisplay()" title="Pulisci visualizzazione">
+<span>🗑️</span> Pulisci
+</button>
+</div>
+</div>
 <div class="log-box" id="logBox">Caricamento log...</div>
 </div>
 
 </div>
 </div>
 
+<!-- Modal conferma -->
+<div class="modal-overlay" id="confirmModal">
+<div class="modal">
+<h3>⚠️ Conferma Azione</h3>
+<p id="confirmMessage">Sei sicuro?</p>
+<div class="modal-actions">
+<button class="btn-secondary" onclick="closeModal()">Annulla</button>
+<button class="btn-start" id="confirmBtn" onclick="executeConfirmedAction()">Conferma</button>
+</div>
+</div>
+</div>
+
+<!-- Toast notification -->
+<div class="toast" id="toast">Log copiati!</div>
+
 <script>
+let autoScroll = true;
+let pendingAction = null;
+let rawLogText = '';
+
+// Format log lines with colors
+function formatLogLine(line) {
+    const div = document.createElement('div');
+    div.className = 'log-line';
+
+    // Detect log level and add appropriate class
+    if (line.includes('[ERROR]')) {
+        div.classList.add('error');
+    } else if (line.includes('[WARN]')) {
+        div.classList.add('warn');
+    } else if (line.includes('[INFO]')) {
+        div.classList.add('info');
+    }
+    if (line.includes('✅') || line.includes('SUCCESS')) {
+        div.classList.add('success');
+    }
+
+    // Format timestamp
+    const formatted = line.replace(/\[(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})\]/g,
+        '<span class="timestamp">[$1]</span>');
+
+    div.innerHTML = formatted;
+    return div;
+}
+
 async function fetchStatus() {
     try {
         const res = await fetch('/api/status');
@@ -157,6 +658,7 @@ async function fetchStatus() {
         const taskDiv = document.getElementById('currentTask');
         const taskId = document.getElementById('currentId');
         const taskProgress = document.getElementById('currentProgress');
+
         if (data.panda_running) {
             dot.className = 'status-dot running';
             text.textContent = 'PANDA Attivo';
@@ -164,6 +666,7 @@ async function fetchStatus() {
             dot.className = 'status-dot stopped';
             text.textContent = 'PANDA Fermo';
         }
+
         if (data.current_task && data.current_task.current_task) {
             taskDiv.className = 'current-task';
             taskId.textContent = '🔨 ' + data.current_task.current_task + ' (' + (data.current_task.task_type || '') + ')';
@@ -173,7 +676,7 @@ async function fetchStatus() {
             taskId.textContent = 'Nessuno - In attesa di task';
             taskProgress.textContent = '';
         }
-    } catch(e) { console.error(e); }
+    } catch(e) { console.error('fetchStatus error:', e); }
 }
 
 async function fetchPending() {
@@ -182,22 +685,26 @@ async function fetchPending() {
         const tasks = await res.json();
         document.getElementById('pendingCount').textContent = tasks.length;
         const list = document.getElementById('pendingList');
+
         if (tasks.length === 0) {
-            list.innerHTML = '<p style="opacity:0.5;text-align:center;padding:20px">Nessun task in coda</p>';
+            list.innerHTML = '<p class="empty-state">Nessun task in coda</p>';
             return;
         }
-        list.innerHTML = tasks.map(t => 
-            '<div class="task-item">' +
-            '<div class="task-info">' +
-            '<span class="priority">' + t.priority + '</span>' +
-            '<span class="task-id">' + t.id + '</span>' +
-            '<span class="task-type">' + t.type + '</span>' +
-            '<div class="task-prompt">' + (t.prompt || '').substring(0,70) + '</div>' +
-            '</div>' +
-            '<button class="delete-btn" onclick="deleteTask(\'' + t.filename + '\')">✕</button>' +
-            '</div>'
-        ).join('');
-    } catch(e) { console.error(e); }
+
+        list.innerHTML = tasks.map(t => `
+            <div class="task-item">
+                <div class="task-info">
+                    <div class="task-header">
+                        <span class="priority">${t.priority}</span>
+                        <span class="task-id">${escapeHtml(t.id)}</span>
+                        <span class="task-type">${t.type}</span>
+                    </div>
+                    <div class="task-prompt">${escapeHtml((t.prompt || '').substring(0, 100))}</div>
+                </div>
+                <button class="delete-btn" onclick="deleteTask('${escapeHtml(t.filename)}')" aria-label="Elimina task">✕</button>
+            </div>
+        `).join('');
+    } catch(e) { console.error('fetchPending error:', e); }
 }
 
 async function fetchDone() {
@@ -205,14 +712,19 @@ async function fetchDone() {
         const res = await fetch('/api/tasks/done');
         const tasks = await res.json();
         const list = document.getElementById('doneList');
+
         if (tasks.length === 0) {
-            list.innerHTML = '<p style="opacity:0.5;text-align:center;padding:20px">Nessun task completato</p>';
+            list.innerHTML = '<p class="empty-state">Nessun task completato</p>';
             return;
         }
-        list.innerHTML = tasks.slice(0,20).map(t =>
-            '<div class="task-item" style="padding:8px"><span class="task-id">' + t.id + '</span><span class="task-type">' + t.type + '</span></div>'
-        ).join('');
-    } catch(e) { console.error(e); }
+
+        list.innerHTML = tasks.slice(0, 20).map(t => `
+            <div class="task-item" style="padding:10px">
+                <span class="task-id">${escapeHtml(t.id)}</span>
+                <span class="task-type">${t.type}</span>
+            </div>
+        `).join('');
+    } catch(e) { console.error('fetchDone error:', e); }
 }
 
 async function fetchLogs() {
@@ -220,20 +732,85 @@ async function fetchLogs() {
         const res = await fetch('/api/logs');
         const data = await res.json();
         const box = document.getElementById('logBox');
-        box.textContent = data.lines.join('\n');
-        box.scrollTop = box.scrollHeight;
-    } catch(e) { console.error(e); }
+
+        // Store raw text for copy
+        rawLogText = data.lines.join('\n');
+
+        // Clear and rebuild with formatted lines
+        box.innerHTML = '';
+        data.lines.forEach(line => {
+            box.appendChild(formatLogLine(line));
+        });
+
+        // Auto scroll if enabled
+        if (autoScroll) {
+            box.scrollTop = box.scrollHeight;
+        }
+    } catch(e) { console.error('fetchLogs error:', e); }
 }
 
-async function control(action) {
-    await fetch('/api/control/' + action, {method:'POST'});
-    setTimeout(fetchStatus, 1500);
+function toggleAutoScroll() {
+    autoScroll = !autoScroll;
+    const btn = document.getElementById('autoScrollBtn');
+    btn.classList.toggle('active', autoScroll);
+
+    if (autoScroll) {
+        const box = document.getElementById('logBox');
+        box.scrollTop = box.scrollHeight;
+    }
+}
+
+function copyLogs() {
+    navigator.clipboard.writeText(rawLogText).then(() => {
+        showToast('Log copiati negli appunti!');
+    }).catch(err => {
+        // Fallback per browser che non supportano clipboard API
+        const textarea = document.createElement('textarea');
+        textarea.value = rawLogText;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
+        showToast('Log copiati!');
+    });
+}
+
+function clearLogDisplay() {
+    document.getElementById('logBox').innerHTML = '<div class="log-line" style="opacity:0.5">Log puliti. Si aggiorneranno automaticamente...</div>';
+}
+
+function showToast(message) {
+    const toast = document.getElementById('toast');
+    toast.textContent = message;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 2000);
+}
+
+function confirmAction(action, message) {
+    pendingAction = action;
+    document.getElementById('confirmMessage').textContent = message;
+    document.getElementById('confirmModal').classList.add('show');
+}
+
+function closeModal() {
+    document.getElementById('confirmModal').classList.remove('show');
+    pendingAction = null;
+}
+
+async function executeConfirmedAction() {
+    if (pendingAction) {
+        await fetch('/api/control/' + pendingAction, {method: 'POST'});
+        setTimeout(fetchStatus, 1500);
+    }
+    closeModal();
 }
 
 async function deleteTask(filename) {
-    if(confirm('Eliminare questo task?')) {
-        await fetch('/api/tasks/pending/' + filename, {method:'DELETE'});
+    // Mostra conferma custom invece di alert browser
+    if (confirm('Eliminare questo task dalla coda?')) {
+        await fetch('/api/tasks/pending/' + encodeURIComponent(filename), {method: 'DELETE'});
         fetchPending();
+        showToast('Task eliminato');
     }
 }
 
@@ -246,20 +823,31 @@ async function addTask(event) {
         priority: parseInt(document.getElementById('taskPriority').value) || 10,
         prompt: document.getElementById('taskPrompt').value.trim()
     };
+
     if (taskType === 'file') {
         const fp = document.getElementById('taskFilepath').value.trim();
-        if (!fp) { alert('Specifica il percorso file!'); return; }
+        if (!fp) {
+            showToast('Specifica il percorso file!');
+            document.getElementById('taskFilepath').focus();
+            return;
+        }
         data.filepath = fp;
     }
-    await fetch('/api/tasks/add', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify(data)
-    });
-    document.getElementById('taskForm').reset();
-    document.getElementById('taskPriority').value = '10';
-    document.getElementById('filepathRow').classList.add('hidden');
-    fetchPending();
+
+    try {
+        await fetch('/api/tasks/add', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(data)
+        });
+        document.getElementById('taskForm').reset();
+        document.getElementById('taskPriority').value = '10';
+        document.getElementById('filepathRow').classList.add('hidden');
+        fetchPending();
+        showToast('Task aggiunto!');
+    } catch(e) {
+        showToast('Errore nell\'aggiunta del task');
+    }
 }
 
 function toggleFilepath() {
@@ -267,9 +855,20 @@ function toggleFilepath() {
     fp.classList.toggle('hidden', document.getElementById('taskType').value !== 'file');
 }
 
+function toggleGuide(header) {
+    const content = header.nextElementSibling;
+    const toggle = header.querySelector('.guide-toggle');
+    content.classList.toggle('collapsed');
+    toggle.textContent = content.classList.contains('collapsed') ? '▶' : '▼';
+}
+
 async function importTasks() {
     const text = document.getElementById('importJson').value.trim();
-    if (!text) { alert('Incolla il JSON!'); return; }
+    if (!text) {
+        showToast('Incolla il JSON da importare!');
+        return;
+    }
+
     try {
         const data = JSON.parse(text);
         const res = await fetch('/api/tasks/import', {
@@ -278,18 +877,53 @@ async function importTasks() {
             body: JSON.stringify(data)
         });
         const result = await res.json();
-        alert('Importati ' + result.imported + ' task!');
+        showToast('Importati ' + result.imported + ' task!');
         document.getElementById('importJson').value = '';
         fetchPending();
-    } catch(e) { alert('JSON non valido: ' + e.message); }
+    } catch(e) {
+        showToast('JSON non valido: ' + e.message);
+    }
 }
 
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+// Click fuori dal modal lo chiude
+document.getElementById('confirmModal').addEventListener('click', function(e) {
+    if (e.target === this) closeModal();
+});
+
+// ESC chiude il modal
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closeModal();
+});
+
+// Init
 document.addEventListener('DOMContentLoaded', function() {
-    fetchStatus(); fetchPending(); fetchDone(); fetchLogs();
+    fetchStatus();
+    fetchPending();
+    fetchDone();
+    fetchLogs();
+
+    // Set auto-scroll button initial state
+    document.getElementById('autoScrollBtn').classList.add('active');
+
+    // Polling intervals
     setInterval(fetchStatus, 2000);
     setInterval(fetchPending, 3000);
     setInterval(fetchDone, 5000);
     setInterval(fetchLogs, 2000);
+
+    // Collapse guides on mobile by default
+    if (window.innerWidth < 600) {
+        document.querySelectorAll('.guide-content').forEach(el => {
+            el.classList.add('collapsed');
+            el.previousElementSibling.querySelector('.guide-toggle').textContent = '▶';
+        });
+    }
 });
 </script>
 </body>
