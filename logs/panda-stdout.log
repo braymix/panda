@@ -728,3 +728,7 @@ FileNotFoundError: [Errno 2] No such file or directory: '/home/michele/panda/fac
 [2026-01-31 18:16:46] [INFO] ▶ Task verify_no_chatter
 [2026-01-31 18:16:46] [INFO] ✅ Task verify_no_chatter
 [2026-01-31 18:16:56] [INFO] ▶ Task sanitize_clean_v2
+[2026-01-31 18:19:42] [WARN] 🔁 Retry 2 for sanitize_clean_v2
+[2026-01-31 18:19:52] [INFO] ▶ Task sanitize_clean_v2
+[2026-01-31 18:22:28] [WARN] 🔁 Retry 3 for sanitize_clean_v2
+[2026-01-31 18:22:38] [INFO] ▶ Task sanitize_clean_v2
