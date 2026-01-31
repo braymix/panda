@@ -1,0 +1,14 @@
+Crea un file systemd service unit per la dashboard PANDA.
+
+Deve contenere:
+- [Unit] con Description=PANDA Dashboard, After=network.target
+- [Service] con:
+  - User=michele
+  - WorkingDirectory=/home/michele/panda/dashboard
+  - ExecStart=/usr/bin/python3 /home/michele/panda/dashboard/server.py
+  - Restart=always
+  - RestartSec=5
+  - Environment=PYTHONUNBUFFERED=1
+- [Install] con WantedBy=multi-user.target
+
+Genera SOLO il contenuto del file service, niente altro.

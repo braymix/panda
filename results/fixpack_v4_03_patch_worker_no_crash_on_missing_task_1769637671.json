@@ -1,0 +1,15 @@
+{
+  "task_id": "fixpack_v4_03_patch_worker_no_crash_on_missing_task",
+  "type": "bash",
+  "steps": [
+    {
+      "cmd": "Aqu\u00ed tienes el solo comando bash que ejecutar\u00e1 tu c\u00f3digo:",
+      "result": {
+        "success": false,
+        "stdout": "",
+        "stderr": "/bin/sh: 1: Aqu\u00ed: not found\n"
+      }
+    }
+  ],
+  "success": false
+}

@@ -1,0 +1,7 @@
+{
+  "id": "fixpack_v3_06_sanitize_real_oneliner",
+  "type": "bash",
+  "priority": 10,
+  "pipeline": "fixpack_v3",
+  "prompt": "python3 -c \"from pathlib import Path; import re; root=Path.home()/'panda'/'projects'/'events-app'; skip={'.md'}; bad=(\\\"Ecco\\\",\\\"Di seguito\\\",\\\"Sure\\\",\\\"Here\\\",\\\"Il contenuto\\\");\nfor f in root.rglob('*'):\n    pass\n\""
+}

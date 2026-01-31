@@ -1,0 +1,25 @@
+{
+  "task_id": "factory_06_report",
+  "task": {
+    "id": "factory_06_report",
+    "type": "file",
+    "priority": 6,
+    "filepath": "~/panda/factory/report/final_report.txt",
+    "prompt": "Crea un report finale con stato COMPLETATO, timestamp e numero file processati."
+  },
+  "prompt_preview": "Crea un report finale con stato COMPLETATO, timestamp e numero file processati.",
+  "started_at": "2026-01-28T20:27:57.978962",
+  "steps": [
+    {
+      "type": "file",
+      "filepath": "~/panda/factory/report/final_report.txt",
+      "size": 77,
+      "result": {
+        "success": true,
+        "path": "/home/michele/panda/factory/report/final_report.txt"
+      }
+    }
+  ],
+  "success": true,
+  "finished_at": "2026-01-28T20:28:08.849940"
+}

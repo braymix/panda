@@ -1,0 +1,8 @@
+{
+  "id": "factory_07_final_gate",
+  "type": "test",
+  "priority": 7,
+  "test_name": "Pipeline completata",
+  "test_command": "grep -c COMPLETATO ~/panda/factory/report/final_report.txt",
+  "expected": "1"
+}

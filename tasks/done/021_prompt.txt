@@ -1,0 +1,31 @@
+Crea una pagina HTML5 completa per dashboard PANDA. Responsive per mobile.
+
+STRUTTURA:
+- Header: titolo "PANDA Dashboard" con emoji panda, indicatore stato (pallino verde/rosso)
+- Tre pulsanti: Start (verde), Stop (rosso), Restart (arancione)
+- Sezione "Task in Coda": lista task pending con bottone X per eliminarli
+- Sezione "Completati": lista ultimi 20 task completati
+- Sezione "Log Live": textarea con ultimi log, sfondo nero, testo verde
+
+STILE (tutto inline in tag style):
+- Sfondo pagina: #1a1a2e
+- Testo: #eee
+- Card: sfondo #16213e, padding 20px, border-radius 10px, margin 15px 0
+- Bottoni: padding 10px 20px, border-radius 5px, cursor pointer, border none
+- Bottone start: sfondo #2ecc71
+- Bottone stop: sfondo #e74c3c
+- Bottone restart: sfondo #f39c12
+- Log textarea: width 100%, height 250px, sfondo #0a0a0a, colore #0f0, font monospace
+- Lista task: ogni item sfondo #252550, padding 10px, margin 5px 0, border-radius 5px, display flex, justify-content space-between
+
+JAVASCRIPT (tutto inline in tag script):
+- Funzione fetchStatus() che chiama GET /api/status e aggiorna pallino
+- Funzione fetchTasks() che chiama GET /api/tasks/pending e popola lista
+- Funzione fetchDone() che chiama GET /api/tasks/done e popola lista
+- Funzione fetchLogs() che chiama GET /api/logs e aggiorna textarea
+- Funzione controlPanda(action) che chiama POST /api/control/{action}
+- Funzione deleteTask(filename) che chiama DELETE /api/tasks/pending/{filename}
+- setInterval che chiama tutte le fetch ogni 3 secondi
+- Auto-scroll textarea log in basso
+
+Usa fetch() per le chiamate API. No librerie esterne.

@@ -1,0 +1,7 @@
+{
+  "id": "fixpack_v3_02_patch_worker_clean_llm",
+  "type": "bash",
+  "priority": 2,
+  "pipeline": "fixpack_v3",
+  "prompt": "python3 -c \"from pathlib import Path; import re; p=Path.home()/'panda'/'worker.py'; s=p.read_text(); start=s.find('def clean_llm('); assert start!=-1, 'clean_llm not found'; end=s.find('\\n\\ndef ', start+1); end=end if end!=-1 else len(s); rep='def clean_llm(code):\\n    \\\"\\\"\\\"Normalizza output LLM per scrittura file.\\n    - Se trova un fenced block ```...```, usa SOLO il contenuto interno\\n    - Altrimenti rimuove preamboli comuni\\n    \\\"\\\"\\\"\\n    if not code:\\n        return \\\"\\\"\\n    import re\\n    t = code.strip()\\n    m = re.search(r\\\"```(?:[a-zA-Z0-9_-]+)?\\\\n([\\\\s\\\\S]*?)\\\\n```\\\", t)\\n    if m:\\n        return m.group(1).strip()\\n    lines = t.splitlines()\\n    bad = (\\\"Ecco\\\", \\\"Di seguito\\\", \\\"Sure\\\", \\\"Here\\\", \\\"Il contenuto\\\")\\n    if lines and lines[0].strip().startswith(bad):\\n        i = 0\\n        while i < len(lines) and (not lines[i].strip() or lines[i].strip().startswith(bad)):\\n            i += 1\\n        return (\\\"\\\\n\\\".join(lines[i:]).strip() if i < len(lines) else t)\\n    return t.strip()\\n'; s2=s[:start]+rep+s[end:]; p.write_text(s2)\""
+}

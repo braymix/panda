@@ -1,0 +1,8 @@
+{
+  "id": "factory_output_check",
+  "type": "test",
+  "priority": 5,
+  "test_name": "Verifica output generati",
+  "test_command": "ls -1 ~/panda/factory/output | wc -l",
+  "expected": "1"
+}

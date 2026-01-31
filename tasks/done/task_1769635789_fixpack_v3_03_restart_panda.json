@@ -1,0 +1,8 @@
+{
+  "id": "fixpack_v3_03_restart_panda",
+  "type": "bash",
+  "priority": 3,
+  "pipeline": "fixpack_v3",
+  "prompt": "sudo systemctl restart panda",
+  "_retry": 2
+}

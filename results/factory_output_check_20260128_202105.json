@@ -1,0 +1,24 @@
+{
+  "task_id": "factory_output_check",
+  "task": {
+    "id": "factory_output_check",
+    "type": "test",
+    "priority": 5,
+    "test_name": "Verifica output generati",
+    "test_command": "ls -1 ~/panda/factory/output | wc -l",
+    "expected": "1"
+  },
+  "prompt_preview": "",
+  "started_at": "2026-01-28T20:21:05.755629",
+  "steps": [
+    {
+      "type": "test",
+      "command": "ls -1 ~/panda/factory/output | wc -l",
+      "expected": "1",
+      "actual": "0",
+      "passed": false
+    }
+  ],
+  "success": false,
+  "finished_at": "2026-01-28T20:21:05.757816"
+}

@@ -1,0 +1,8 @@
+{
+  "id": "events_app_034_backend_app",
+  "type": "file",
+  "priority": 34,
+  "pipeline": "events_app_v1",
+  "filepath": "~/panda/projects/events-app/backend/src/main/java/com/panda/events/EventsApplication.java",
+  "prompt": "Scrivi classe Java Spring Boot main:\npackage com.panda.events;\n@SpringBootApplication\npublic class EventsApplication { public static void main(String[] args) { SpringApplication.run(EventsApplication.class,args);} }\nImport corretti. Solo codice."
+}

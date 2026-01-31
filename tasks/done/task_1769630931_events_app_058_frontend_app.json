@@ -1,0 +1,8 @@
+{
+  "id": "events_app_058_frontend_app",
+  "type": "file",
+  "priority": 58,
+  "pipeline": "events_app_v1",
+  "filepath": "~/panda/projects/events-app/frontend/src/App.tsx",
+  "prompt": "Crea App.tsx con router:\n- / -> EventsListPage\n- /events/:id -> EventDetailPage\n- /create -> EventCreatePage\nAggiungi una navbar semplice con link.\nSolo codice."
+}

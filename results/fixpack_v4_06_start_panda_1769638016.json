@@ -1,0 +1,15 @@
+{
+  "task_id": "fixpack_v4_06_start_panda",
+  "type": "bash",
+  "steps": [
+    {
+      "cmd": "Para iniciar el servicio `panda` utilizando `systemctl`, puedes usar el siguiente comando en Bash:",
+      "result": {
+        "success": false,
+        "stdout": "",
+        "stderr": "/bin/sh: 1: panda: not found\n/bin/sh: 1: Para: not found\n"
+      }
+    }
+  ],
+  "success": false
+}

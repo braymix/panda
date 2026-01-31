@@ -1,0 +1,10 @@
+{
+  "task_id": "events_app_050_frontend_dockerfile",
+  "type": "file",
+  "steps": [
+    {
+      "success": true
+    }
+  ],
+  "success": true
+}

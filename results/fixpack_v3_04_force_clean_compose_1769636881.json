@@ -1,0 +1,15 @@
+{
+  "task_id": "fixpack_v3_04_force_clean_compose",
+  "type": "bash",
+  "steps": [
+    {
+      "cmd": "El comando bash que ejecuta el c\u00f3digo Python para crear y escribir en el archivo `docker-compose.yml` es:",
+      "result": {
+        "success": false,
+        "stdout": "",
+        "stderr": "/bin/sh: 1: docker-compose.yml: not found\n/bin/sh: 1: El: not found\n"
+      }
+    }
+  ],
+  "success": false
+}

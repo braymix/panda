@@ -1,0 +1,6 @@
+{
+  "id": "restart_dashboard",
+  "type": "bash",
+  "priority": 32,
+  "prompt": "Riavvia il servizio panda-dashboard con systemctl restart panda-dashboard"
+}

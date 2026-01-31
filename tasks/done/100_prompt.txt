@@ -1,0 +1,105 @@
+Crea un server Flask COMPLETO per la dashboard PANDA.
+
+REGOLE IMPORTANTI:
+- Prima riga DEVE essere: from flask import Flask, jsonify, request, render_template
+- Import separati per: json, subprocess, time
+- from datetime import datetime
+- from pathlib import Path
+
+VARIABILI GLOBALI dopo gli import:
+app = Flask(__name__)
+PANDA_HOME = Path.home() / "panda"
+TASKS_DIR = PANDA_HOME / "tasks"
+RESULTS_DIR = PANDA_HOME / "results"
+LOGS_DIR = PANDA_HOME / "logs"
+STATUS_DIR = PANDA_HOME / "status"
+
+ROUTE 1 - GET /:
+return render_template('index.html')
+
+ROUTE 2 - GET /api/status:
+Esegui subprocess.run(['systemctl', 'is-active', 'panda'], capture_output=True, text=True)
+panda_running = (result.stdout.strip() == 'active')
+current_task = None
+status_file = STATUS_DIR / 'current.json'
+if status_file.exists(): current_task = json.loads(status_file.read_text())
+return jsonify({'panda_running': panda_running, 'current_task': current_task})
+
+ROUTE 3 - GET /api/tasks/pending:
+tasks = []
+for f in sorted(TASKS_DIR.glob('*.json')):
+    if f.name.startswith('_'): continue
+    try:
+        data = json.loads(f.read_text())
+        tasks.append({'filename': f.name, 'id': data.get('id',''), 'type': data.get('type',''), 'priority': data.get('priority',10), 'prompt': data.get('prompt','')[:80]})
+    except: pass
+tasks.sort(key=lambda x: x['priority'])
+return jsonify(tasks)
+
+ROUTE 4 - GET /api/tasks/done:
+tasks = []
+done_dir = TASKS_DIR / 'done'
+if done_dir.exists():
+    files = sorted(done_dir.glob('*.json'), key=lambda x: x.stat().st_mtime, reverse=True)[:30]
+    for f in files:
+        try:
+            data = json.loads(f.read_text())
+            tasks.append({'filename': f.name, 'id': data.get('id',''), 'type': data.get('type','')})
+        except: pass
+return jsonify(tasks)
+
+ROUTE 5 - GET /api/results:
+results = []
+if RESULTS_DIR.exists():
+    files = sorted(RESULTS_DIR.glob('*.json'), key=lambda x: x.stat().st_mtime, reverse=True)[:30]
+    for f in files:
+        try:
+            data = json.loads(f.read_text())
+            results.append({'filename': f.name, 'task_id': data.get('task_id',''), 'success': data.get('success',False)})
+        except: pass
+return jsonify(results)
+
+ROUTE 6 - GET /api/logs:
+today = datetime.now().strftime('%Y-%m-%d')
+log_file = LOGS_DIR / f'{today}.log'
+lines = []
+if log_file.exists():
+    lines = log_file.read_text().split('\n')[-150:]
+return jsonify({'lines': lines})
+
+ROUTE 7 - POST /api/control/<action>:
+if action not in ['start','stop','restart']: return jsonify({'success':False})
+result = subprocess.run(['sudo','systemctl',action,'panda'], capture_output=True, text=True)
+return jsonify({'success': result.returncode==0})
+
+ROUTE 8 - POST /api/tasks/add:
+data = request.get_json()
+task_id = data.get('id', f'task_{int(time.time())}')
+filename = f"task_{int(time.time())}_{task_id}.json"
+filepath = TASKS_DIR / filename
+task = {'id': task_id, 'type': data.get('type','prompt'), 'priority': data.get('priority',10), 'prompt': data.get('prompt','')}
+if data.get('filepath'): task['filepath'] = data['filepath']
+filepath.write_text(json.dumps(task, indent=2))
+return jsonify({'success': True, 'filename': filename})
+
+ROUTE 9 - DELETE /api/tasks/pending/<filename>:
+filepath = TASKS_DIR / filename
+if filepath.exists(): filepath.unlink()
+return jsonify({'success': True})
+
+ROUTE 10 - POST /api/tasks/import:
+data = request.get_json()
+tasks = data.get('tasks', [])
+filenames = []
+for t in tasks:
+    task_id = t.get('id', f'task_{int(time.time())}')
+    filename = f"task_{int(time.time())}_{task_id}.json"
+    filepath = TASKS_DIR / filename
+    filepath.write_text(json.dumps(t, indent=2))
+    filenames.append(filename)
+    time.sleep(0.01)
+return jsonify({'success': True, 'imported': len(filenames), 'filenames': filenames})
+
+MAIN:
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000, debug=False)

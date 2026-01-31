@@ -1,0 +1,24 @@
+{
+  "task_id": "test_html",
+  "task": {
+    "id": "test_html",
+    "type": "test",
+    "priority": 43,
+    "test_name": "HTML dashboard esiste",
+    "test_command": "test -f ~/panda/dashboard/templates/index.html && echo OK",
+    "expected": "OK"
+  },
+  "prompt_preview": "",
+  "started_at": "2026-01-27T23:00:55.302612",
+  "steps": [
+    {
+      "type": "test",
+      "command": "test -f ~/panda/dashboard/templates/index.html && echo OK",
+      "expected": "OK",
+      "actual": "OK",
+      "passed": true
+    }
+  ],
+  "success": true,
+  "finished_at": "2026-01-27T23:00:55.303778"
+}

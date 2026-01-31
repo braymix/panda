@@ -1,0 +1,24 @@
+{
+  "task_id": "test_finale",
+  "task": {
+    "id": "test_finale",
+    "type": "test",
+    "priority": 45,
+    "test_name": "Dashboard risponde dopo restart",
+    "test_command": "sleep 3 && curl -s -o /dev/null -w '%{http_code}' http://localhost:5000/",
+    "expected": "200"
+  },
+  "prompt_preview": "",
+  "started_at": "2026-01-27T23:00:57.199211",
+  "steps": [
+    {
+      "type": "test",
+      "command": "sleep 3 && curl -s -o /dev/null -w '%{http_code}' http://localhost:5000/",
+      "expected": "200",
+      "actual": "000",
+      "passed": false
+    }
+  ],
+  "success": false,
+  "finished_at": "2026-01-27T23:01:00.209121"
+}

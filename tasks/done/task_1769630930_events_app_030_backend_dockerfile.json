@@ -1,0 +1,8 @@
+{
+  "id": "events_app_030_backend_dockerfile",
+  "type": "file",
+  "priority": 30,
+  "pipeline": "events_app_v1",
+  "filepath": "~/panda/projects/events-app/backend/Dockerfile",
+  "prompt": "Scrivi ESATTAMENTE questo contenuto:\nFROM maven:3.9-eclipse-temurin-21 AS build\nWORKDIR /app\nCOPY pom.xml .\nCOPY src ./src\nRUN mvn -q -DskipTests package\n\nFROM eclipse-temurin:21-jre\nWORKDIR /app\nCOPY --from=build /app/target/events-backend-0.1.0.jar app.jar\nEXPOSE 8080\nENTRYPOINT [\"java\",\"-jar\",\"app.jar\"]\n"
+}

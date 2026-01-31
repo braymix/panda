@@ -1,0 +1,59 @@
+Crea pagina HTML5 completa per dashboard PANDA. Mobile responsive.
+
+HEADER:
+- Sfondo gradient da #1a1a2e a #16213e
+- Titolo grande "PANDA" con emoji panda
+- Sottotitolo piccolo "Pana Automating Never Death (on) Afterwork"
+- Pallino stato: verde #2ecc71 se running, rosso #e74c3c se stopped
+- Testo "Running" o "Stopped" accanto al pallino
+
+CONTROLLI (sotto header):
+- Tre bottoni in fila: Start (verde #2ecc71), Stop (rosso #e74c3c), Restart (arancione #f39c12)
+- Bottoni con icone Unicode: ▶ Start, ⏹ Stop, ⟳ Restart
+- Hover: schiarisce colore
+
+FORM NUOVO TASK (card separata):
+- Titolo "Aggiungi Task"
+- Select per type: prompt, bash, python, file
+- Input per ID task
+- Input number per priority (default 10)
+- Textarea per prompt
+- Input per filepath (visibile solo se type=file)
+- Bottone "Aggiungi" arancione
+- Quando submit, chiama POST /api/tasks/add
+
+SEZIONE TASK IN CODA:
+- Titolo con contatore "(N)"
+- Lista task con sfondo #252550
+- Ogni task mostra: priority come badge colorato, id in grassetto, type, prompt troncato
+- Bottone X rosso per eliminare
+
+SEZIONE COMPLETATI:
+- Titolo "Ultimi Completati"
+- Lista compatta con id e type
+- Badge verde OK o rosso FAIL
+
+SEZIONE LOG:
+- Titolo "Log Live"
+- Textarea readonly, sfondo #0a0a0a, testo #0f0 (verde terminale)
+- Font monospace, altezza 200px
+- Auto-scroll in basso
+
+STILE:
+- Body: sfondo #1a1a2e, colore #eee, font system-ui, margin 0, padding 20px
+- Card: sfondo #16213e, border-radius 12px, padding 20px, margin 15px 0, box-shadow
+- Input/Select/Textarea: sfondo #252550, border none, colore #eee, padding 10px, border-radius 6px, width 100%
+- Bottoni: border none, padding 12px 24px, border-radius 6px, cursor pointer, font-weight bold
+- Badge priority: padding 4px 8px, border-radius 4px, font-size piccolo
+
+JAVASCRIPT:
+- fetchStatus() ogni 3 secondi, aggiorna pallino e testo
+- fetchTasks() ogni 3 secondi, popola lista pending
+- fetchDone() ogni 5 secondi, popola lista completati
+- fetchLogs() ogni 2 secondi, aggiorna textarea con auto-scroll
+- controlPanda(action) chiama POST /api/control/{action}, poi fetch status
+- deleteTask(filename) chiama DELETE, poi fetchTasks()
+- addTask() legge form, chiama POST /api/tasks/add con JSON, pulisce form, fetchTasks()
+- Mostra/nascondi campo filepath quando type cambia
+
+Tutto inline: CSS in style, JS in script. No librerie esterne.

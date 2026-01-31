@@ -1,0 +1,8 @@
+{
+  "id": "factory_final_check",
+  "type": "test",
+  "priority": 7,
+  "test_name": "Verifica report finale",
+  "test_command": "grep -c COMPLETATO ~/panda/factory/report/report.txt",
+  "expected": "1"
+}

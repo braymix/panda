@@ -1,0 +1,6 @@
+{
+  "id": "create_dashboard_service",
+  "type": "bash",
+  "priority": 15,
+  "prompt": "Crea il file /etc/systemd/system/panda-dashboard.service con sudo tee. Il servizio deve: usare User=michele, WorkingDirectory=/home/michele/panda/dashboard, ExecStart=/usr/bin/python3 /home/michele/panda/dashboard/server.py, Restart=always, RestartSec=5, After=network.target. Poi esegui sudo systemctl daemon-reload"
+}

@@ -1,0 +1,15 @@
+{
+  "task_id": "1",
+  "task": {
+    "id": "1",
+    "type": "file",
+    "priority": 10,
+    "prompt": "make a hello world in python"
+  },
+  "prompt_preview": "make a hello world in python",
+  "started_at": "2026-01-28T00:18:38.934277",
+  "steps": [],
+  "error": "filepath mancante",
+  "success": false,
+  "finished_at": "2026-01-28T00:18:38.934293"
+}

@@ -1,0 +1,26 @@
+{
+  "task_id": "factory_v1_07_gate_report_success",
+  "task": {
+    "id": "factory_v1_07_gate_report_success",
+    "type": "test",
+    "priority": 7,
+    "pipeline": "factory_v1",
+    "stop_on_fail": true,
+    "test_name": "Report success coerente",
+    "test_command": "grep -q '^COMPLETATO$' ~/panda/factory/report/final_report.txt && grep -q '^PIPELINE=factory_v1$' ~/panda/factory/report/final_report.txt && echo OK || echo KO",
+    "expected": "OK"
+  },
+  "prompt_preview": "",
+  "started_at": "2026-01-28T20:49:02.432152",
+  "steps": [
+    {
+      "type": "test",
+      "command": "grep -q '^COMPLETATO$' ~/panda/factory/report/final_report.txt && grep -q '^PIPELINE=factory_v1$' ~/panda/factory/report/final_report.txt && echo OK || echo KO",
+      "expected": "OK",
+      "actual": "OK",
+      "passed": true
+    }
+  ],
+  "success": true,
+  "finished_at": "2026-01-28T20:49:02.434959"
+}

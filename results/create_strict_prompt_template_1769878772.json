@@ -1,0 +1,10 @@
+{
+  "task_id": "create_strict_prompt_template",
+  "type": "file",
+  "steps": [
+    {
+      "success": true
+    }
+  ],
+  "success": true
+}

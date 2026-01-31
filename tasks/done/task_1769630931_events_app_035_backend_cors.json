@@ -1,0 +1,8 @@
+{
+  "id": "events_app_035_backend_cors",
+  "type": "file",
+  "priority": 35,
+  "pipeline": "events_app_v1",
+  "filepath": "~/panda/projects/events-app/backend/src/main/java/com/panda/events/config/CorsConfig.java",
+  "prompt": "Crea configurazione CORS Spring Boot che permetta richieste da http://localhost:5173 e metodi GET,POST,PUT,DELETE,OPTIONS su /api/**. Solo codice, package com.panda.events.config."
+}

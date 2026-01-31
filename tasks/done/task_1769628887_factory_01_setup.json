@@ -1,0 +1,6 @@
+{
+  "id": "factory_01_setup",
+  "type": "bash",
+  "priority": 1,
+  "prompt": "mkdir -p ~/panda/factory/input ~/panda/factory/work ~/panda/factory/output ~/panda/factory/report"
+}

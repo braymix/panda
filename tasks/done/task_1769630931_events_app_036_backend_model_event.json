@@ -1,0 +1,8 @@
+{
+  "id": "events_app_036_backend_model_event",
+  "type": "file",
+  "priority": 36,
+  "pipeline": "events_app_v1",
+  "filepath": "~/panda/projects/events-app/backend/src/main/java/com/panda/events/model/Event.java",
+  "prompt": "Crea entity JPA Event con campi coerenti con DB V1__init.sql.\n- package com.panda.events.model\n- @Entity @Table(name=\"events\")\n- id UUID @Id\n- title, description, city, venue, category, startAt, endAt, organizer, price (BigDecimal), url, createdAt, updatedAt\n- mapping colonne snake_case\n- @PrePersist e @PreUpdate per createdAt/updatedAt\n- Getter/setter (puoi usare Lombok ma allora anche pom lo deve includere bene)\nSolo codice."
+}

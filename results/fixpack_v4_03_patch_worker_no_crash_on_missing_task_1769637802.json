@@ -1,0 +1,15 @@
+{
+  "task_id": "fixpack_v4_03_patch_worker_no_crash_on_missing_task",
+  "type": "bash",
+  "steps": [
+    {
+      "cmd": "Here is the bash command you requested:",
+      "result": {
+        "success": false,
+        "stdout": "",
+        "stderr": "/bin/sh: 1: Here: not found\n"
+      }
+    }
+  ],
+  "success": false
+}

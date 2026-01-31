@@ -1,0 +1,7 @@
+{
+  "id": "sanitize_clean_v2",
+  "type": "python",
+  "priority": 1,
+  "prompt": "Scrivi uno script Python che cammini in ~/panda/projects/. Per ogni file .py o .html, deve leggere il contenuto e, SE contiene stringhe come 'Certamente' o 'Ecco il codice', deve rimuovere tutto ci\u00f2 che precede la prima riga di codice reale (es. import, def, o <!DOCTYPE). Usa os.walk e re.sub.",
+  "_retry": 1
+}

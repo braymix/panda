@@ -1,0 +1,15 @@
+{
+  "task_id": "fixpack_v3_01_backup_worker",
+  "type": "bash",
+  "steps": [
+    {
+      "cmd": "Aqu\u00ed tienes el comando Bash que realiza una copia de seguridad del archivo `worker.py` en la carpeta `~/panda`, a\u00f1adiendo un sufijo con la fecha y hora actual:",
+      "result": {
+        "success": false,
+        "stdout": "",
+        "stderr": "/bin/sh: 1: worker.py: not found\n/bin/sh: 1: /home/michele/panda: Permission denied\n/bin/sh: 1: Aqu\u00ed: not found\n"
+      }
+    }
+  ],
+  "success": false
+}

@@ -1,0 +1,8 @@
+{
+  "id": "fixpack_04_fix_events_app_files_extract_fenced",
+  "type": "bash",
+  "priority": 4,
+  "pipeline": "panda_fixpack_v1",
+  "prompt": "python3 -c \"from pathlib import Path; import re; root=Path.home()/'panda'/'projects'/'events-app';\n# Fix: per tutti i file NON markdown che contengono ```...``` o iniziano con Ecco/Di seguito ecc\nskip_ext={'.md'}\nbad_prefix=('Ecco','Di seguito','Sure','Here','Il contenuto')\nfor f in root.rglob('*'):\n    if not f.is_file():\n        continue\n    if f.suffix in skip_ext:\n        continue\n    try:\n        t=f.read_text(errors='ignore')\n    except Exception:\n        continue\n    tt=t.strip()\n    if not tt:\n        continue\n    m=re.search(r\"```(?:[a-zA-Z0-9_-]+)?\\n([\\s\\S]*?)\\n```\", tt)\n    if m:\n        new=m.group(1).strip()+\"\\n\"\n        f.write_text(new)\n        continue\n    # se niente fenced block ma preambolo, prova a drop righe iniziali\n    lines=tt.splitlines()\n    if lines and lines[0].strip().startswith(bad_prefix):\n        # trova prima riga 'vera'\n        i=0\n        while i<len(lines) and (not lines[i].strip() or lines[i].strip().startswith(bad_prefix)):\n            i+=1\n        if i<len(lines):\n            f.write_text(\"\\n\".join(lines[i:]).strip()+\"\\n\")\"",
+  "_retry": 1
+}

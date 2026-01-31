@@ -1,0 +1,10 @@
+{
+  "task_id": "fixpack_v4_04_write_compose_via_file_task",
+  "type": "file",
+  "steps": [
+    {
+      "success": true
+    }
+  ],
+  "success": true
+}

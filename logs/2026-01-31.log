@@ -1,0 +1,46 @@
+[2026-01-31 17:54:37] [INFO] 🐼 PANDA Worker v3.1 avviato
+[2026-01-31 17:57:24] [INFO] ▶ Task fix_panda_config_determinism
+[2026-01-31 17:57:56] [INFO] ✅ Task fix_panda_config_determinism
+[2026-01-31 17:57:56] [INFO] ▶ Task sanitize_existing_files
+[2026-01-31 17:59:05] [WARN] 🔁 Retry 1 for sanitize_existing_files
+[2026-01-31 17:59:05] [INFO] ▶ Task create_strict_prompt_template
+[2026-01-31 17:59:32] [INFO] ✅ Task create_strict_prompt_template
+[2026-01-31 17:59:42] [ERROR] Worker crash: Expecting value: line 1 column 1 (char 0)
+[2026-01-31 17:59:52] [ERROR] Worker crash: Expecting value: line 1 column 1 (char 0)
+[2026-01-31 18:00:02] [ERROR] Worker crash: Expecting value: line 1 column 1 (char 0)
+[2026-01-31 18:00:12] [ERROR] Worker crash: Expecting value: line 1 column 1 (char 0)
+[2026-01-31 18:00:22] [ERROR] Worker crash: Expecting value: line 1 column 1 (char 0)
+[2026-01-31 18:00:32] [ERROR] Worker crash: Expecting value: line 1 column 1 (char 0)
+[2026-01-31 18:00:42] [ERROR] Worker crash: Expecting value: line 1 column 1 (char 0)
+[2026-01-31 18:00:52] [ERROR] Worker crash: Expecting value: line 1 column 1 (char 0)
+[2026-01-31 18:01:02] [ERROR] Worker crash: Expecting value: line 1 column 1 (char 0)
+[2026-01-31 18:01:12] [ERROR] Worker crash: Expecting value: line 1 column 1 (char 0)
+[2026-01-31 18:01:22] [ERROR] Worker crash: Expecting value: line 1 column 1 (char 0)
+[2026-01-31 18:01:32] [ERROR] Worker crash: Expecting value: line 1 column 1 (char 0)
+[2026-01-31 18:01:42] [ERROR] Worker crash: Expecting value: line 1 column 1 (char 0)
+[2026-01-31 18:01:52] [ERROR] Worker crash: Expecting value: line 1 column 1 (char 0)
+[2026-01-31 18:02:02] [ERROR] Worker crash: Expecting value: line 1 column 1 (char 0)
+[2026-01-31 18:02:10] [INFO] 🐼 PANDA Worker v3.1 avviato
+[2026-01-31 18:02:10] [ERROR] Worker crash: Expecting value: line 1 column 1 (char 0)
+[2026-01-31 18:02:10] [INFO] 🐼 PANDA Worker v3.1 avviato
+[2026-01-31 18:02:10] [ERROR] Worker crash: Expecting value: line 1 column 1 (char 0)
+[2026-01-31 18:02:20] [ERROR] Worker crash: Expecting value: line 1 column 1 (char 0)
+[2026-01-31 18:02:30] [ERROR] Worker crash: Expecting value: line 1 column 1 (char 0)
+[2026-01-31 18:02:40] [ERROR] Worker crash: Expecting value: line 1 column 1 (char 0)
+[2026-01-31 18:02:50] [ERROR] Worker crash: Expecting value: line 1 column 1 (char 0)
+[2026-01-31 18:03:00] [ERROR] Worker crash: Expecting value: line 1 column 1 (char 0)
+[2026-01-31 18:03:10] [ERROR] Worker crash: Expecting value: line 1 column 1 (char 0)
+[2026-01-31 18:03:20] [INFO] ▶ Task sanitize_existing_files
+[2026-01-31 18:03:29] [INFO] 🐼 PANDA Worker v3.1 avviato
+[2026-01-31 18:03:29] [INFO] ▶ Task sanitize_existing_files
+[2026-01-31 18:05:53] [WARN] 🔁 Retry 2 for sanitize_existing_files
+[2026-01-31 18:06:03] [INFO] ▶ Task sanitize_existing_files
+[2026-01-31 18:07:07] [WARN] 🔁 Retry 3 for sanitize_existing_files
+[2026-01-31 18:07:17] [INFO] ▶ Task sanitize_existing_files
+[2026-01-31 18:09:39] [INFO] ❌ Task sanitize_existing_files
+[2026-01-31 18:13:44] [INFO] 🐼 PANDA Worker v3.1 avviato
+[2026-01-31 18:14:04] [INFO] ▶ Task sanitize_clean_v2
+[2026-01-31 18:16:46] [WARN] 🔁 Retry 1 for sanitize_clean_v2
+[2026-01-31 18:16:46] [INFO] ▶ Task verify_no_chatter
+[2026-01-31 18:16:46] [INFO] ✅ Task verify_no_chatter
+[2026-01-31 18:16:56] [INFO] ▶ Task sanitize_clean_v2

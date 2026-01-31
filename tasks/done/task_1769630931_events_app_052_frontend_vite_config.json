@@ -1,0 +1,8 @@
+{
+  "id": "events_app_052_frontend_vite_config",
+  "type": "file",
+  "priority": 52,
+  "pipeline": "events_app_v1",
+  "filepath": "~/panda/projects/events-app/frontend/vite.config.ts",
+  "prompt": "Crea vite.config.ts con plugin react e server host 0.0.0.0 port 5173. Solo codice."
+}

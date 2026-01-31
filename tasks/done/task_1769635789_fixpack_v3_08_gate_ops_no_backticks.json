@@ -1,0 +1,11 @@
+{
+  "id": "fixpack_v3_08_gate_ops_no_backticks",
+  "type": "test",
+  "priority": 21,
+  "pipeline": "fixpack_v3",
+  "stop_on_fail": true,
+  "test_name": "ops senza ```",
+  "test_command": "! grep -R \"```\" -n ~/panda/projects/events-app/ops >/dev/null 2>&1 && echo OK",
+  "expected": "OK",
+  "_retry": 3
+}

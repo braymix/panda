@@ -1,0 +1,15 @@
+{
+  "task_id": "fixpack_v3_03_restart_panda",
+  "type": "bash",
+  "steps": [
+    {
+      "cmd": "Claro, aqu\u00ed tienes el comando bash para reiniciar un servicio llamado \"panda\" utilizando `systemctl`:",
+      "result": {
+        "success": false,
+        "stdout": "",
+        "stderr": "/bin/sh: 1: Claro,: not found\n"
+      }
+    }
+  ],
+  "success": false
+}

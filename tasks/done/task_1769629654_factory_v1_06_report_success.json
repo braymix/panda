@@ -1,0 +1,7 @@
+{
+  "id": "factory_v1_06_report_success",
+  "type": "bash",
+  "priority": 6,
+  "pipeline": "factory_v1",
+  "prompt": "c=$(ls -1 ~/panda/factory/output 2>/dev/null | wc -l); ts=$(date -Iseconds); echo 'COMPLETATO' > ~/panda/factory/report/final_report.txt; echo \"PIPELINE=factory_v1\" >> ~/panda/factory/report/final_report.txt; echo \"TIMESTAMP=$ts\" >> ~/panda/factory/report/final_report.txt; echo \"FILES_PROCESSATI=$c\" >> ~/panda/factory/report/final_report.txt"
+}

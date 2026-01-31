@@ -1,0 +1,8 @@
+{
+  "id": "test_server",
+  "type": "test",
+  "priority": 42,
+  "test_name": "Server Flask risponde",
+  "test_command": "curl -s http://localhost:5000/api/status | head -c 100",
+  "expected": "panda_running"
+}

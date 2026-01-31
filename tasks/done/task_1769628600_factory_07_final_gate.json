@@ -1,0 +1,8 @@
+{
+  "id": "factory_07_final_gate",
+  "type": "test",
+  "priority": 7,
+  "test_name": "Report coerente",
+  "test_command": "grep -q '^COMPLETATO$' ~/panda/factory/report/final_report.txt && echo OK || echo KO",
+  "expected": "OK"
+}

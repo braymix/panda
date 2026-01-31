@@ -1,0 +1,7 @@
+{
+  "id": "create_dashboard_service_file",
+  "type": "file",
+  "priority": 22,
+  "filepath": "~/panda/dashboard/panda-dashboard.service",
+  "prompt_file": "022_prompt.txt"
+}

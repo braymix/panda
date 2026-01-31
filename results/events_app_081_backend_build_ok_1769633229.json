@@ -1,0 +1,11 @@
+{
+  "task_id": "events_app_081_backend_build_ok",
+  "type": "test",
+  "steps": [
+    {
+      "expected": "OK",
+      "actual": ""
+    }
+  ],
+  "success": false
+}

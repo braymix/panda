@@ -1,0 +1,8 @@
+{
+  "id": "events_app_037_backend_dto_create",
+  "type": "file",
+  "priority": 37,
+  "pipeline": "events_app_v1",
+  "filepath": "~/panda/projects/events-app/backend/src/main/java/com/panda/events/dto/EventCreateRequest.java",
+  "prompt": "Crea DTO EventCreateRequest con validation:\n- title @NotBlank @Size(max=200)\n- description optional\n- city @NotBlank @Size(max=120)\n- venue optional @Size(max=200)\n- category @NotBlank @Size(max=80)\n- startAt @NotNull (OffsetDateTime)\n- endAt optional (OffsetDateTime)\n- organizer optional @Size(max=160)\n- price optional (BigDecimal)\n- url optional @Size(max=400)\nSolo codice, package com.panda.events.dto."
+}

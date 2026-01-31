@@ -1,0 +1,25 @@
+{
+  "task_id": "html_completo",
+  "task": {
+    "id": "html_completo",
+    "type": "file",
+    "priority": 101,
+    "filepath": "~/panda/dashboard/templates/index.html",
+    "prompt_file": "101_prompt.txt"
+  },
+  "prompt_preview": "Crea una pagina HTML5 COMPLETA per dashboard PANDA con CSS e JavaScript INLINE.\n\nSTRUTTURA BASE:\n<!DOCTYPE html>\n<html lang=\"it\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"w...",
+  "started_at": "2026-01-27T23:32:37.932938",
+  "steps": [
+    {
+      "type": "file",
+      "filepath": "~/panda/dashboard/templates/index.html",
+      "size": 10143,
+      "result": {
+        "success": true,
+        "path": "/home/michele/panda/dashboard/templates/index.html"
+      }
+    }
+  ],
+  "success": true,
+  "finished_at": "2026-01-27T23:46:54.836420"
+}

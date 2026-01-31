@@ -1,0 +1,11 @@
+{
+  "task_id": "events_app_070_gate_files_exist",
+  "type": "test",
+  "steps": [
+    {
+      "expected": "OK",
+      "actual": "OK"
+    }
+  ],
+  "success": true
+}

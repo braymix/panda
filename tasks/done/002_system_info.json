@@ -1,0 +1,6 @@
+{
+  "id": "system_info",
+  "type": "bash",
+  "priority": 2,
+  "prompt": "Mostra informazioni sul sistema: hostname, uptime, memoria disponibile"
+}

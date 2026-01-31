@@ -1,0 +1,6 @@
+{
+  "id": "hello_world",
+  "type": "python",
+  "priority": 10,
+  "prompt": "make a hello world python code"
+}

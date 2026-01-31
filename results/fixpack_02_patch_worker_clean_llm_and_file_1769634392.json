@@ -1,0 +1,15 @@
+{
+  "task_id": "fixpack_02_patch_worker_clean_llm_and_file",
+  "type": "bash",
+  "steps": [
+    {
+      "cmd": "Ecco il comando bash per eseguire lo script Python:",
+      "result": {
+        "success": false,
+        "stdout": "",
+        "stderr": "/bin/sh: 1: Ecco: not found\n"
+      }
+    }
+  ],
+  "success": false
+}

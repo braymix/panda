@@ -1,0 +1,11 @@
+{
+  "id": "events_app_081_backend_build_ok",
+  "type": "test",
+  "priority": 81,
+  "pipeline": "events_app_v1",
+  "stop_on_fail": true,
+  "test_name": "Backend build success gate",
+  "test_command": "test -d ~/panda/projects/events-app/backend/target && echo OK",
+  "expected": "OK",
+  "_retry": 3
+}

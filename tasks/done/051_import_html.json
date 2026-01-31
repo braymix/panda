@@ -1,0 +1,7 @@
+{
+  "id": "add_import_html",
+  "type": "file",
+  "priority": 51,
+  "filepath": "~/panda/dashboard/templates/index.html",
+  "prompt_file": "051_prompt.txt"
+}

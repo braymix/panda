@@ -1,0 +1,6 @@
+{
+  "id": "install_deps",
+  "type": "bash",
+  "priority": 10,
+  "prompt": "Installa flask e flask-socketio con pip. Usa il flag --break-system-packages. Comando singolo."
+}

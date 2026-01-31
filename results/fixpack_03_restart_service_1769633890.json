@@ -1,0 +1,15 @@
+{
+  "task_id": "fixpack_03_restart_service",
+  "type": "bash",
+  "steps": [
+    {
+      "cmd": "bash",
+      "result": {
+        "success": true,
+        "stdout": "",
+        "stderr": ""
+      }
+    }
+  ],
+  "success": true
+}

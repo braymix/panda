@@ -1,0 +1,8 @@
+{
+  "id": "factory_05_output_gate",
+  "type": "test",
+  "priority": 5,
+  "test_name": "Output generati (>=1)",
+  "test_command": "c=$(ls -1 ~/panda/factory/output 2>/dev/null | wc -l); test \"$c\" -ge 1 && echo OK || echo KO",
+  "expected": "OK"
+}

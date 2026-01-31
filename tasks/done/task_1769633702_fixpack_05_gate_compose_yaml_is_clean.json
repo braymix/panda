@@ -1,0 +1,11 @@
+{
+  "id": "fixpack_05_gate_compose_yaml_is_clean",
+  "type": "test",
+  "priority": 5,
+  "pipeline": "panda_fixpack_v1",
+  "stop_on_fail": true,
+  "test_name": "docker-compose.yml deve essere YAML pulito",
+  "test_command": "head -n 1 ~/panda/projects/events-app/ops/docker-compose.yml | grep -q '^services:' && ! grep -q '```' ~/panda/projects/events-app/ops/docker-compose.yml && echo OK",
+  "expected": "OK",
+  "_retry": 3
+}

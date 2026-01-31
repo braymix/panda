@@ -1,0 +1,10 @@
+{
+  "task_id": "events_app_032_backend_application_yml",
+  "type": "file",
+  "steps": [
+    {
+      "success": true
+    }
+  ],
+  "success": true
+}

@@ -1,0 +1,90 @@
+Crea pagina HTML5 dashboard PANDA completa con IMPORT JSON.
+
+CSS inline, JS inline, responsive mobile.
+
+STILE:
+body: sfondo #0f0f1a, colore #e0e0e0, font system-ui
+header: gradient #1a1a2e a #16213e, padding 25px, border-radius 15px
+.card: sfondo #16213e, border-radius 12px, padding 20px
+button: padding 12px 24px, border-radius 8px, cursor pointer
+.btn-start verde #2ecc71, .btn-stop rosso #e74c3c, .btn-restart arancio #f39c12
+input/select/textarea: sfondo #1a1a2e, border #2c3e50, padding 12px, border-radius 8px
+.log-box: sfondo #0a0a0f, colore #0f0, font monospace, height 200px, overflow auto
+.task-item: sfondo #1a1a2e, padding 12px, margin 8px 0, border-radius 8px, display flex, justify-content space-between
+.status-dot: 12px, border-radius 50%, animazione pulse
+.import-area: border 2px dashed #3498db, padding 20px, border-radius 12px, text-align center
+.import-area.dragover: background rgba(52,152,219,0.2)
+
+STRUTTURA:
+<div class="container">
+
+HEADER con titolo PANDA, emoji, status badge con pallino
+
+CONTROLLI: Start, Stop, Restart buttons
+
+CURRENT TASK: box che mostra task in esecuzione con id e progress
+
+GRID con cards:
+
+CARD 1 - Coda:
+- Titolo con contatore
+- Lista task pending con delete button
+
+CARD 2 - Nuovo Task:
+- Form: id, priority, type (select), filepath (solo se type=file), prompt textarea
+- Button Aggiungi
+
+CARD 3 - IMPORT JSON (NUOVA):
+- Titolo "📥 Importa Task"
+- Textarea grande per incollare JSON
+- Placeholder: {"tasks": [{"id":"...", "type":"...", "priority":10, "prompt":"..."}]}
+- Div drop area con testo "Trascina file JSON qui"
+- Input file nascosto per selezionare file
+- Button "Importa" blu
+- Div risultato import
+
+CARD 4 - Completati:
+- Lista ultimi task done
+
+CARD 5 - Log Live:
+- Textarea log con autoscroll
+
+</div>
+
+JAVASCRIPT:
+
+fetchStatus() ogni 2s: aggiorna pallino e current task
+fetchPending() ogni 3s: popola lista coda
+fetchDone() ogni 5s: popola completati
+fetchLogs() ogni 2s: aggiorna log box con scroll
+
+control(action): POST /api/control/action
+
+deleteTask(filename): DELETE + fetchPending
+
+addTask(event): preventDefault, POST /api/tasks/add, reset form
+
+toggleFilepath(): mostra/nascondi filepath input
+
+importTasks(): 
+  leggi textarea importJson
+  parse JSON
+  POST /api/tasks/import con body
+  mostra risultato (N task importati)
+  fetchPending()
+
+handleFileDrop(event):
+  preventDefault
+  leggi file trascinato
+  metti contenuto in textarea importJson
+
+setupDragDrop():
+  area = getElementById importArea
+  area.ondragover: preventDefault, addClass dragover
+  area.ondragleave: removeClass dragover
+  area.ondrop: handleFileDrop
+
+document.addEventListener DOMContentLoaded:
+  setupDragDrop()
+  chiama tutti i fetch
+  avvia tutti i setInterval

@@ -1,0 +1,11 @@
+{
+  "task_id": "fixpack_05_gate_compose_yaml_is_clean",
+  "type": "test",
+  "steps": [
+    {
+      "expected": "OK",
+      "actual": ""
+    }
+  ],
+  "success": false
+}

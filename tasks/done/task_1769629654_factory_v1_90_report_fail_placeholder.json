@@ -1,0 +1,7 @@
+{
+  "id": "factory_v1_90_report_fail_placeholder",
+  "type": "bash",
+  "priority": 90,
+  "pipeline": "factory_v1",
+  "prompt": "ts=$(date -Iseconds); echo 'FALLITO' > ~/panda/factory/report/fail_report.txt; echo \"PIPELINE=factory_v1\" >> ~/panda/factory/report/fail_report.txt; echo \"TIMESTAMP=$ts\" >> ~/panda/factory/report/fail_report.txt; echo 'MOTIVO=Gate fallito (controlla results JSON e logs)' >> ~/panda/factory/report/fail_report.txt"
+}

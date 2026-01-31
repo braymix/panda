@@ -1,0 +1,7 @@
+{
+  "id": "server_completo",
+  "type": "file",
+  "priority": 100,
+  "filepath": "~/panda/dashboard/server.py",
+  "prompt_file": "100_prompt.txt"
+}

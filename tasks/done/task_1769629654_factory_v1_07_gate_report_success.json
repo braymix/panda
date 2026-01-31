@@ -1,0 +1,10 @@
+{
+  "id": "factory_v1_07_gate_report_success",
+  "type": "test",
+  "priority": 7,
+  "pipeline": "factory_v1",
+  "stop_on_fail": true,
+  "test_name": "Report success coerente",
+  "test_command": "grep -q '^COMPLETATO$' ~/panda/factory/report/final_report.txt && grep -q '^PIPELINE=factory_v1$' ~/panda/factory/report/final_report.txt && echo OK || echo KO",
+  "expected": "OK"
+}

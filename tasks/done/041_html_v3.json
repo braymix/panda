@@ -1,0 +1,7 @@
+{
+  "id": "html_v3",
+  "type": "file",
+  "priority": 41,
+  "filepath": "~/panda/dashboard/templates/index.html",
+  "prompt_file": "041_prompt.txt"
+}

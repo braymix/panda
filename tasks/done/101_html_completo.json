@@ -1,0 +1,7 @@
+{
+  "id": "html_completo",
+  "type": "file",
+  "priority": 101,
+  "filepath": "~/panda/dashboard/templates/index.html",
+  "prompt_file": "101_prompt.txt"
+}

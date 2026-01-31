@@ -1,0 +1,15 @@
+{
+  "task_id": "fixpack_v4_01_stop_panda",
+  "type": "bash",
+  "steps": [
+    {
+      "cmd": "bash",
+      "result": {
+        "success": true,
+        "stdout": "",
+        "stderr": ""
+      }
+    }
+  ],
+  "success": true
+}

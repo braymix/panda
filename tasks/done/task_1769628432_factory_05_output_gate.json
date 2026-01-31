@@ -1,0 +1,8 @@
+{
+  "id": "factory_05_output_gate",
+  "type": "test",
+  "priority": 5,
+  "test_name": "Output generati",
+  "test_command": "ls ~/panda/factory/output | wc -l",
+  "expected": "1"
+}

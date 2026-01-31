@@ -1,0 +1,8 @@
+{
+  "id": "fixpack_v4_03_patch_worker_no_crash_on_missing_task",
+  "type": "bash",
+  "priority": 3,
+  "pipeline": "fixpack_v4",
+  "prompt": "python3 -c \"from pathlib import Path; p=Path.home()/'panda'/'worker.py'; s=p.read_text();\n\"",
+  "_retry": 3
+}

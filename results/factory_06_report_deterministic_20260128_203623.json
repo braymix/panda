@@ -1,0 +1,25 @@
+{
+  "task_id": "factory_06_report_deterministic",
+  "task": {
+    "id": "factory_06_report_deterministic",
+    "type": "bash",
+    "priority": 6,
+    "prompt": "c=$(ls -1 ~/panda/factory/output 2>/dev/null | wc -l); ts=$(date -Iseconds); if [ \"$c\" -ge 1 ]; then echo \"COMPLETATO\" > ~/panda/factory/report/final_report.txt; else echo \"FALLITO\" > ~/panda/factory/report/final_report.txt; fi; echo \"TIMESTAMP=$ts\" >> ~/panda/factory/report/final_report.txt; echo \"FILES_PROCESSATI=$c\" >> ~/panda/factory/report/final_report.txt"
+  },
+  "prompt_preview": "c=$(ls -1 ~/panda/factory/output 2>/dev/null | wc -l); ts=$(date -Iseconds); if [ \"$c\" -ge 1 ]; then echo \"COMPLETATO\" > ~/panda/factory/report/final_report.txt; else echo \"FALLITO\" > ~/panda/factory/...",
+  "started_at": "2026-01-28T20:35:49.942884",
+  "steps": [
+    {
+      "type": "bash",
+      "command": "c=$(ls -1 ~/panda/factory/output 2>/dev/null | wc -l); ts=$(date -Iseconds); if [ \"$c\" -ge 1 ]; then echo \"COMPLETATO\" > ~/panda/factory/report/final_report.txt; else echo \"FALLITO\" > ~/panda/factory/report/final_report.txt; fi; echo \"TIMESTAMP=$ts\" >> ~/panda/factory/report/final_report.txt; echo \"FILES_PROCESSATI=$c\" >> ~/panda/factory/report/final_report.txt",
+      "result": {
+        "success": true,
+        "stdout": "",
+        "stderr": "",
+        "returncode": 0
+      }
+    }
+  ],
+  "success": true,
+  "finished_at": "2026-01-28T20:36:23.401744"
+}

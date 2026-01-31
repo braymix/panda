@@ -1,0 +1,26 @@
+{
+  "task_id": "factory_v1_01_setup",
+  "task": {
+    "id": "factory_v1_01_setup",
+    "type": "bash",
+    "priority": 1,
+    "pipeline": "factory_v1",
+    "prompt": "mkdir -p ~/panda/factory/input ~/panda/factory/work ~/panda/factory/output ~/panda/factory/report"
+  },
+  "prompt_preview": "mkdir -p ~/panda/factory/input ~/panda/factory/work ~/panda/factory/output ~/panda/factory/report",
+  "started_at": "2026-01-28T20:47:39.740477",
+  "steps": [
+    {
+      "type": "bash",
+      "command": "mkdir -p ~/panda/factory/input ~/panda/factory/work ~/panda/factory/output ~/panda/factory/report",
+      "result": {
+        "success": true,
+        "stdout": "",
+        "stderr": "",
+        "returncode": 0
+      }
+    }
+  ],
+  "success": true,
+  "finished_at": "2026-01-28T20:47:51.556558"
+}

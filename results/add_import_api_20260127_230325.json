@@ -1,0 +1,25 @@
+{
+  "task_id": "add_import_api",
+  "task": {
+    "id": "add_import_api",
+    "type": "file",
+    "priority": 50,
+    "filepath": "~/panda/dashboard/server.py",
+    "prompt_file": "050_prompt.txt"
+  },
+  "prompt_preview": "Crea server Flask completo per dashboard PANDA con tutte le API inclusa IMPORT.\n\nIMPORTANTE: inizia con \"from flask\" - mai scrivere \"python\" da solo.\n\nImport: Flask, jsonify, request, render_template,...",
+  "started_at": "2026-01-27T23:01:17.700956",
+  "steps": [
+    {
+      "type": "file",
+      "filepath": "~/panda/dashboard/server.py",
+      "size": 4538,
+      "result": {
+        "success": true,
+        "path": "/home/michele/panda/dashboard/server.py"
+      }
+    }
+  ],
+  "success": true,
+  "finished_at": "2026-01-27T23:03:25.523077"
+}

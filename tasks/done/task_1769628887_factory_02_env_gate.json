@@ -1,0 +1,8 @@
+{
+  "id": "factory_02_env_gate",
+  "type": "test",
+  "priority": 2,
+  "test_name": "Ambiente factory pronto",
+  "test_command": "test -d ~/panda/factory/input && test -d ~/panda/factory/work && test -d ~/panda/factory/output && test -d ~/panda/factory/report && echo OK",
+  "expected": "OK"
+}

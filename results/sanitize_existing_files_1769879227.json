@@ -1,0 +1,15 @@
+{
+  "task_id": "sanitize_existing_files",
+  "type": "python",
+  "steps": [
+    {
+      "code": "python\nimport os\nimport re\n\ndef is_code_block(line):\n    return line.strip().startswith('",
+      "result": {
+        "success": false,
+        "stdout": "",
+        "stderr": "  File \"/home/michele/panda/scripts/temp_1769879227.py\", line 6\n    return line.strip().startswith('\n                                   ^\nSyntaxError: unterminated string literal (detected at line 6)\n"
+      }
+    }
+  ],
+  "success": false
+}

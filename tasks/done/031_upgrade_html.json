@@ -1,0 +1,7 @@
+{
+  "id": "upgrade_html_graphics",
+  "type": "file",
+  "priority": 31,
+  "filepath": "~/panda/dashboard/templates/index.html",
+  "prompt_file": "031_prompt.txt"
+}

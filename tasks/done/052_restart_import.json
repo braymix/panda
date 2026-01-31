@@ -1,0 +1,6 @@
+{
+  "id": "restart_after_import",
+  "type": "bash",
+  "priority": 52,
+  "prompt": "Riavvia panda-dashboard con sudo systemctl restart panda-dashboard"
+}

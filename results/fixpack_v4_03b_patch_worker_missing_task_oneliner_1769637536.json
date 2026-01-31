@@ -1,0 +1,15 @@
+{
+  "task_id": "fixpack_v4_03b_patch_worker_missing_task_oneliner",
+  "type": "bash",
+  "steps": [
+    {
+      "cmd": "Ecco il comando bash per eseguire lo script Python che hai fornito:",
+      "result": {
+        "success": false,
+        "stdout": "",
+        "stderr": "/bin/sh: 1: Ecco: not found\n"
+      }
+    }
+  ],
+  "success": false
+}

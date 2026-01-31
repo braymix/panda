@@ -1,0 +1,15 @@
+{
+  "task_id": "fixpack_v3_05b_sanitize_events_app_non_md_oneliner",
+  "type": "bash",
+  "steps": [
+    {
+      "cmd": "bash",
+      "result": {
+        "success": true,
+        "stdout": "",
+        "stderr": ""
+      }
+    }
+  ],
+  "success": true
+}

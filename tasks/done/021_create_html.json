@@ -1,0 +1,7 @@
+{
+  "id": "create_dashboard_html",
+  "type": "file",
+  "priority": 21,
+  "filepath": "~/panda/dashboard/templates/index.html",
+  "prompt_file": "021_prompt.txt"
+}

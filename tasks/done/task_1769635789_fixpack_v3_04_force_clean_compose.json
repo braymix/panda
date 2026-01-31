@@ -1,0 +1,8 @@
+{
+  "id": "fixpack_v3_04_force_clean_compose",
+  "type": "bash",
+  "priority": 4,
+  "pipeline": "fixpack_v3",
+  "prompt": "python3 -c \"from pathlib import Path; p=Path.home()/'panda'/'projects'/'events-app'/'ops'/'docker-compose.yml'; p.parent.mkdir(parents=True, exist_ok=True); p.write_text('services:\\n  db:\\n    image: postgres:16\\n    environment:\\n      POSTGRES_DB: events\\n      POSTGRES_USER: events\\n      POSTGRES_PASSWORD: events\\n    ports:\\n      - \\\"5432:5432\\\"\\n    healthcheck:\\n      test: [\\\"CMD-SHELL\\\", \\\"pg_isready -U events -d events\\\"]\\n      interval: 5s\\n      timeout: 5s\\n      retries: 10\\n\\n  backend:\\n    build:\\n      context: ../backend\\n    environment:\\n      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/events\\n      SPRING_DATASOURCE_USERNAME: events\\n      SPRING_DATASOURCE_PASSWORD: events\\n      SPRING_JPA_HIBERNATE_DDL_AUTO: validate\\n      SPRING_FLYWAY_ENABLED: \\\"true\\\"\\n    ports:\\n      - \\\"8080:8080\\\"\\n    depends_on:\\n      db:\\n        condition: service_healthy\\n\\n  frontend:\\n    build:\\n      context: ../frontend\\n    environment:\\n      VITE_API_BASE_URL: http://localhost:8080\\n    ports:\\n      - \\\"5173:5173\\\"\\n    depends_on:\\n      - backend\\n')\"",
+  "_retry": 3
+}

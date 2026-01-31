@@ -1,0 +1,10 @@
+{
+  "task_id": "events_app_041_backend_exception_notfound",
+  "type": "file",
+  "steps": [
+    {
+      "success": true
+    }
+  ],
+  "success": true
+}

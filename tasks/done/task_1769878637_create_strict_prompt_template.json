@@ -1,0 +1,7 @@
+{
+  "id": "create_strict_prompt_template",
+  "type": "file",
+  "priority": 3,
+  "filepath": "~/panda/tasks/strict_rule.txt",
+  "prompt": "Crea un file di testo che contenga le seguenti istruzioni di sistema: SYSTEM: Sei un generatore di codice puro. Rispondi SEMPRE e SOLTANTO con il contenuto richiesto. VIETATO introdurre la risposta con frasi di cortesia. VIETATO concludere con spiegazioni. Se ti viene chiesto codice, scrivi solo il codice senza blocchi markdown ```."
+}

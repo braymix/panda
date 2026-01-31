@@ -1,0 +1,8 @@
+{
+  "id": "fixpack_v4_06_start_panda",
+  "type": "bash",
+  "priority": 7,
+  "pipeline": "fixpack_v4",
+  "prompt": "sudo systemctl start panda",
+  "_retry": 1
+}

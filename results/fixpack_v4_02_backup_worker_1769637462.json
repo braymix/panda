@@ -1,0 +1,15 @@
+{
+  "task_id": "fixpack_v4_02_backup_worker",
+  "type": "bash",
+  "steps": [
+    {
+      "cmd": "Claro, aqu\u00ed tienes el comando Bash que has pedido:",
+      "result": {
+        "success": false,
+        "stdout": "",
+        "stderr": "/bin/sh: 1: Claro,: not found\n"
+      }
+    }
+  ],
+  "success": false
+}

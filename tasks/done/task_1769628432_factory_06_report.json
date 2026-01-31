@@ -1,0 +1,7 @@
+{
+  "id": "factory_06_report",
+  "type": "file",
+  "priority": 6,
+  "filepath": "~/panda/factory/report/final_report.txt",
+  "prompt": "Crea un report finale con stato COMPLETATO, timestamp e numero file processati."
+}

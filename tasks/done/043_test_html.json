@@ -1,0 +1,8 @@
+{
+  "id": "test_html",
+  "type": "test",
+  "priority": 43,
+  "test_name": "HTML dashboard esiste",
+  "test_command": "test -f ~/panda/dashboard/templates/index.html && echo OK",
+  "expected": "OK"
+}

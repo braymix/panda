@@ -1,0 +1,25 @@
+{
+  "task_id": "add_import_html",
+  "task": {
+    "id": "add_import_html",
+    "type": "file",
+    "priority": 51,
+    "filepath": "~/panda/dashboard/templates/index.html",
+    "prompt_file": "051_prompt.txt"
+  },
+  "prompt_preview": "Crea pagina HTML5 dashboard PANDA completa con IMPORT JSON.\n\nCSS inline, JS inline, responsive mobile.\n\nSTILE:\nbody: sfondo #0f0f1a, colore #e0e0e0, font system-ui\nheader: gradient #1a1a2e a #16213e, ...",
+  "started_at": "2026-01-27T23:03:25.526083",
+  "steps": [
+    {
+      "type": "file",
+      "filepath": "~/panda/dashboard/templates/index.html",
+      "size": 4053,
+      "result": {
+        "success": true,
+        "path": "/home/michele/panda/dashboard/templates/index.html"
+      }
+    }
+  ],
+  "success": true,
+  "finished_at": "2026-01-27T23:05:39.359368"
+}

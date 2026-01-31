@@ -1,0 +1,24 @@
+{
+  "task_id": "create_dashboard_structure",
+  "task": {
+    "id": "create_dashboard_structure",
+    "type": "bash",
+    "priority": 11,
+    "prompt": "Crea le cartelle ~/panda/dashboard e ~/panda/dashboard/templates e ~/panda/dashboard/static"
+  },
+  "started_at": "2026-01-27T22:19:03.801901",
+  "steps": [
+    {
+      "type": "bash",
+      "command": "mkdir -p ~/panda/dashboard/{templates,static}",
+      "result": {
+        "success": true,
+        "stdout": "",
+        "stderr": "",
+        "returncode": 0
+      }
+    }
+  ],
+  "success": true,
+  "finished_at": "2026-01-27T22:19:05.583736"
+}

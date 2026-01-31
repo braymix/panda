@@ -1,0 +1,15 @@
+{
+  "task_id": "sanitize_existing_files",
+  "type": "python",
+  "steps": [
+    {
+      "code": "python\nimport os\nimport re\n\ndef clean_file(file_path):\n    with open(file_path, 'r', encoding='utf-8') as file:\n        content = file.readlines()\n\n    new_content = []\n    in_code_block = False\n    skip_lines = False\n\n    for line in content:\n        if in_code_block:\n            new_content.append(line)\n            if line.strip().endswith('",
+      "result": {
+        "success": false,
+        "stdout": "",
+        "stderr": "  File \"/home/michele/panda/scripts/temp_1769878745.py\", line 16\n    if line.strip().endswith('\n                             ^\nSyntaxError: unterminated string literal (detected at line 16)\n"
+      }
+    }
+  ],
+  "success": false
+}

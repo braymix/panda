@@ -1,0 +1,52 @@
+Crea server Flask completo per dashboard PANDA con tutte le API inclusa IMPORT.
+
+IMPORTANTE: inizia con "from flask" - mai scrivere "python" da solo.
+
+Import: Flask, jsonify, request, render_template, json, subprocess, datetime, pathlib, time
+
+Variabili:
+PANDA_HOME = Path.home() / "panda"
+TASKS_DIR = PANDA_HOME / "tasks"
+RESULTS_DIR = PANDA_HOME / "results" 
+LOGS_DIR = PANDA_HOME / "logs"
+STATUS_DIR = PANDA_HOME / "status"
+
+TUTTE le routes:
+
+GET / -> render_template('index.html')
+
+GET /api/status -> JSON:
+  panda_running: systemctl is-active panda == "active"
+  current_task: contenuto di STATUS_DIR/current.json se esiste
+
+GET /api/tasks/pending -> lista file TASKS_DIR/*.json (no _*)
+  Per ogni file: filename, id, type, priority, prompt (max 80 char)
+
+GET /api/tasks/done -> ultimi 30 file TASKS_DIR/done/*.json per data desc
+  Per ogni file: filename, id, type
+
+GET /api/results -> ultimi 30 file RESULTS_DIR/*.json per data desc
+  Per ogni file: filename, task_id, success, finished_at
+
+GET /api/logs -> ultime 150 righe LOGS_DIR/oggi.log
+  Return: {"lines": [...]}
+
+POST /api/control/<action> -> sudo systemctl action panda
+  Return: success, message
+
+POST /api/tasks/add -> crea singolo task
+  Body: id, type, priority, prompt, filepath
+  Crea file task_TIMESTAMP_id.json in TASKS_DIR
+  Return: success, filename
+
+DELETE /api/tasks/pending/<filename> -> elimina file
+
+POST /api/tasks/import -> NUOVA ROUTE per import multiplo
+  Body JSON: {"tasks": [{"id":"...", "type":"...", "priority":N, "prompt":"...", "filepath":"..."},...]}
+  Per ogni task nell'array crea un file JSON in TASKS_DIR
+  Nome file: task_TIMESTAMP_id.json
+  Return: {"success": true, "imported": N, "filenames": [...]}
+
+Fine:
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000, debug=False)

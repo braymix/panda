@@ -1,0 +1,10 @@
+{
+  "task_id": "events_app_035_backend_cors",
+  "type": "file",
+  "steps": [
+    {
+      "success": true
+    }
+  ],
+  "success": true
+}

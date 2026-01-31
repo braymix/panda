@@ -1,0 +1,24 @@
+{
+  "task_id": "factory_02_env_gate",
+  "task": {
+    "id": "factory_02_env_gate",
+    "type": "test",
+    "priority": 2,
+    "test_name": "Ambiente factory pronto",
+    "test_command": "test -d ~/panda/factory/input && test -d ~/panda/factory/work && echo OK",
+    "expected": "OK"
+  },
+  "prompt_preview": "",
+  "started_at": "2026-01-28T20:27:25.115348",
+  "steps": [
+    {
+      "type": "test",
+      "command": "test -d ~/panda/factory/input && test -d ~/panda/factory/work && echo OK",
+      "expected": "OK",
+      "actual": "",
+      "passed": false
+    }
+  ],
+  "success": false,
+  "finished_at": "2026-01-28T20:27:25.116202"
+}

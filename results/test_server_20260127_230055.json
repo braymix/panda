@@ -1,0 +1,24 @@
+{
+  "task_id": "test_server",
+  "task": {
+    "id": "test_server",
+    "type": "test",
+    "priority": 42,
+    "test_name": "Server Flask risponde",
+    "test_command": "curl -s http://localhost:5000/api/status | head -c 100",
+    "expected": "panda_running"
+  },
+  "prompt_preview": "",
+  "started_at": "2026-01-27T23:00:55.284825",
+  "steps": [
+    {
+      "type": "test",
+      "command": "curl -s http://localhost:5000/api/status | head -c 100",
+      "expected": "panda_running",
+      "actual": "{\"running\":true,\"status\":\"\\u25cf panda.service - PANDA - Pana Automating Never Death (on) Afterwork\\",
+      "passed": false
+    }
+  ],
+  "success": false,
+  "finished_at": "2026-01-27T23:00:55.301278"
+}

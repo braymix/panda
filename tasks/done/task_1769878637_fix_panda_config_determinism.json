@@ -1,0 +1,7 @@
+{
+  "id": "fix_panda_config_determinism",
+  "type": "file",
+  "priority": 1,
+  "filepath": "~/panda/config/panda.json",
+  "prompt": "Genera esclusivamente un file JSON di configurazione valido. Parametri: ollama_url: http://localhost:11434, model: qwen2.5-coder:7b, check_interval: 10, max_retries: 3, execute_code: true, execute_bash: true, modify_files: true. Assicurati che non ci sia testo prima o dopo le parentesi graffe."
+}

@@ -1,0 +1,11 @@
+{
+  "task_id": "verify_no_chatter",
+  "type": "test",
+  "steps": [
+    {
+      "expected": "0",
+      "actual": "0"
+    }
+  ],
+  "success": true
+}

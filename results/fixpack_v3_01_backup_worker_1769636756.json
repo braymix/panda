@@ -1,0 +1,15 @@
+{
+  "task_id": "fixpack_v3_01_backup_worker",
+  "type": "bash",
+  "steps": [
+    {
+      "cmd": "Aqu\u00ed tienes el comando `bash` que realiza una copia de seguridad de un archivo con una fecha y hora\u6233:",
+      "result": {
+        "success": false,
+        "stdout": "",
+        "stderr": "/bin/sh: 1: Aqu\u00ed: not found\n"
+      }
+    }
+  ],
+  "success": false
+}

@@ -1,0 +1,6 @@
+{
+  "id": "restart_finale",
+  "type": "bash",
+  "priority": 102,
+  "prompt": "Riavvia panda-dashboard usando sudo systemctl restart panda-dashboard"
+}

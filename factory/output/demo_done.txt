@@ -1,0 +1,1 @@
+OK /home/michele/panda/factory/input/demo.txt

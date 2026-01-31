@@ -1,0 +1,8 @@
+{
+  "id": "factory_input_check",
+  "type": "test",
+  "priority": 2,
+  "test_name": "Verifica input presenti",
+  "test_command": "ls -1 ~/panda/factory/input | wc -l",
+  "expected": "1"
+}

@@ -1,0 +1,7 @@
+{
+  "id": "add_import_api",
+  "type": "file",
+  "priority": 50,
+  "filepath": "~/panda/dashboard/server.py",
+  "prompt_file": "050_prompt.txt"
+}

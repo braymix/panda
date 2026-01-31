@@ -1,0 +1,354 @@
+#!/usr/bin/env python3
+"""
+PANDA Worker - Pana Automating Never Death (on) Afterwork
+Loop infinito che processa task da ~/panda/tasks/
+"""
+
+import json
+import os
+import sys
+import time
+import subprocess
+import requests
+from datetime import datetime
+from pathlib import Path
+
+# Configurazione
+PANDA_HOME = Path.home() / "panda"
+TASKS_DIR = PANDA_HOME / "tasks"
+RESULTS_DIR = PANDA_HOME / "results"
+LOGS_DIR = PANDA_HOME / "logs"
+CONFIG_FILE = PANDA_HOME / "config" / "panda.json"
+
+# Config di default
+DEFAULT_CONFIG = {
+    "ollama_url": "http://localhost:11434",
+    "model": "qwen2.5-coder:3b",
+    "check_interval": 10,
+    "max_retries": 3,
+    "execute_code": True,
+    "execute_bash": True,
+    "modify_files": True
+}
+
+def log(message, level="INFO"):
+    """Logga su file e console"""
+    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    log_line = f"[{timestamp}] [{level}] {message}"
+    print(log_line)
+    
+    log_file = LOGS_DIR / f"{datetime.now().strftime('%Y-%m-%d')}.log"
+    with open(log_file, "a") as f:
+        f.write(log_line + "\n")
+
+def load_config():
+    """Carica configurazione (hot reload)"""
+    if CONFIG_FILE.exists():
+        with open(CONFIG_FILE) as f:
+            config = json.load(f)
+            return {**DEFAULT_CONFIG, **config}
+    return DEFAULT_CONFIG
+
+def save_default_config():
+    """Salva config di default se non esiste"""
+    if not CONFIG_FILE.exists():
+        with open(CONFIG_FILE, "w") as f:
+            json.dump(DEFAULT_CONFIG, f, indent=2)
+
+def ask_ollama(prompt, config):
+    """Chiama Ollama e ritorna la risposta"""
+    url = f"{config['ollama_url']}/api/generate"
+    payload = {
+        "model": config["model"],
+        "prompt": prompt,
+        "stream": False
+    }
+    
+    try:
+        response = requests.post(url, json=payload, timeout=600)
+        response.raise_for_status()
+        return response.json().get("response", "")
+    except Exception as e:
+        log(f"Errore Ollama: {e}", "ERROR")
+        return None
+
+def execute_bash(command):
+    """Esegue comando bash e ritorna output"""
+    try:
+        result = subprocess.run(
+            command, 
+            shell=True, 
+            capture_output=True, 
+            text=True,
+            timeout=300
+        )
+        return {
+            "success": result.returncode == 0,
+            "stdout": result.stdout,
+            "stderr": result.stderr,
+            "returncode": result.returncode
+        }
+    except subprocess.TimeoutExpired:
+        return {"success": False, "error": "Timeout"}
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+def execute_python(code):
+    """Esegue codice Python e ritorna output"""
+    try:
+        # Salva in file temporaneo ed esegue
+        temp_file = PANDA_HOME / "scripts" / f"temp_{int(time.time())}.py"
+        with open(temp_file, "w") as f:
+            f.write(code)
+        
+        result = subprocess.run(
+            [sys.executable, str(temp_file)],
+            capture_output=True,
+            text=True,
+            timeout=300
+        )
+        
+        return {
+            "success": result.returncode == 0,
+            "stdout": result.stdout,
+            "stderr": result.stderr,
+            "returncode": result.returncode
+        }
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+def write_file(filepath, content):
+    """Scrive contenuto su file"""
+    try:
+        path = Path(filepath).expanduser()
+        path.parent.mkdir(parents=True, exist_ok=True)
+        with open(path, "w") as f:
+            f.write(content)
+        return {"success": True, "path": str(path)}
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+def process_task(task_file, config):
+    """Processa un singolo task"""
+    log(f"Processo task: {task_file.name}")
+    
+    try:
+        with open(task_file) as f:
+            task = json.load(f)
+    except Exception as e:
+        log(f"Errore lettura task: {e}", "ERROR")
+        return False
+    
+    task_id = task.get("id", task_file.stem)
+    task_type = task.get("type", "prompt")  # prompt, bash, python, file
+    prompt = task.get("prompt", "")
+    
+    result = {
+        "task_id": task_id,
+        "task": task,
+        "started_at": datetime.now().isoformat(),
+        "steps": []
+    }
+    
+    # Tipo: prompt generico a Ollama
+    if task_type == "prompt":
+        log(f"Invio prompt a Ollama...")
+        response = ask_ollama(prompt, config)
+        if response:
+            result["steps"].append({
+                "type": "ollama",
+                "response": response
+            })
+            result["success"] = True
+        else:
+            result["success"] = False
+            result["error"] = "Ollama non ha risposto"
+    
+    # Tipo: chiedi a Ollama di generare e poi esegui bash
+    elif task_type == "bash":
+        if not config["execute_bash"]:
+            log("Esecuzione bash disabilitata", "WARN")
+            result["success"] = False
+            result["error"] = "bash execution disabled"
+        else:
+            log(f"Chiedo a Ollama comando bash...")
+            llm_prompt = f"""Genera SOLO il comando bash per fare questo task. 
+Rispondi SOLO con il comando, senza spiegazioni, senza markdown, senza ```.
+
+Task: {prompt}
+
+Comando bash:"""
+            
+            command = ask_ollama(llm_prompt, config)
+            if command:
+                command = command.strip().strip('`').strip()
+                log(f"Eseguo: {command}")
+                exec_result = execute_bash(command)
+                result["steps"].append({
+                    "type": "bash",
+                    "command": command,
+                    "result": exec_result
+                })
+                result["success"] = exec_result["success"]
+            else:
+                result["success"] = False
+    
+    # Tipo: chiedi a Ollama di generare e poi esegui Python
+    elif task_type == "python":
+        if not config["execute_code"]:
+            log("Esecuzione codice disabilitata", "WARN")
+            result["success"] = False
+            result["error"] = "code execution disabled"
+        else:
+            log(f"Chiedo a Ollama codice Python...")
+            llm_prompt = f"""Genera SOLO il codice Python per fare questo task.
+Rispondi SOLO con il codice, senza spiegazioni, senza markdown, senza ```.
+
+Task: {prompt}
+
+Codice Python:"""
+            
+            code = ask_ollama(llm_prompt, config)
+            if code:
+                code = code.strip()
+                # Rimuovi eventuale markdown
+                if code.startswith("```python"):
+                    code = code[9:]
+                if code.startswith("```"):
+                    code = code[3:]
+                if code.endswith("```"):
+                    code = code[:-3]
+                code = code.strip()
+                
+                log(f"Eseguo codice Python ({len(code)} chars)")
+                exec_result = execute_python(code)
+                result["steps"].append({
+                    "type": "python",
+                    "code": code,
+                    "result": exec_result
+                })
+                result["success"] = exec_result["success"]
+            else:
+                result["success"] = False
+    
+    # Tipo: chiedi a Ollama di generare contenuto per un file
+    elif task_type == "file":
+        if not config["modify_files"]:
+            log("Modifica file disabilitata", "WARN")
+            result["success"] = False
+            result["error"] = "file modification disabled"
+        else:
+            filepath = task.get("filepath", "")
+            if not filepath:
+                result["success"] = False
+                result["error"] = "filepath mancante"
+            else:
+                log(f"Chiedo a Ollama contenuto file...")
+                llm_prompt = f"""Genera SOLO il contenuto del file richiesto.
+Rispondi SOLO con il contenuto, senza spiegazioni, senza markdown, senza ```.
+
+Task: {prompt}
+
+Contenuto file:"""
+                
+                content = ask_ollama(llm_prompt, config)
+                if content:
+                    write_result = write_file(filepath, content)
+                    result["steps"].append({
+                        "type": "file",
+                        "filepath": filepath,
+                        "result": write_result
+                    })
+                    result["success"] = write_result["success"]
+                else:
+                    result["success"] = False
+    
+    # Tipo: multi-step (catena di operazioni)
+    elif task_type == "multi":
+        steps = task.get("steps", [])
+        result["success"] = True
+        for i, step in enumerate(steps):
+            log(f"Step {i+1}/{len(steps)}: {step.get('type', 'unknown')}")
+            # Crea task temporaneo per ogni step
+            step_task = {"id": f"{task_id}_step{i}", **step}
+            step_file = TASKS_DIR / f"_temp_step_{i}.json"
+            with open(step_file, "w") as f:
+                json.dump(step_task, f)
+            
+            step_result = process_task(step_file, config)
+            step_file.unlink()  # Rimuovi task temporaneo
+            
+            if not step_result:
+                result["success"] = False
+                break
+    
+    result["finished_at"] = datetime.now().isoformat()
+    
+    # Salva risultato
+    result_file = RESULTS_DIR / f"{task_id}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+    with open(result_file, "w") as f:
+        json.dump(result, f, indent=2, default=str)
+    
+    # Sposta task completato
+    done_dir = TASKS_DIR / "done"
+    done_dir.mkdir(exist_ok=True)
+    task_file.rename(done_dir / task_file.name)
+    
+    log(f"Task {task_id} completato: {'OK' if result['success'] else 'FALLITO'}")
+    return result["success"]
+
+def get_pending_tasks():
+    """Ritorna lista task pendenti ordinati per priorità"""
+    tasks = []
+    for f in TASKS_DIR.glob("*.json"):
+        if f.name.startswith("_"):  # Skip temp files
+            continue
+        try:
+            with open(f) as file:
+                data = json.load(file)
+                priority = data.get("priority", 10)
+                tasks.append((priority, f))
+        except:
+            tasks.append((10, f))
+    
+    # Ordina per priorità (più bassa = prima)
+    tasks.sort(key=lambda x: x[0])
+    return [t[1] for t in tasks]
+
+def main():
+    """Loop principale PANDA"""
+    log("🐼 PANDA Worker avviato!")
+    log(f"Home: {PANDA_HOME}")
+    
+    # Crea config se non esiste
+    save_default_config()
+    
+    while True:
+        try:
+            # Ricarica config ad ogni ciclo (hot reload)
+            config = load_config()
+            
+            # Cerca task pendenti
+            pending = get_pending_tasks()
+            
+            if pending:
+                log(f"Trovati {len(pending)} task pendenti")
+                for task_file in pending:
+                    process_task(task_file, config)
+                    # Ricarica config tra un task e l'altro
+                    config = load_config()
+            else:
+                # Nessun task, aspetta
+                pass
+            
+            time.sleep(config["check_interval"])
+            
+        except KeyboardInterrupt:
+            log("🐼 PANDA Worker fermato dall'utente")
+            break
+        except Exception as e:
+            log(f"Errore nel loop principale: {e}", "ERROR")
+            time.sleep(30)  # Pausa più lunga in caso di errore
+
+if __name__ == "__main__":
+    main()

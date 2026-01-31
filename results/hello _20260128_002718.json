@@ -1,0 +1,15 @@
+{
+  "task_id": "hello ",
+  "task": {
+    "id": "hello ",
+    "type": "command",
+    "priority": 1,
+    "prompt": "create a hello world in python"
+  },
+  "prompt_preview": "create a hello world in python",
+  "started_at": "2026-01-28T00:27:18.959062",
+  "steps": [],
+  "error": "unknown task type: command",
+  "success": false,
+  "finished_at": "2026-01-28T00:27:18.959152"
+}

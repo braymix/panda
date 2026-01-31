@@ -1,0 +1,15 @@
+{
+  "task_id": "fixpack_v3_06b_sanitize_events_app",
+  "type": "bash",
+  "steps": [
+    {
+      "cmd": "bash",
+      "result": {
+        "success": true,
+        "stdout": "",
+        "stderr": ""
+      }
+    }
+  ],
+  "success": true
+}

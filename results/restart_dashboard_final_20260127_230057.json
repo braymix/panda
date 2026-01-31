@@ -1,0 +1,25 @@
+{
+  "task_id": "restart_dashboard_final",
+  "task": {
+    "id": "restart_dashboard_final",
+    "type": "bash",
+    "priority": 44,
+    "prompt": "Riavvia il servizio panda-dashboard usando sudo systemctl restart panda-dashboard"
+  },
+  "prompt_preview": "Riavvia il servizio panda-dashboard usando sudo systemctl restart panda-dashboard",
+  "started_at": "2026-01-27T23:00:55.304414",
+  "steps": [
+    {
+      "type": "bash",
+      "command": "sudo systemctl restart panda-dashboard",
+      "result": {
+        "success": true,
+        "stdout": "",
+        "stderr": "",
+        "returncode": 0
+      }
+    }
+  ],
+  "success": true,
+  "finished_at": "2026-01-27T23:00:57.196875"
+}

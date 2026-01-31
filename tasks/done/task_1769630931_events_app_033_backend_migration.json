@@ -1,0 +1,8 @@
+{
+  "id": "events_app_033_backend_migration",
+  "type": "file",
+  "priority": 33,
+  "pipeline": "events_app_v1",
+  "filepath": "~/panda/projects/events-app/backend/src/main/resources/db/migration/V1__init.sql",
+  "prompt": "Scrivi SQL PostgreSQL per creare tabella events con:\n- id UUID PK\n- title varchar(200) not null\n- description text null\n- city varchar(120) not null\n- venue varchar(200) null\n- category varchar(80) not null\n- start_at timestamptz not null\n- end_at timestamptz null\n- organizer varchar(160) null\n- price numeric(10,2) null\n- url varchar(400) null\n- created_at timestamptz not null default now()\n- updated_at timestamptz not null default now()\nIndici:\n- index su (start_at)\n- index su (city)\n- index su (category)\n- index su (title) (btree)\nRisposta: SOLO SQL."
+}

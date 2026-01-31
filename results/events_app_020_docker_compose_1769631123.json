@@ -1,0 +1,10 @@
+{
+  "task_id": "events_app_020_docker_compose",
+  "type": "file",
+  "steps": [
+    {
+      "success": true
+    }
+  ],
+  "success": true
+}

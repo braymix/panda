@@ -1,0 +1,8 @@
+{
+  "id": "events_app_040_backend_service",
+  "type": "file",
+  "priority": 40,
+  "pipeline": "events_app_v1",
+  "filepath": "~/panda/projects/events-app/backend/src/main/java/com/panda/events/service/EventService.java",
+  "prompt": "Crea service con metodi:\n- Page<Event> search(String q, OffsetDateTime from, OffsetDateTime to, String city, String category, Pageable pageable)\n- Event get(UUID id) (throw NotFoundException)\n- Event create(EventCreateRequest req)\n- Event update(UUID id, EventCreateRequest req)\n- void delete(UUID id)\nImplementa search con Specification JPA:\n- se q presente: title ILIKE %q% OR description ILIKE %q%\n- se from/to: startAt >= from, startAt <= to\n- se city/category: equals ignore case\nUsa repository.\nSolo codice."
+}

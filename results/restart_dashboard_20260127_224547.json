@@ -1,0 +1,25 @@
+{
+  "task_id": "restart_dashboard",
+  "task": {
+    "id": "restart_dashboard",
+    "type": "bash",
+    "priority": 32,
+    "prompt": "Riavvia il servizio panda-dashboard con systemctl restart panda-dashboard"
+  },
+  "prompt_used": "Riavvia il servizio panda-dashboard con systemctl restart panda-dashboard",
+  "started_at": "2026-01-27T22:45:46.156361",
+  "steps": [
+    {
+      "type": "bash",
+      "command": "systemctl restart panda-dashboard",
+      "result": {
+        "success": false,
+        "stdout": "",
+        "stderr": "Failed to restart panda-dashboard.service: Interactive authentication required.\nSee system logs and 'systemctl status panda-dashboard.service' for details.\n",
+        "returncode": 1
+      }
+    }
+  ],
+  "success": false,
+  "finished_at": "2026-01-27T22:45:47.676305"
+}

@@ -1,0 +1,8 @@
+{
+  "id": "events_app_051_frontend_package_json",
+  "type": "file",
+  "priority": 51,
+  "pipeline": "events_app_v1",
+  "filepath": "~/panda/projects/events-app/frontend/package.json",
+  "prompt": "Genera package.json per Vite + React + TypeScript con dipendenze:\n- react, react-dom\n- react-router-dom\n- axios\nDevDependencies:\n- vite\n- typescript\n- @types/react, @types/react-dom\n- @vitejs/plugin-react\nScripts:\n- dev, build, preview\nNome: events-frontend\nVersion: 0.1.0\nSolo JSON."
+}

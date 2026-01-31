@@ -1,0 +1,23 @@
+[2026-01-27 23:03:25] [INFO]   💾 Scrivo ~/panda/dashboard/server.py (4538 chars)
+[2026-01-27 23:03:25] [INFO] ✅ Task add_import_api completato: OK
+[2026-01-27 23:03:25] [INFO] ▶ Processo task: 051_import_html.json
+[2026-01-27 23:03:25] [INFO]   📄 Genero contenuto per ~/panda/dashboard/templates/index.html...
+[2026-01-27 23:05:39] [INFO]   💾 Scrivo ~/panda/dashboard/templates/index.html (4053 chars)
+[2026-01-27 23:05:39] [INFO] ✅ Task add_import_html completato: OK
+[2026-01-27 23:05:39] [INFO] ▶ Processo task: 052_restart_import.json
+[2026-01-27 23:05:39] [INFO]   🖥️ Chiedo comando bash a Ollama...
+[2026-01-27 23:05:40] [INFO]   ▶ Eseguo: sudo systemctl restart panda-dashboard
+[2026-01-27 23:05:40] [INFO] ✅ Task restart_after_import completato: OK
+[2026-01-27 23:27:30] [INFO] 📋 Trovati 3 task pendenti
+[2026-01-27 23:27:30] [INFO] ▶ Processo task: 100_server_completo.json
+[2026-01-27 23:27:30] [INFO]   📄 Genero contenuto per ~/panda/dashboard/server.py...
+[2026-01-27 23:32:37] [INFO]   💾 Scrivo ~/panda/dashboard/server.py (4251 chars)
+[2026-01-27 23:32:37] [INFO] ✅ Task server_completo completato: OK
+[2026-01-27 23:32:37] [INFO] ▶ Processo task: 101_html_completo.json
+[2026-01-27 23:32:37] [INFO]   📄 Genero contenuto per ~/panda/dashboard/templates/index.html...
+[2026-01-27 23:46:54] [INFO]   💾 Scrivo ~/panda/dashboard/templates/index.html (10143 chars)
+[2026-01-27 23:46:54] [INFO] ✅ Task html_completo completato: OK
+[2026-01-27 23:46:54] [INFO] ▶ Processo task: 102_restart_finale.json
+[2026-01-27 23:46:54] [INFO]   🖥️ Chiedo comando bash a Ollama...
+[2026-01-27 23:46:58] [INFO]   ▶ Eseguo: sudo systemctl restart panda-dashboard
+[2026-01-27 23:46:58] [INFO] ✅ Task restart_finale completato: OK

@@ -1,0 +1,8 @@
+{
+  "id": "events_app_042_backend_exception_handler",
+  "type": "file",
+  "priority": 42,
+  "pipeline": "events_app_v1",
+  "filepath": "~/panda/projects/events-app/backend/src/main/java/com/panda/events/exception/ApiExceptionHandler.java",
+  "prompt": "Crea @RestControllerAdvice che gestisce:\n- NotFoundException -> 404 con JSON {timestamp, status, error, message, path}\n- MethodArgumentNotValidException -> 400 con JSON {timestamp, status, error, message:\"Validation failed\", fieldErrors:[{field,message}]}\nUsa HttpServletRequest per path.\nSolo codice."
+}

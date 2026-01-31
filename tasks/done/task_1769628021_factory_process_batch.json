@@ -1,0 +1,6 @@
+{
+  "id": "factory_process_batch",
+  "type": "python",
+  "priority": 4,
+  "prompt": "import time, pathlib\nfiles = pathlib.Path('~/panda/factory/work/file_list.txt').expanduser().read_text().splitlines()\nout = pathlib.Path('~/panda/factory/output').expanduser()\nout.mkdir(exist_ok=True)\nfor f in files:\n    time.sleep(5)\n    p = out / (pathlib.Path(f).stem + '_processed.txt')\n    p.write_text(f'PROCESSED: {f}\\n')\nprint('BATCH_COMPLETED')"
+}

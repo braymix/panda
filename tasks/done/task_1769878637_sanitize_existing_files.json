@@ -1,0 +1,7 @@
+{
+  "id": "sanitize_existing_files",
+  "type": "python",
+  "priority": 2,
+  "prompt": "Scrivi uno script che analizzi tutti i file .py, .html e .md nella cartella ~/panda/projects/. Per ogni file, se loutput inizia con frasi tipiche da chatbot come 'Ecco qua', 'Certamente', 'Sure', 'Here is' seguite da testo discorsivo prima del codice (identificato da tag markdown o blocchi di codice), deve rimuovere tutto il testo precedente al codice effettivo e sovrascrivere il file. Non aggiungere commenti allo script.",
+  "_retry": 3
+}

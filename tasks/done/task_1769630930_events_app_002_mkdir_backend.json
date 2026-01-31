@@ -1,0 +1,7 @@
+{
+  "id": "events_app_002_mkdir_backend",
+  "type": "bash",
+  "priority": 2,
+  "pipeline": "events_app_v1",
+  "prompt": "mkdir -p ~/panda/projects/events-app/backend/src/main/java/com/panda/events/{config,controller,dto,exception,model,repository,service} ~/panda/projects/events-app/backend/src/main/resources/db/migration ~/panda/projects/events-app/backend/src/test/java/com/panda/events"
+}

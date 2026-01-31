@@ -1,0 +1,8 @@
+{
+  "id": "events_app_038_backend_dto_response",
+  "type": "file",
+  "priority": 38,
+  "pipeline": "events_app_v1",
+  "filepath": "~/panda/projects/events-app/backend/src/main/java/com/panda/events/dto/EventResponse.java",
+  "prompt": "Crea DTO EventResponse con:\n- UUID id\n- stessi campi dell'entity\n- OffsetDateTime per date\n- createdAt, updatedAt\n- costruttore statico fromEntity(Event)\nSolo codice."
+}

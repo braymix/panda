@@ -1,0 +1,8 @@
+{
+  "id": "events_app_061_frontend_page_detail",
+  "type": "file",
+  "priority": 61,
+  "pipeline": "events_app_v1",
+  "filepath": "~/panda/projects/events-app/frontend/src/pages/EventDetailPage.tsx",
+  "prompt": "Crea pagina dettaglio evento:\n- legge id da route params\n- getEvent\n- mostra campi\n- link back\nUsa Layout.\nSolo codice."
+}

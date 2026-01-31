@@ -1,0 +1,7 @@
+{
+  "id": "factory_generate_report",
+  "type": "file",
+  "priority": 6,
+  "filepath": "~/panda/factory/report/report.txt",
+  "prompt": "Crea un report testuale che indichi: numero file processati, timestamp di fine, stato COMPLETATO."
+}

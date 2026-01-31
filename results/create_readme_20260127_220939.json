@@ -1,0 +1,23 @@
+{
+  "task_id": "create_readme",
+  "task": {
+    "id": "create_readme",
+    "type": "file",
+    "priority": 3,
+    "filepath": "~/panda/README.md",
+    "prompt": "Crea un README per il progetto PANDA (Pana Automating Never Death on Afterwork). Spiega che \u00e8 un sistema di automazione task con LLM locale che gira h24 su un mini PC Linux. Scrivi in italiano."
+  },
+  "started_at": "2026-01-27T22:08:28.170367",
+  "steps": [
+    {
+      "type": "file",
+      "filepath": "~/panda/README.md",
+      "result": {
+        "success": true,
+        "path": "/home/michele/panda/README.md"
+      }
+    }
+  ],
+  "success": true,
+  "finished_at": "2026-01-27T22:09:39.295898"
+}

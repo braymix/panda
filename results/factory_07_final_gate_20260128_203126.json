@@ -1,0 +1,24 @@
+{
+  "task_id": "factory_07_final_gate",
+  "task": {
+    "id": "factory_07_final_gate",
+    "type": "test",
+    "priority": 7,
+    "test_name": "Report coerente",
+    "test_command": "grep -q '^COMPLETATO$' ~/panda/factory/report/final_report.txt && echo OK || echo KO",
+    "expected": "OK"
+  },
+  "prompt_preview": "",
+  "started_at": "2026-01-28T20:31:26.859797",
+  "steps": [
+    {
+      "type": "test",
+      "command": "grep -q '^COMPLETATO$' ~/panda/factory/report/final_report.txt && echo OK || echo KO",
+      "expected": "OK",
+      "actual": "KO",
+      "passed": false
+    }
+  ],
+  "success": false,
+  "finished_at": "2026-01-28T20:31:26.861764"
+}

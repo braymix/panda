@@ -1,0 +1,14 @@
+[Unit]
+Description=PANDA Dashboard
+After=network.target
+
+[Service]
+User=michele
+WorkingDirectory=/home/michele/panda/dashboard
+ExecStart=/usr/bin/python3 /home/michele/panda/dashboard/server.py
+Restart=always
+RestartSec=5
+Environment=PYTHONUNBUFFERED=1
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,7 @@
+{
+  "id": "events_app_080_backend_build_gate",
+  "type": "bash",
+  "priority": 80,
+  "pipeline": "events_app_v1",
+  "prompt": "cd ~/panda/projects/events-app/backend && mvn -q test"
+}

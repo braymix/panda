@@ -1,0 +1,6 @@
+print("PANDA v3.0 UPGRADE COMPLETATO!")
+print("Dashboard disponibile con:")
+print("- task in esecuzione live")
+print("- form per aggiungere task")
+print("- grafica migliorata")
+print("- test automatici superati")

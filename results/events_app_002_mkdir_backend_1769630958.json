@@ -1,0 +1,15 @@
+{
+  "task_id": "events_app_002_mkdir_backend",
+  "type": "bash",
+  "steps": [
+    {
+      "cmd": "bash",
+      "result": {
+        "success": true,
+        "stdout": "",
+        "stderr": ""
+      }
+    }
+  ],
+  "success": true
+}

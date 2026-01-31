@@ -1,0 +1,15 @@
+{
+  "task_id": "fixpack_v3_04_force_clean_compose",
+  "type": "bash",
+  "steps": [
+    {
+      "cmd": "Aqu\u00ed tienes el comando bash para crear el archivo `docker-compose.yml`:",
+      "result": {
+        "success": false,
+        "stdout": "",
+        "stderr": "/bin/sh: 1: docker-compose.yml: not found\n/bin/sh: 1: Aqu\u00ed: not found\n"
+      }
+    }
+  ],
+  "success": false
+}

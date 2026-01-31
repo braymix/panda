@@ -1,0 +1,6 @@
+{
+  "id": "start_dashboard",
+  "type": "bash",
+  "priority": 16,
+  "prompt": "Abilita e avvia il servizio panda-dashboard con systemctl enable e systemctl start"
+}

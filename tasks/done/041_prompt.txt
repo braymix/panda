@@ -1,0 +1,136 @@
+Crea pagina HTML5 dashboard PANDA completa e bella. Responsive mobile-first.
+
+DOCTYPE html, lang it, charset utf-8, viewport mobile
+
+CSS inline in <style>:
+- * { box-sizing: border-box; margin: 0; padding: 0; }
+- body: sfondo #0f0f1a, colore #e0e0e0, font 'Segoe UI' sans-serif, padding 15px
+- .container: max-width 1200px, margin auto
+- header: sfondo linear-gradient(135deg, #1a1a2e, #16213e), padding 25px, border-radius 15px, margin-bottom 20px, text-align center
+- h1: font-size 2.5em, margin-bottom 5px, con emoji panda
+- .subtitle: font-size 0.9em, opacity 0.7
+- .status-badge: display inline-flex, align-items center, gap 8px, padding 8px 16px, border-radius 20px, margin-top 15px
+- .status-dot: width 12px, height 12px, border-radius 50%, animation pulse 2s infinite
+- .running: background #2ecc71
+- .stopped: background #e74c3c
+- @keyframes pulse: 0%,100% opacity 1, 50% opacity 0.5
+- .controls: display flex, gap 10px, justify-content center, flex-wrap wrap, margin 20px 0
+- button: padding 12px 24px, border none, border-radius 8px, cursor pointer, font-weight 600, transition 0.3s
+- button:hover: transform translateY(-2px), box-shadow 0 5px 15px rgba(0,0,0,0.3)
+- .btn-start: background #2ecc71, color white
+- .btn-stop: background #e74c3c, color white
+- .btn-restart: background #f39c12, color white
+- .btn-add: background #3498db, color white
+- .grid: display grid, grid-template-columns repeat(auto-fit, minmax(350px, 1fr)), gap 20px
+- .card: background #16213e, border-radius 12px, padding 20px, box-shadow 0 4px 15px rgba(0,0,0,0.2)
+- .card h2: font-size 1.2em, margin-bottom 15px, display flex, align-items center, gap 10px
+- .card h2 .count: background #3498db, padding 2px 10px, border-radius 10px, font-size 0.8em
+- .task-item: background #1a1a2e, padding 12px, border-radius 8px, margin-bottom 10px, display flex, justify-content space-between, align-items center
+- .task-info: flex 1
+- .task-id: font-weight bold, color #3498db
+- .task-type: font-size 0.8em, background #2c3e50, padding 2px 8px, border-radius 4px, margin-left 8px
+- .task-prompt: font-size 0.85em, opacity 0.7, margin-top 5px
+- .priority: background #f39c12, color black, padding 2px 8px, border-radius 4px, font-size 0.8em, font-weight bold
+- .delete-btn: background #e74c3c, border none, color white, padding 5px 10px, border-radius 5px, cursor pointer
+- .success: color #2ecc71
+- .failed: color #e74c3c
+- .log-box: background #0a0a0f, border-radius 8px, padding 15px, font-family monospace, font-size 0.85em, height 250px, overflow-y auto, white-space pre-wrap, color #0f0
+- .current-task: background linear-gradient(135deg, #2c3e50, #1a252f), border 2px solid #3498db, padding 20px, border-radius 12px, margin-bottom 20px
+- .current-task.idle: border-color #666, opacity 0.7
+- .current-label: font-size 0.9em, opacity 0.7
+- .current-id: font-size 1.3em, font-weight bold, color #3498db
+- .current-progress: margin-top 10px, font-style italic
+- form: display flex, flex-direction column, gap 12px
+- input, select, textarea: background #1a1a2e, border 1px solid #2c3e50, color #e0e0e0, padding 12px, border-radius 8px, font-size 1em
+- input:focus, select:focus, textarea:focus: outline none, border-color #3498db
+- textarea: min-height 100px, resize vertical
+- label: font-size 0.9em, margin-bottom -8px
+- .form-row: display grid, grid-template-columns 1fr 1fr, gap 12px
+- .hidden: display none
+- @media (max-width 600px): .form-row display block, button padding 10px 16px
+
+STRUTTURA HTML:
+<div class="container">
+  <header>
+    <h1>🐼 PANDA</h1>
+    <div class="subtitle">Pana Automating Never Death (on) Afterwork</div>
+    <div class="status-badge">
+      <span class="status-dot" id="statusDot"></span>
+      <span id="statusText">Checking...</span>
+    </div>
+  </header>
+  
+  <div class="controls">
+    <button class="btn-start" onclick="control('start')">▶ Start</button>
+    <button class="btn-stop" onclick="control('stop')">⏹ Stop</button>
+    <button class="btn-restart" onclick="control('restart')">⟳ Restart</button>
+  </div>
+  
+  <div class="current-task idle" id="currentTask">
+    <div class="current-label">Task in esecuzione:</div>
+    <div class="current-id" id="currentId">Nessuno</div>
+    <div class="current-progress" id="currentProgress"></div>
+  </div>
+  
+  <div class="grid">
+    <div class="card">
+      <h2>📋 Coda <span class="count" id="pendingCount">0</span></h2>
+      <div id="pendingList"></div>
+    </div>
+    
+    <div class="card">
+      <h2>➕ Nuovo Task</h2>
+      <form onsubmit="addTask(event)">
+        <div class="form-row">
+          <div>
+            <label>ID Task</label>
+            <input type="text" id="taskId" required placeholder="es: genera_report">
+          </div>
+          <div>
+            <label>Priorità</label>
+            <input type="number" id="taskPriority" value="10" min="1" max="99">
+          </div>
+        </div>
+        <label>Tipo</label>
+        <select id="taskType" onchange="toggleFilepath()">
+          <option value="prompt">prompt - Domanda generica</option>
+          <option value="bash">bash - Comando shell</option>
+          <option value="python">python - Script Python</option>
+          <option value="file">file - Genera file</option>
+        </select>
+        <div id="filepathRow" class="hidden">
+          <label>Filepath destinazione</label>
+          <input type="text" id="taskFilepath" placeholder="~/panda/output/file.txt">
+        </div>
+        <label>Prompt / Istruzioni</label>
+        <textarea id="taskPrompt" required placeholder="Descrivi cosa deve fare PANDA..."></textarea>
+        <button type="submit" class="btn-add">➕ Aggiungi Task</button>
+      </form>
+    </div>
+    
+    <div class="card">
+      <h2>✅ Completati</h2>
+      <div id="doneList" style="max-height:300px;overflow-y:auto"></div>
+    </div>
+    
+    <div class="card">
+      <h2>📜 Log Live</h2>
+      <div class="log-box" id="logBox"></div>
+    </div>
+  </div>
+</div>
+
+JAVASCRIPT in <script>:
+- async function fetchStatus() chiama GET /api/status, aggiorna statusDot classe e statusText, aggiorna currentTask section
+- async function fetchPending() chiama GET /api/tasks/pending, popola pendingList con task-item, aggiorna pendingCount
+- async function fetchDone() chiama GET /api/tasks/done, popola doneList
+- async function fetchLogs() chiama GET /api/logs, aggiorna logBox innerHTML, scrolla in basso
+- async function control(action) chiama POST /api/control/action, poi fetchStatus
+- async function deleteTask(filename) se confirm, chiama DELETE, poi fetchPending
+- async function addTask(event) preventDefault, leggi form, chiama POST /api/tasks/add con JSON, resetta form, fetchPending
+- function toggleFilepath() mostra/nascondi filepathRow se type==file
+- setInterval fetchStatus 2000
+- setInterval fetchPending 3000
+- setInterval fetchDone 5000
+- setInterval fetchLogs 2000
+- chiama tutte le fetch all'avvio

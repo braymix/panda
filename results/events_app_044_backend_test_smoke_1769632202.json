@@ -1,0 +1,10 @@
+{
+  "task_id": "events_app_044_backend_test_smoke",
+  "type": "file",
+  "steps": [
+    {
+      "success": true
+    }
+  ],
+  "success": true
+}

@@ -1,0 +1,6 @@
+{
+  "id": "factory_06_report_deterministic",
+  "type": "bash",
+  "priority": 6,
+  "prompt": "c=$(ls -1 ~/panda/factory/output 2>/dev/null | wc -l); ts=$(date -Iseconds); if [ \"$c\" -ge 1 ]; then echo \"COMPLETATO\" > ~/panda/factory/report/final_report.txt; else echo \"FALLITO\" > ~/panda/factory/report/final_report.txt; fi; echo \"TIMESTAMP=$ts\" >> ~/panda/factory/report/final_report.txt; echo \"FILES_PROCESSATI=$c\" >> ~/panda/factory/report/final_report.txt"
+}

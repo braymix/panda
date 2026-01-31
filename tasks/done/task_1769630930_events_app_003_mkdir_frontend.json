@@ -1,0 +1,7 @@
+{
+  "id": "events_app_003_mkdir_frontend",
+  "type": "bash",
+  "priority": 3,
+  "pipeline": "events_app_v1",
+  "prompt": "mkdir -p ~/panda/projects/events-app/frontend/src/{api,components,pages,types} ~/panda/projects/events-app/frontend/public"
+}

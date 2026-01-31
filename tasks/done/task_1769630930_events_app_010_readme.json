@@ -1,0 +1,8 @@
+{
+  "id": "events_app_010_readme",
+  "type": "file",
+  "priority": 10,
+  "pipeline": "events_app_v1",
+  "filepath": "~/panda/projects/events-app/README.md",
+  "prompt": "Scrivi ESATTAMENTE questo contenuto (identico, senza aggiunte):\n# Events App (Event Finder)\n\nProgetto full-stack per cercare e gestire eventi.\n\n## Stack\n- Backend: Java 21, Spring Boot 3, JPA, Validation, Flyway, OpenAPI\n- DB: PostgreSQL\n- Frontend: React + Vite + TypeScript\n- Ops: Docker Compose\n\n## Avvio rapido con Docker\n\n```bash\ncd ops\ndocker compose up --build\n```\n\n- Backend: http://localhost:8080\n- OpenAPI: http://localhost:8080/swagger-ui.html\n- Frontend: http://localhost:5173\n\n## Variabili ambiente (Docker)\nBackend usa:\n- SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/events\n- SPRING_DATASOURCE_USERNAME=events\n- SPRING_DATASOURCE_PASSWORD=events\n\n## Dev locale\n### Backend\n```bash\ncd backend\nmvn test\nmvn spring-boot:run\n```\n\n### Frontend\n```bash\ncd frontend\nnpm install\nnpm run dev\n```\n\n## API principali\n- GET /api/events?q=&from=&to=&city=&category=&page=&size=\n- GET /api/events/{id}\n- POST /api/events\n- PUT /api/events/{id}\n- DELETE /api/events/{id}\n"
+}

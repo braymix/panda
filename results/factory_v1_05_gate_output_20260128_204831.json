@@ -1,0 +1,26 @@
+{
+  "task_id": "factory_v1_05_gate_output",
+  "task": {
+    "id": "factory_v1_05_gate_output",
+    "type": "test",
+    "priority": 5,
+    "pipeline": "factory_v1",
+    "stop_on_fail": true,
+    "test_name": "Gate output (>=1 file generato)",
+    "test_command": "c=$(ls -1 ~/panda/factory/output 2>/dev/null | wc -l); echo COUNT=$c; test \"$c\" -ge 1 && echo OK || echo KO",
+    "expected": "OK"
+  },
+  "prompt_preview": "",
+  "started_at": "2026-01-28T20:48:31.487968",
+  "steps": [
+    {
+      "type": "test",
+      "command": "c=$(ls -1 ~/panda/factory/output 2>/dev/null | wc -l); echo COUNT=$c; test \"$c\" -ge 1 && echo OK || echo KO",
+      "expected": "OK",
+      "actual": "COUNT=1\nOK",
+      "passed": true
+    }
+  ],
+  "success": true,
+  "finished_at": "2026-01-28T20:48:31.490873"
+}

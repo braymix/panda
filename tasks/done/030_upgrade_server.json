@@ -1,0 +1,7 @@
+{
+  "id": "upgrade_server_add_task",
+  "type": "file",
+  "priority": 30,
+  "filepath": "~/panda/dashboard/server.py",
+  "prompt_file": "030_prompt.txt"
+}

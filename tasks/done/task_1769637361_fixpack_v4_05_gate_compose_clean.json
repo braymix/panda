@@ -1,0 +1,11 @@
+{
+  "id": "fixpack_v4_05_gate_compose_clean",
+  "type": "test",
+  "priority": 6,
+  "pipeline": "fixpack_v4",
+  "stop_on_fail": true,
+  "test_name": "compose pulito e valido",
+  "test_command": "head -n 1 ~/panda/projects/events-app/ops/docker-compose.yml | grep -q '^services:' && ! grep -q '```' ~/panda/projects/events-app/ops/docker-compose.yml && echo OK",
+  "expected": "OK",
+  "_retry": 3
+}

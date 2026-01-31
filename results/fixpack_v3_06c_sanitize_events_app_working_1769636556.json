@@ -1,0 +1,15 @@
+{
+  "task_id": "fixpack_v3_06c_sanitize_events_app_working",
+  "type": "bash",
+  "steps": [
+    {
+      "cmd": "Aqui est\u00e1 o comando bash gerado:",
+      "result": {
+        "success": false,
+        "stdout": "",
+        "stderr": "/bin/sh: 1: Aqui: not found\n"
+      }
+    }
+  ],
+  "success": false
+}

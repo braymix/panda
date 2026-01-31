@@ -1,0 +1,25 @@
+{
+  "task_id": "restart_after_import",
+  "task": {
+    "id": "restart_after_import",
+    "type": "bash",
+    "priority": 52,
+    "prompt": "Riavvia panda-dashboard con sudo systemctl restart panda-dashboard"
+  },
+  "prompt_preview": "Riavvia panda-dashboard con sudo systemctl restart panda-dashboard",
+  "started_at": "2026-01-27T23:05:39.361585",
+  "steps": [
+    {
+      "type": "bash",
+      "command": "sudo systemctl restart panda-dashboard",
+      "result": {
+        "success": true,
+        "stdout": "",
+        "stderr": "",
+        "returncode": 0
+      }
+    }
+  ],
+  "success": true,
+  "finished_at": "2026-01-27T23:05:40.804560"
+}

@@ -1,0 +1,8 @@
+{
+  "id": "verify_no_chatter",
+  "type": "test",
+  "priority": 2,
+  "test_name": "Controllo pulizia",
+  "test_command": "grep -r \"Certamente\" ~/panda/projects/ | wc -l",
+  "expected": "0"
+}

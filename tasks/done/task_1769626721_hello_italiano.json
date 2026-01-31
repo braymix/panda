@@ -1,0 +1,7 @@
+{
+  "id": "hello_italiano",
+  "type": "file",
+  "priority": 4,
+  "filepath": "~/panda/progetti/hello_world/italiano/index.html",
+  "prompt": "Crea una pagina HTML5 completa con titolo Ciao Mondo, un h1 che dice Ciao Mondo e un paragrafo che dice Benvenuto nel mio sito web in italiano. Stile: sfondo blu scuro, testo bianco, font Arial, centrato"
+}

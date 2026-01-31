@@ -1,0 +1,34 @@
+Crea un server Flask completo per la dashboard PANDA. Porta 5000, host 0.0.0.0.
+
+Il server deve avere queste route:
+
+1. GET / - serve templates/index.html
+
+2. GET /api/status - ritorna JSON con:
+   - running: true/false (esegui: systemctl is-active panda)
+   - status: stringa dello stato
+
+3. GET /api/tasks/pending - lista JSON dei file in ~/panda/tasks/*.json
+   Ogni elemento ha: filename, id, type, priority, prompt (troncato a 100 char)
+   Escludi file che iniziano con _
+
+4. GET /api/tasks/done - lista JSON dei file in ~/panda/tasks/done/*.json
+   Ultimi 20 file ordinati per data modifica decrescente
+   Ogni elemento ha: filename, id, type
+
+5. GET /api/results - lista JSON dei file in ~/panda/results/*.json
+   Ultimi 20 file ordinati per data modifica decrescente
+   Ogni elemento ha: filename, task_id, success, finished_at
+
+6. GET /api/logs - ritorna JSON con array lines contenente ultime 100 righe
+   del file ~/panda/logs/YYYY-MM-DD.log (data di oggi)
+
+7. POST /api/control/<action> - action puo essere start, stop, restart
+   Esegue: sudo systemctl <action> panda
+   Ritorna JSON con success, stdout, stderr
+
+8. DELETE /api/tasks/pending/<filename> - cancella il file dalla coda
+   Ritorna JSON con success
+
+Usa: Flask, json, subprocess, datetime, pathlib
+Usa Path.home() per la home directory

@@ -1,0 +1,8 @@
+{
+  "id": "fixpack_01_backup_worker",
+  "type": "bash",
+  "priority": 1,
+  "pipeline": "panda_fixpack_v1",
+  "prompt": "cp -f ~/panda/worker.py ~/panda/worker.py.bak_fixpack_$(date +%Y%m%d_%H%M%S)",
+  "_retry": 1
+}

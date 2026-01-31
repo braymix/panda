@@ -1,0 +1,7 @@
+{
+  "id": "fixpack_v3_05_sanitize_events_app_non_md",
+  "type": "bash",
+  "priority": 5,
+  "pipeline": "fixpack_v3",
+  "prompt": "python3 -c \"from pathlib import Path; import re; root=Path.home()/'panda'/'projects'/'events-app'; skip={'.md'}; bad=(\\\"Ecco\\\",\\\"Di seguito\\\",\\\"Sure\\\",\\\"Here\\\",\\\"Il contenuto\\\");\n\""
+}

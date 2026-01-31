@@ -1,0 +1,8 @@
+{
+  "id": "events_app_056_frontend_api_client",
+  "type": "file",
+  "priority": 56,
+  "pipeline": "events_app_v1",
+  "filepath": "~/panda/projects/events-app/frontend/src/api/client.ts",
+  "prompt": "Crea axios client con baseURL da import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080'. Exporta api.\nAggiungi funzioni:\n- searchEvents(params) -> GET /api/events\n- getEvent(id)\n- createEvent(payload)\nSolo codice."
+}

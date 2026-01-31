@@ -1,0 +1,25 @@
+{
+  "task_id": "server_completo",
+  "task": {
+    "id": "server_completo",
+    "type": "file",
+    "priority": 100,
+    "filepath": "~/panda/dashboard/server.py",
+    "prompt_file": "100_prompt.txt"
+  },
+  "prompt_preview": "Crea un server Flask COMPLETO per la dashboard PANDA.\n\nREGOLE IMPORTANTI:\n- Prima riga DEVE essere: from flask import Flask, jsonify, request, render_template\n- Import separati per: json, subprocess, ...",
+  "started_at": "2026-01-27T23:27:30.852987",
+  "steps": [
+    {
+      "type": "file",
+      "filepath": "~/panda/dashboard/server.py",
+      "size": 4251,
+      "result": {
+        "success": true,
+        "path": "/home/michele/panda/dashboard/server.py"
+      }
+    }
+  ],
+  "success": true,
+  "finished_at": "2026-01-27T23:32:37.931988"
+}

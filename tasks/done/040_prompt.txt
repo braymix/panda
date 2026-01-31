@@ -1,0 +1,56 @@
+Crea server Flask per dashboard PANDA. Porta 5000, host 0.0.0.0.
+
+IMPORTANTE: inizia con "from flask" - NON scrivere mai la parola "python" da sola.
+
+Import necessari: Flask, jsonify, request, render_template, json, subprocess, datetime, pathlib, time
+
+Variabili globali:
+PANDA_HOME = Path.home() / "panda"
+TASKS_DIR = PANDA_HOME / "tasks"
+RESULTS_DIR = PANDA_HOME / "results"
+LOGS_DIR = PANDA_HOME / "logs"
+STATUS_DIR = PANDA_HOME / "status"
+
+Routes:
+
+GET / -> render_template('index.html')
+
+GET /api/status -> JSON con:
+  - panda_running: bool (systemctl is-active panda == "active")
+  - dashboard_running: bool (sempre True se risponde)
+  - current_task: leggi ~/panda/status/current.json e ritorna contenuto
+
+GET /api/tasks/pending -> lista JSON file in TASKS_DIR/*.json (escludi _*)
+  Per ogni file: filename, id, type, priority, prompt (max 80 char)
+  Ordina per priority crescente
+
+GET /api/tasks/done -> lista ultimi 30 file in TASKS_DIR/done/*.json
+  Ordina per data modifica decrescente
+  Per ogni file: filename, id, type, timestamp
+
+GET /api/results -> lista ultimi 30 file in RESULTS_DIR/*.json
+  Per ogni file: filename, task_id, success, finished_at
+
+GET /api/results/<filename> -> contenuto completo del file JSON
+
+GET /api/logs -> ultime 150 righe di LOGS_DIR/YYYY-MM-DD.log (oggi)
+  Ritorna: {"lines": [...]}
+
+GET /api/logs/tail/<n> -> ultime n righe del log
+
+POST /api/control/<action> (action = start|stop|restart)
+  Esegui: subprocess.run(["sudo", "systemctl", action, "panda"])
+  Ritorna: success, message
+
+POST /api/tasks/add
+  Body JSON: id, type, priority, prompt, filepath (opzionale per type=file)
+  Crea file TASKS_DIR/task_TIMESTAMP_ID.json
+  Ritorna: success, filename
+
+DELETE /api/tasks/pending/<filename>
+  Elimina file da TASKS_DIR
+  Ritorna: success
+
+Fine file:
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000, debug=False)

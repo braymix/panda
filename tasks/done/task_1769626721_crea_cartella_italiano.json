@@ -1,0 +1,6 @@
+{
+  "id": "crea_cartella_italiano",
+  "type": "bash",
+  "priority": 1,
+  "prompt": "Crea la cartella ~/panda/progetti/hello_world/italiano"
+}

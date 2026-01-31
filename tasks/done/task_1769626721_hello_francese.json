@@ -1,0 +1,7 @@
+{
+  "id": "hello_francese",
+  "type": "file",
+  "priority": 6,
+  "filepath": "~/panda/progetti/hello_world/francese/index.html",
+  "prompt": "Crea una pagina HTML5 completa con titolo Bonjour Monde, un h1 che dice Bonjour Monde e un paragrafo che dice Bienvenue sur mon site web in francese. Stile: sfondo verde scuro, testo bianco, font Arial, centrato"
+}

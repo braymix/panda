@@ -1,0 +1,15 @@
+{
+  "task_id": "fixpack_v3_05c_sanitize_events_app_non_md_real",
+  "type": "bash",
+  "steps": [
+    {
+      "cmd": "Here's the bash command you requested:",
+      "result": {
+        "success": false,
+        "stdout": "",
+        "stderr": "/bin/sh: 1: Syntax error: Unterminated quoted string\n"
+      }
+    }
+  ],
+  "success": false
+}

@@ -1,0 +1,15 @@
+{
+  "task_id": "sanitize_existing_files",
+  "type": "python",
+  "steps": [
+    {
+      "code": "Ecco lo script Python che soddisfa i tuoi requisiti:\n\n```python\nimport os\n\ndef should_process(file_path):\n    extensions = ['.py', '.html', '.md']\n    return any(file_path.endswith(ext) for ext in extensions)\n\ndef is_code_block(line):\n    return line.strip().startswith('```')\n\ndef process_file(file_path):\n    with open(file_path, 'r') as file:\n        lines = file.readlines()\n\n    found_code_start = False\n    new_lines = []\n\n    for line in lines:\n        if not found_code_start and should_process(file_path):\n            # Check for chatbot-like phrases at the beginning of the file\n            if line.strip().startswith(('Ecco qua', 'Certamente', 'Sure', 'Here is')):\n                continue\n\n        if is_code_block(line) or (not new_lines and line.strip()):\n            found_code_start = True\n            new_lines.append(line)\n        elif found_code_start:\n            new_lines.append(line)\n\n    with open(file_path, 'w') as file:\n        file.writelines(new_lines)\n\ndef process_directory(directory):\n    for root, _, files in os.walk(directory):\n        for file_name in files:\n            file_path = os.path.join(root, file_name)\n            process_file(file_path)\n\nif __name__ == \"__main__\":\n    home_dir = os.path.expanduser(\"~/panda/projects/\")\n    process_directory(home_dir)\n```\n\n### Come funziona lo script:\n\n1. **should_process**: Verifica se il file ha l'estensione `.py`, `.html` o `.md`.\n\n2. **is_code_block**: Controlla se la linea inizia con un blocco di codice (`\"```\"`).\n\n3. **process_file**:\n   - Legge tutte le righe del file.\n   - Salta le prime righe che iniziano con frasi tipiche da chatbot come 'Ecco qua', 'Certamente', 'Sure', 'Here is'.\n   - Identifica il primo blocco di codice o la prima linea significativa dopo le frasi di benvenuto e lo salva.\n   - Sovrascrive il file con solo la parte del codice.\n\n4. **process_directory**: Scorre tutti i file nella directory `~/panda/projects/` (o qualsiasi altra directory passata come argomento) e chiama `process_file`.\n\n### Come eseguire lo script:\n\n1. Salva lo script in un file, ad esempio `clean_files.py`.\n2. Assicurati di avere le autorizzazioni necessarie per leggere e scrivere nella directory `~/panda/projects/`.\n3. Esegui lo script utilizzando Python:\n   ```sh\n   python clean_files.py\n   ```\n\nQuesto script eliminer\u00e0 tutte le parti precedenti ai blocchi di codice nei file `.py`, `.html` e `.md` all'interno della directory `~/panda/projects/`.",
+      "result": {
+        "success": false,
+        "stdout": "",
+        "stderr": "  File \"/home/michele/panda/scripts/temp_1769879153.py\", line 48\n    1. **should_process**: Verifica se il file ha l'estensione `.py`, `.html` o `.md`.\n                                                   ^\nSyntaxError: unterminated string literal (detected at line 48)\n"
+      }
+    }
+  ],
+  "success": false
+}

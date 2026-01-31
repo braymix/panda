@@ -1,0 +1,15 @@
+{
+  "task_id": "events_app_003_mkdir_frontend",
+  "type": "bash",
+  "steps": [
+    {
+      "cmd": "bash",
+      "result": {
+        "success": true,
+        "stdout": "",
+        "stderr": ""
+      }
+    }
+  ],
+  "success": true
+}

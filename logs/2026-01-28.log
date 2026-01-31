@@ -1,0 +1,524 @@
+[2026-01-28 00:07:48] [INFO] 📋 Trovati 1 task pendenti
+[2026-01-28 00:07:48] [INFO] ▶ Processo task: task_1769555267_.json
+[2026-01-28 00:07:48] [ERROR] Tipo task sconosciuto: command
+[2026-01-28 00:07:48] [INFO] ❌ Task  completato: FALLITO
+[2026-01-28 00:10:18] [INFO] 📋 Trovati 1 task pendenti
+[2026-01-28 00:10:18] [INFO] ▶ Processo task: task_1769555411_1.json
+[2026-01-28 00:10:18] [INFO] ❌ Task 1 completato: FALLITO
+[2026-01-28 00:18:38] [INFO] 📋 Trovati 1 task pendenti
+[2026-01-28 00:18:38] [INFO] ▶ Processo task: task_1769555918_1.json
+[2026-01-28 00:18:38] [INFO] ❌ Task 1 completato: FALLITO
+[2026-01-28 00:24:08] [INFO] 📋 Trovati 1 task pendenti
+[2026-01-28 00:24:08] [INFO] ▶ Processo task: task_1769556241_1.json
+[2026-01-28 00:24:08] [INFO] ❌ Task 1 completato: FALLITO
+[2026-01-28 00:27:18] [INFO] 📋 Trovati 1 task pendenti
+[2026-01-28 00:27:18] [INFO] ▶ Processo task: task_1769556433_hello .json
+[2026-01-28 00:27:18] [ERROR] Tipo task sconosciuto: command
+[2026-01-28 00:27:18] [INFO] ❌ Task hello  completato: FALLITO
+[2026-01-28 00:29:18] [INFO] 📋 Trovati 1 task pendenti
+[2026-01-28 00:29:18] [INFO] ▶ Processo task: task_1769556553_hi.json
+[2026-01-28 00:29:18] [INFO] ❌ Task hi completato: FALLITO
+[2026-01-28 19:30:02] [INFO] ============================================================
+[2026-01-28 19:30:02] [INFO] 🐼 PANDA Worker v3.0 avviato!
+[2026-01-28 19:30:02] [INFO] ============================================================
+[2026-01-28 19:30:02] [INFO] 📁 Home: /home/michele/panda
+[2026-01-28 19:30:02] [INFO] ✨ Features: auto-fix, stato live, retry, test
+[2026-01-28 19:30:02] [INFO] 
+[2026-01-28 19:36:54] [INFO] 📋 Trovati 2 task pendenti
+[2026-01-28 19:36:54] [INFO] ▶ Processo task: 110_fix_dashboard.json
+[2026-01-28 19:36:54] [INFO]   📄 Genero contenuto per ~/panda/dashboard/templates/index.html...
+[2026-01-28 19:43:42] [INFO]   💾 Scrivo ~/panda/dashboard/templates/index.html (2696 chars)
+[2026-01-28 19:43:42] [INFO] ✅ Task fix_dashboard_ui completato: OK
+[2026-01-28 19:43:42] [INFO] ▶ Processo task: 111_restart.json
+[2026-01-28 19:43:42] [INFO]   🖥️ Chiedo comando bash a Ollama...
+[2026-01-28 19:43:47] [INFO]   ▶ Eseguo: sudo systemctl restart panda-dashboard
+[2026-01-28 19:43:47] [INFO] ✅ Task restart_dashboard_fix completato: OK
+[2026-01-28 19:52:57] [INFO] 📋 Trovati 1 task pendenti
+[2026-01-28 19:52:57] [INFO] ▶ Processo task: task_1769626368_hello_world.json
+[2026-01-28 19:52:57] [INFO]   🐍 Chiedo codice Python a Ollama...
+[2026-01-28 19:53:03] [INFO]   ▶ Eseguo Python (21 chars)
+[2026-01-28 19:53:03] [INFO] ✅ Task hello_world completato: OK
+[2026-01-28 19:55:43] [INFO] 📋 Trovati 1 task pendenti
+[2026-01-28 19:55:43] [INFO] ▶ Processo task: task_1769626539_pyhellofile.json
+[2026-01-28 19:55:43] [INFO]   📄 Genero contenuto per ~/prova/hello.py...
+[2026-01-28 19:55:47] [INFO]   💾 Scrivo ~/prova/hello.py (21 chars)
+[2026-01-28 19:55:47] [INFO] ✅ Task pyhellofile completato: OK
+[2026-01-28 19:58:47] [INFO] 📋 Trovati 6 task pendenti
+[2026-01-28 19:58:47] [INFO] ▶ Processo task: task_1769626721_crea_cartella_italiano.json
+[2026-01-28 19:58:47] [INFO]   🖥️ Chiedo comando bash a Ollama...
+[2026-01-28 19:58:52] [INFO]   ▶ Eseguo: mkdir -p ~/panda/progetti/hello_world/italiano
+[2026-01-28 19:58:52] [INFO] ✅ Task crea_cartella_italiano completato: OK
+[2026-01-28 19:58:52] [INFO] ▶ Processo task: task_1769626721_crea_cartella_spagnolo.json
+[2026-01-28 19:58:52] [INFO]   🖥️ Chiedo comando bash a Ollama...
+[2026-01-28 19:58:55] [INFO]   ▶ Eseguo: mkdir -p ~/panda/progetti/hello_world/spagnolo
+[2026-01-28 19:58:55] [INFO] ✅ Task crea_cartella_spagnolo completato: OK
+[2026-01-28 19:58:55] [INFO] ▶ Processo task: task_1769626721_crea_cartella_francese.json
+[2026-01-28 19:58:55] [INFO]   🖥️ Chiedo comando bash a Ollama...
+[2026-01-28 19:58:59] [INFO]   ▶ Eseguo: mkdir -p ~/panda/progetti/hello_world/francese
+[2026-01-28 19:58:59] [INFO] ✅ Task crea_cartella_francese completato: OK
+[2026-01-28 19:58:59] [INFO] ▶ Processo task: task_1769626721_hello_italiano.json
+[2026-01-28 19:58:59] [INFO]   📄 Genero contenuto per ~/panda/progetti/hello_world/italiano/index.html...
+[2026-01-28 19:59:43] [INFO]   💾 Scrivo ~/panda/progetti/hello_world/italiano/index.html (637 chars)
+[2026-01-28 19:59:43] [INFO] ✅ Task hello_italiano completato: OK
+[2026-01-28 19:59:43] [INFO] ▶ Processo task: task_1769626721_hello_spagnolo.json
+[2026-01-28 19:59:43] [INFO]   📄 Genero contenuto per ~/panda/progetti/hello_world/spagnolo/index.html...
+[2026-01-28 20:00:25] [INFO]   💾 Scrivo ~/panda/progetti/hello_world/spagnolo/index.html (624 chars)
+[2026-01-28 20:00:25] [INFO] ✅ Task hello_spagnolo completato: OK
+[2026-01-28 20:00:25] [INFO] ▶ Processo task: task_1769626721_hello_francese.json
+[2026-01-28 20:00:25] [INFO]   📄 Genero contenuto per ~/panda/progetti/hello_world/francese/index.html...
+[2026-01-28 20:01:01] [INFO]   💾 Scrivo ~/panda/progetti/hello_world/francese/index.html (492 chars)
+[2026-01-28 20:01:01] [INFO] ✅ Task hello_francese completato: OK
+[2026-01-28 20:20:22] [INFO] 📋 Trovati 7 task pendenti
+[2026-01-28 20:20:22] [INFO] ▶ Processo task: task_1769628021_factory_setup_dirs.json
+[2026-01-28 20:20:22] [INFO]   🖥️ Chiedo comando bash a Ollama...
+[2026-01-28 20:20:30] [INFO]   ▶ Eseguo: mkdir -p ~/panda/factory/{input,work,output,report}
+[2026-01-28 20:20:30] [INFO] ✅ Task factory_setup_dirs completato: OK
+[2026-01-28 20:20:30] [INFO] ▶ Processo task: task_1769628021_factory_input_check.json
+[2026-01-28 20:20:30] [INFO]   🧪 Eseguo test: Verifica input presenti
+[2026-01-28 20:20:30] [INFO]   ❌ Test FAILED
+[2026-01-28 20:20:30] [INFO] ❌ Task factory_input_check completato: FALLITO
+[2026-01-28 20:20:30] [INFO] ▶ Processo task: task_1769628021_factory_scan_input.json
+[2026-01-28 20:20:30] [INFO]   🖥️ Chiedo comando bash a Ollama...
+[2026-01-28 20:20:36] [INFO]   ▶ Eseguo: find ~/panda/factory/input -type f > ~/panda/factory/work/file_list.txt
+[2026-01-28 20:20:36] [ERROR]   ❌ Errore: /bin/sh: 1: cannot create /home/michele/panda/factory/work/file_list.txt: Directory nonexistent
+
+[2026-01-28 20:20:36] [INFO] ❌ Task factory_scan_input completato: FALLITO
+[2026-01-28 20:20:36] [INFO] ▶ Processo task: task_1769628021_factory_process_batch.json
+[2026-01-28 20:20:36] [INFO]   🐍 Chiedo codice Python a Ollama...
+[2026-01-28 20:21:05] [INFO]   ▶ Eseguo Python (356 chars)
+[2026-01-28 20:21:05] [ERROR]   ❌ Errore: Traceback (most recent call last):
+  File "/home/michele/panda/scripts/temp_1769628065.py", line 3, in <module>
+    files = pathlib.Path('~/panda/factory/work/file_list.txt').expanduser().read_text().splitlines()
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/pathlib.py", line 1029, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/pathlib.py", line 1015, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/home/michele/panda/factory/work/file_list.txt'
+
+[2026-01-28 20:21:05] [INFO] ❌ Task factory_process_batch completato: FALLITO
+[2026-01-28 20:21:05] [INFO] ▶ Processo task: task_1769628021_factory_output_check.json
+[2026-01-28 20:21:05] [INFO]   🧪 Eseguo test: Verifica output generati
+[2026-01-28 20:21:05] [INFO]   ❌ Test FAILED
+[2026-01-28 20:21:05] [INFO] ❌ Task factory_output_check completato: FALLITO
+[2026-01-28 20:21:05] [INFO] ▶ Processo task: task_1769628021_factory_generate_report.json
+[2026-01-28 20:21:05] [INFO]   📄 Genero contenuto per ~/panda/factory/report/report.txt...
+[2026-01-28 20:21:17] [INFO]   💾 Scrivo ~/panda/factory/report/report.txt (88 chars)
+[2026-01-28 20:21:17] [INFO] ✅ Task factory_generate_report completato: OK
+[2026-01-28 20:21:17] [INFO] ▶ Processo task: task_1769628021_factory_final_check.json
+[2026-01-28 20:21:17] [INFO]   🧪 Eseguo test: Verifica report finale
+[2026-01-28 20:21:17] [INFO]   ✅ Test PASSED
+[2026-01-28 20:21:17] [INFO] ✅ Task factory_final_check completato: OK
+[2026-01-28 20:23:26] [INFO] ============================================================
+[2026-01-28 20:23:26] [INFO] 🐼 PANDA Worker v3.0 avviato!
+[2026-01-28 20:23:26] [INFO] ============================================================
+[2026-01-28 20:23:26] [INFO] 📁 Home: /home/michele/panda
+[2026-01-28 20:23:26] [INFO] ✨ Features: auto-fix, stato live, retry, test
+[2026-01-28 20:23:26] [INFO] 
+[2026-01-28 20:27:16] [INFO] 📋 Trovati 7 task pendenti
+[2026-01-28 20:27:16] [INFO] ▶ Processo task: task_1769628432_factory_01_setup.json
+[2026-01-28 20:27:16] [INFO]   🖥️ Chiedo comando bash a Ollama...
+[2026-01-28 20:27:25] [INFO]   ▶ Eseguo: mkdir -p ~/panda/factory/{input,work,output,report}
+[2026-01-28 20:27:25] [INFO] ✅ Task factory_01_setup completato: OK
+[2026-01-28 20:27:25] [INFO] ▶ Processo task: task_1769628432_factory_02_env_gate.json
+[2026-01-28 20:27:25] [INFO]   🧪 Eseguo test: Ambiente factory pronto
+[2026-01-28 20:27:25] [INFO]   ❌ Test FAILED
+[2026-01-28 20:27:25] [INFO] ❌ Task factory_02_env_gate completato: FALLITO
+[2026-01-28 20:27:25] [INFO] ▶ Processo task: task_1769628432_factory_03_scan_input.json
+[2026-01-28 20:27:25] [INFO]   🖥️ Chiedo comando bash a Ollama...
+[2026-01-28 20:27:30] [INFO]   ▶ Eseguo: find ~/panda/factory/input -type f > ~/panda/factory/work/files.txt
+[2026-01-28 20:27:30] [ERROR]   ❌ Errore: /bin/sh: 1: cannot create /home/michele/panda/factory/work/files.txt: Directory nonexistent
+
+[2026-01-28 20:27:30] [INFO] ❌ Task factory_03_scan_input completato: FALLITO
+[2026-01-28 20:27:30] [INFO] ▶ Processo task: task_1769628432_factory_04_process_batch.json
+[2026-01-28 20:27:30] [INFO]   🐍 Chiedo codice Python a Ollama...
+[2026-01-28 20:27:57] [INFO]   ▶ Eseguo Python (320 chars)
+[2026-01-28 20:27:57] [ERROR]   ❌ Errore: Traceback (most recent call last):
+  File "/home/michele/panda/scripts/temp_1769628477.py", line 3, in <module>
+    files = base.joinpath('work/files.txt').read_text().splitlines()
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/pathlib.py", line 1029, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/pathlib.py", line 1015, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/home/michele/panda/factory/work/files.txt'
+
+[2026-01-28 20:27:57] [INFO] ❌ Task factory_04_process_batch completato: FALLITO
+[2026-01-28 20:27:57] [INFO] ▶ Processo task: task_1769628432_factory_05_output_gate.json
+[2026-01-28 20:27:57] [INFO]   🧪 Eseguo test: Output generati
+[2026-01-28 20:27:57] [INFO]   ❌ Test FAILED
+[2026-01-28 20:27:57] [INFO] ❌ Task factory_05_output_gate completato: FALLITO
+[2026-01-28 20:27:57] [INFO] ▶ Processo task: task_1769628432_factory_06_report.json
+[2026-01-28 20:27:57] [INFO]   📄 Genero contenuto per ~/panda/factory/report/final_report.txt...
+[2026-01-28 20:28:08] [INFO]   💾 Scrivo ~/panda/factory/report/final_report.txt (77 chars)
+[2026-01-28 20:28:08] [INFO] ✅ Task factory_06_report completato: OK
+[2026-01-28 20:28:08] [INFO] ▶ Processo task: task_1769628432_factory_07_final_gate.json
+[2026-01-28 20:28:08] [INFO]   🧪 Eseguo test: Pipeline completata
+[2026-01-28 20:28:08] [INFO]   ✅ Test PASSED
+[2026-01-28 20:28:08] [INFO] ✅ Task factory_07_final_gate completato: OK
+[2026-01-28 20:30:08] [INFO] 📋 Trovati 7 task pendenti
+[2026-01-28 20:30:08] [INFO] ▶ Processo task: task_1769628600_factory_01_setup.json
+[2026-01-28 20:30:08] [INFO]   🖥️ Chiedo comando bash a Ollama...
+[2026-01-28 20:30:17] [INFO]   ▶ Eseguo: mkdir -p ~/panda/factory/input ~/panda/factory/work ~/panda/factory/output ~/panda/factory/report
+[2026-01-28 20:30:17] [INFO] ✅ Task factory_01_setup completato: OK
+[2026-01-28 20:30:17] [INFO] ▶ Processo task: task_1769628600_factory_02_env_gate.json
+[2026-01-28 20:30:17] [INFO]   🧪 Eseguo test: Ambiente factory pronto
+[2026-01-28 20:30:17] [INFO]   ✅ Test PASSED
+[2026-01-28 20:30:17] [INFO] ✅ Task factory_02_env_gate completato: OK
+[2026-01-28 20:30:17] [INFO] ▶ Processo task: task_1769628600_factory_03_scan_input.json
+[2026-01-28 20:30:17] [INFO]   🖥️ Chiedo comando bash a Ollama...
+[2026-01-28 20:30:22] [INFO]   ▶ Eseguo: find ~/panda/factory/input -type f > ~/panda/factory/work/files.txt
+[2026-01-28 20:30:22] [INFO] ✅ Task factory_03_scan_input completato: OK
+[2026-01-28 20:30:22] [INFO] ▶ Processo task: task_1769628600_factory_04_process_batch.json
+[2026-01-28 20:30:22] [INFO]   🐍 Chiedo codice Python a Ollama...
+[2026-01-28 20:30:52] [INFO]   ▶ Eseguo Python (358 chars)
+[2026-01-28 20:30:52] [INFO] ✅ Task factory_04_process_batch completato: OK
+[2026-01-28 20:30:52] [INFO] ▶ Processo task: task_1769628600_factory_05_output_gate.json
+[2026-01-28 20:30:52] [INFO]   🧪 Eseguo test: Output generati (>=1)
+[2026-01-28 20:30:52] [INFO]   ❌ Test FAILED
+[2026-01-28 20:30:52] [INFO] ❌ Task factory_05_output_gate completato: FALLITO
+[2026-01-28 20:30:52] [INFO] ▶ Processo task: task_1769628600_factory_06_report_deterministic.json
+[2026-01-28 20:30:52] [INFO]   🖥️ Chiedo comando bash a Ollama...
+[2026-01-28 20:31:26] [INFO]   ▶ Eseguo: c=$(ls -1 ~/panda/factory/output 2>/dev/null | wc -l); ts=$(date -Iseconds); if [ "$c" -ge 1 ]; then echo "COMPLETATO" > ~/panda/factory/report/final_report.txt; else echo "FALLITO" > ~/panda/factory/report/final_report.txt; fi; echo "TIMESTAMP=$ts" >> ~/panda/factory/report/final_report.txt; echo "FILES_PROCESSATI=$c" >> ~/panda/factory/report/final_report.txt
+[2026-01-28 20:31:26] [INFO] ✅ Task factory_06_report_deterministic completato: OK
+[2026-01-28 20:31:26] [INFO] ▶ Processo task: task_1769628600_factory_07_final_gate.json
+[2026-01-28 20:31:26] [INFO]   🧪 Eseguo test: Report coerente
+[2026-01-28 20:31:26] [INFO]   ❌ Test FAILED
+[2026-01-28 20:31:26] [INFO] ❌ Task factory_07_final_gate completato: FALLITO
+[2026-01-28 20:34:56] [INFO] 📋 Trovati 7 task pendenti
+[2026-01-28 20:34:56] [INFO] ▶ Processo task: task_1769628887_factory_01_setup.json
+[2026-01-28 20:34:56] [INFO]   🖥️ Chiedo comando bash a Ollama...
+[2026-01-28 20:35:04] [INFO]   ▶ Eseguo: mkdir -p ~/panda/factory/input ~/panda/factory/work ~/panda/factory/output ~/panda/factory/report
+[2026-01-28 20:35:04] [INFO] ✅ Task factory_01_setup completato: OK
+[2026-01-28 20:35:04] [INFO] ▶ Processo task: task_1769628887_factory_02_env_gate.json
+[2026-01-28 20:35:04] [INFO]   🧪 Eseguo test: Ambiente factory pronto
+[2026-01-28 20:35:04] [INFO]   ✅ Test PASSED
+[2026-01-28 20:35:04] [INFO] ✅ Task factory_02_env_gate completato: OK
+[2026-01-28 20:35:04] [INFO] ▶ Processo task: task_1769628887_factory_03_scan_input.json
+[2026-01-28 20:35:04] [INFO]   🖥️ Chiedo comando bash a Ollama...
+[2026-01-28 20:35:09] [INFO]   ▶ Eseguo: find ~/panda/factory/input -type f > ~/panda/factory/work/files.txt
+[2026-01-28 20:35:09] [INFO] ✅ Task factory_03_scan_input completato: OK
+[2026-01-28 20:35:09] [INFO] ▶ Processo task: task_1769628887_factory_04_process_batch.json
+[2026-01-28 20:35:09] [INFO]   🐍 Chiedo codice Python a Ollama...
+[2026-01-28 20:35:39] [INFO]   ▶ Eseguo Python (358 chars)
+[2026-01-28 20:35:49] [INFO] ✅ Task factory_04_process_batch completato: OK
+[2026-01-28 20:35:49] [INFO] ▶ Processo task: task_1769628887_factory_05_output_gate.json
+[2026-01-28 20:35:49] [INFO]   🧪 Eseguo test: Output generati (>=1)
+[2026-01-28 20:35:49] [INFO]   ✅ Test PASSED
+[2026-01-28 20:35:49] [INFO] ✅ Task factory_05_output_gate completato: OK
+[2026-01-28 20:35:49] [INFO] ▶ Processo task: task_1769628887_factory_06_report_deterministic.json
+[2026-01-28 20:35:49] [INFO]   🖥️ Chiedo comando bash a Ollama...
+[2026-01-28 20:36:23] [INFO]   ▶ Eseguo: c=$(ls -1 ~/panda/factory/output 2>/dev/null | wc -l); ts=$(date -Iseconds); if [ "$c" -ge 1 ]; then echo "COMPLETATO" > ~/panda/factory/report/final_report.txt; else echo "FALLITO" > ~/panda/factory/report/final_report.txt; fi; echo "TIMESTAMP=$ts" >> ~/panda/factory/report/final_report.txt; echo "FILES_PROCESSATI=$c" >> ~/panda/factory/report/final_report.txt
+[2026-01-28 20:36:23] [INFO] ✅ Task factory_06_report_deterministic completato: OK
+[2026-01-28 20:36:23] [INFO] ▶ Processo task: task_1769628887_factory_07_final_gate.json
+[2026-01-28 20:36:23] [INFO]   🧪 Eseguo test: Report coerente
+[2026-01-28 20:36:23] [INFO]   ✅ Test PASSED
+[2026-01-28 20:36:23] [INFO] ✅ Task factory_07_final_gate completato: OK
+[2026-01-28 20:44:59] [INFO] ============================================================
+[2026-01-28 20:44:59] [INFO] 🐼 PANDA Worker v3.1 avviato!
+[2026-01-28 20:44:59] [INFO] ============================================================
+[2026-01-28 20:44:59] [INFO] 📁 Home: /home/michele/panda
+[2026-01-28 20:44:59] [INFO] ✨ Features: auto-fix, stato live, retry, test, pipeline-stop
+[2026-01-28 20:44:59] [INFO] 
+[2026-01-28 20:47:39] [INFO] 📋 Trovati 8 task pendenti
+[2026-01-28 20:47:39] [INFO] ▶ Processo task: task_1769629654_factory_v1_01_setup.json
+[2026-01-28 20:47:39] [INFO]   🖥️ Chiedo comando bash a Ollama...
+[2026-01-28 20:47:51] [INFO]   ▶ Eseguo: mkdir -p ~/panda/factory/input ~/panda/factory/work ~/panda/factory/output ~/panda/factory/report
+[2026-01-28 20:47:51] [INFO] ✅ Task factory_v1_01_setup completato: OK
+[2026-01-28 20:47:51] [INFO] ▶ Processo task: task_1769629654_factory_v1_02_env_gate.json
+[2026-01-28 20:47:51] [INFO]   🧪 Eseguo test: Ambiente factory pronto
+[2026-01-28 20:47:51] [INFO]   ✅ Test PASSED
+[2026-01-28 20:47:51] [INFO] ✅ Task factory_v1_02_env_gate completato: OK
+[2026-01-28 20:47:51] [INFO] ▶ Processo task: task_1769629654_factory_v1_03_scan_input.json
+[2026-01-28 20:47:51] [INFO]   🖥️ Chiedo comando bash a Ollama...
+[2026-01-28 20:47:57] [INFO]   ▶ Eseguo: find ~/panda/factory/input -type f > ~/panda/factory/work/files.txt
+[2026-01-28 20:47:57] [INFO] ✅ Task factory_v1_03_scan_input completato: OK
+[2026-01-28 20:47:57] [INFO] ▶ Processo task: task_1769629654_factory_v1_04_process_batch.json
+[2026-01-28 20:47:57] [INFO]   🐍 Chiedo codice Python a Ollama...
+[2026-01-28 20:48:29] [INFO]   ▶ Eseguo Python (395 chars)
+[2026-01-28 20:48:31] [INFO] ✅ Task factory_v1_04_process_batch completato: OK
+[2026-01-28 20:48:31] [INFO] ▶ Processo task: task_1769629654_factory_v1_05_gate_output.json
+[2026-01-28 20:48:31] [INFO]   🧪 Eseguo test: Gate output (>=1 file generato)
+[2026-01-28 20:48:31] [INFO]   ✅ Test PASSED
+[2026-01-28 20:48:31] [INFO] ✅ Task factory_v1_05_gate_output completato: OK
+[2026-01-28 20:48:31] [INFO] ▶ Processo task: task_1769629654_factory_v1_06_report_success.json
+[2026-01-28 20:48:31] [INFO]   🖥️ Chiedo comando bash a Ollama...
+[2026-01-28 20:49:02] [INFO]   ▶ Eseguo: bash -c 'c=$(ls -1 ~/panda/factory/output 2>/dev/null | wc -l); ts=$(date -Iseconds); echo "COMPLETATO" > ~/panda/factory/report/final_report.txt; echo "PIPELINE=factory_v1" >> ~/panda/factory/report/final_report.txt; echo "TIMESTAMP=$ts" >> ~/panda/factory/report/final_report.txt; echo "FILES_PROCESSATI=$c" >> ~/panda/factory/report/final_report.txt'
+[2026-01-28 20:49:02] [INFO] ✅ Task factory_v1_06_report_success completato: OK
+[2026-01-28 20:49:02] [INFO] ▶ Processo task: task_1769629654_factory_v1_07_gate_report_success.json
+[2026-01-28 20:49:02] [INFO]   🧪 Eseguo test: Report success coerente
+[2026-01-28 20:49:02] [INFO]   ✅ Test PASSED
+[2026-01-28 20:49:02] [INFO] ✅ Task factory_v1_07_gate_report_success completato: OK
+[2026-01-28 20:49:02] [INFO] ▶ Processo task: task_1769629654_factory_v1_90_report_fail_placeholder.json
+[2026-01-28 20:49:02] [INFO]   🖥️ Chiedo comando bash a Ollama...
+[2026-01-28 20:49:29] [INFO]   ▶ Eseguo: ts=$(date -Iseconds); echo 'FALLITO' > ~/panda/factory/report/fail_report.txt; echo "PIPELINE=factory_v1" >> ~/panda/factory/report/fail_report.txt; echo "TIMESTAMP=$ts" >> ~/panda/factory/report/fail_report.txt; echo 'MOTIVO=Gate fallito (controlla results JSON e logs)' >> ~/panda/factory/report/fail_report.txt
+[2026-01-28 20:49:29] [INFO] ✅ Task factory_v1_90_report_fail_placeholder completato: OK
+[2026-01-28 20:58:05] [INFO] 🐼 PANDA Worker v3.1 avviato
+[2026-01-28 20:58:06] [INFO] 🐼 PANDA Worker v3.1 avviato
+[2026-01-28 20:58:22] [INFO] 🐼 PANDA Worker v3.1 avviato
+[2026-01-28 20:59:05] [INFO] 🐼 PANDA Worker v3.1 avviato
+[2026-01-28 20:59:14] [INFO] 🐼 PANDA Worker v3.1 avviato
+[2026-01-28 21:08:54] [INFO] ▶ Task events_app_001_mkdir_root
+[2026-01-28 21:09:01] [INFO] ✅ Task events_app_001_mkdir_root
+[2026-01-28 21:09:01] [INFO] ▶ Task events_app_002_mkdir_backend
+[2026-01-28 21:09:18] [INFO] ✅ Task events_app_002_mkdir_backend
+[2026-01-28 21:09:18] [INFO] ▶ Task events_app_003_mkdir_frontend
+[2026-01-28 21:09:27] [INFO] ✅ Task events_app_003_mkdir_frontend
+[2026-01-28 21:09:27] [INFO] ▶ Task events_app_010_readme
+[2026-01-28 21:10:45] [INFO] ✅ Task events_app_010_readme
+[2026-01-28 21:10:45] [INFO] ▶ Task events_app_020_docker_compose
+[2026-01-28 21:12:03] [INFO] ✅ Task events_app_020_docker_compose
+[2026-01-28 21:12:03] [INFO] ▶ Task events_app_030_backend_dockerfile
+[2026-01-28 21:12:37] [INFO] ✅ Task events_app_030_backend_dockerfile
+[2026-01-28 21:12:37] [INFO] ▶ Task events_app_031_backend_pom
+[2026-01-28 21:14:50] [INFO] ✅ Task events_app_031_backend_pom
+[2026-01-28 21:14:50] [INFO] ▶ Task events_app_032_backend_application_yml
+[2026-01-28 21:15:23] [INFO] ✅ Task events_app_032_backend_application_yml
+[2026-01-28 21:15:23] [INFO] ▶ Task events_app_033_backend_migration
+[2026-01-28 21:16:10] [INFO] ✅ Task events_app_033_backend_migration
+[2026-01-28 21:16:10] [INFO] ▶ Task events_app_034_backend_app
+[2026-01-28 21:16:25] [INFO] ✅ Task events_app_034_backend_app
+[2026-01-28 21:16:25] [INFO] ▶ Task events_app_035_backend_cors
+[2026-01-28 21:16:54] [INFO] ✅ Task events_app_035_backend_cors
+[2026-01-28 21:16:54] [INFO] ▶ Task events_app_036_backend_model_event
+[2026-01-28 21:18:23] [INFO] ✅ Task events_app_036_backend_model_event
+[2026-01-28 21:18:23] [INFO] ▶ Task events_app_037_backend_dto_create
+[2026-01-28 21:20:04] [INFO] ✅ Task events_app_037_backend_dto_create
+[2026-01-28 21:20:04] [INFO] ▶ Task events_app_038_backend_dto_response
+[2026-01-28 21:22:25] [INFO] ✅ Task events_app_038_backend_dto_response
+[2026-01-28 21:22:25] [INFO] ▶ Task events_app_039_backend_repo
+[2026-01-28 21:23:04] [INFO] ✅ Task events_app_039_backend_repo
+[2026-01-28 21:23:04] [INFO] ▶ Task events_app_040_backend_service
+[2026-01-28 21:25:38] [INFO] ✅ Task events_app_040_backend_service
+[2026-01-28 21:25:38] [INFO] ▶ Task events_app_041_backend_exception_notfound
+[2026-01-28 21:25:46] [INFO] ✅ Task events_app_041_backend_exception_notfound
+[2026-01-28 21:25:46] [INFO] ▶ Task events_app_042_backend_exception_handler
+[2026-01-28 21:27:08] [INFO] ✅ Task events_app_042_backend_exception_handler
+[2026-01-28 21:27:08] [INFO] ▶ Task events_app_043_backend_controller
+[2026-01-28 21:28:52] [INFO] ✅ Task events_app_043_backend_controller
+[2026-01-28 21:28:52] [INFO] ▶ Task events_app_044_backend_test_smoke
+[2026-01-28 21:30:02] [INFO] ✅ Task events_app_044_backend_test_smoke
+[2026-01-28 21:30:02] [INFO] ▶ Task events_app_050_frontend_dockerfile
+[2026-01-28 21:30:22] [INFO] ✅ Task events_app_050_frontend_dockerfile
+[2026-01-28 21:30:22] [INFO] ▶ Task events_app_051_frontend_package_json
+[2026-01-28 21:31:11] [INFO] ✅ Task events_app_051_frontend_package_json
+[2026-01-28 21:31:11] [INFO] ▶ Task events_app_052_frontend_vite_config
+[2026-01-28 21:31:26] [INFO] ✅ Task events_app_052_frontend_vite_config
+[2026-01-28 21:31:26] [INFO] ▶ Task events_app_053_frontend_tsconfig
+[2026-01-28 21:31:47] [INFO] ✅ Task events_app_053_frontend_tsconfig
+[2026-01-28 21:31:47] [INFO] ▶ Task events_app_054_frontend_index_html
+[2026-01-28 21:32:13] [INFO] ✅ Task events_app_054_frontend_index_html
+[2026-01-28 21:32:13] [INFO] ▶ Task events_app_055_frontend_types
+[2026-01-28 21:32:29] [INFO] ✅ Task events_app_055_frontend_types
+[2026-01-28 21:32:29] [INFO] ▶ Task events_app_056_frontend_api_client
+[2026-01-28 21:32:55] [INFO] ✅ Task events_app_056_frontend_api_client
+[2026-01-28 21:32:55] [INFO] ▶ Task events_app_057_frontend_main
+[2026-01-28 21:33:11] [INFO] ✅ Task events_app_057_frontend_main
+[2026-01-28 21:33:11] [INFO] ▶ Task events_app_058_frontend_app
+[2026-01-28 21:33:58] [INFO] ✅ Task events_app_058_frontend_app
+[2026-01-28 21:33:58] [INFO] ▶ Task events_app_059_frontend_components
+[2026-01-28 21:35:24] [INFO] ✅ Task events_app_059_frontend_components
+[2026-01-28 21:35:24] [INFO] ▶ Task events_app_060_frontend_page_list
+[2026-01-28 21:39:29] [INFO] ✅ Task events_app_060_frontend_page_list
+[2026-01-28 21:39:29] [INFO] ▶ Task events_app_061_frontend_page_detail
+[2026-01-28 21:41:52] [INFO] ✅ Task events_app_061_frontend_page_detail
+[2026-01-28 21:41:52] [INFO] ▶ Task events_app_062_frontend_page_create
+[2026-01-28 21:46:43] [INFO] ✅ Task events_app_062_frontend_page_create
+[2026-01-28 21:46:43] [INFO] ▶ Task events_app_070_gate_files_exist
+[2026-01-28 21:46:43] [INFO] ✅ Task events_app_070_gate_files_exist
+[2026-01-28 21:46:43] [INFO] ▶ Task events_app_080_backend_build_gate
+[2026-01-28 21:46:49] [INFO] ✅ Task events_app_080_backend_build_gate
+[2026-01-28 21:46:49] [INFO] ▶ Task events_app_081_backend_build_ok
+[2026-01-28 21:46:49] [WARN] 🔁 Retry 1 for events_app_081_backend_build_ok
+[2026-01-28 21:46:49] [WARN] 🛑 Pipeline fermata da gate
+[2026-01-28 21:46:59] [INFO] ▶ Task events_app_081_backend_build_ok
+[2026-01-28 21:46:59] [WARN] 🔁 Retry 2 for events_app_081_backend_build_ok
+[2026-01-28 21:46:59] [WARN] 🛑 Pipeline fermata da gate
+[2026-01-28 21:47:09] [INFO] ▶ Task events_app_081_backend_build_ok
+[2026-01-28 21:47:09] [WARN] 🔁 Retry 3 for events_app_081_backend_build_ok
+[2026-01-28 21:47:09] [WARN] 🛑 Pipeline fermata da gate
+[2026-01-28 21:47:19] [INFO] ▶ Task events_app_081_backend_build_ok
+[2026-01-28 21:47:19] [INFO] ❌ Task events_app_081_backend_build_ok
+[2026-01-28 21:47:19] [WARN] 🛑 Pipeline fermata da gate
+[2026-01-28 21:55:09] [INFO] ▶ Task fixpack_01_backup_worker
+[2026-01-28 21:55:38] [WARN] 🔁 Retry 1 for fixpack_01_backup_worker
+[2026-01-28 21:55:38] [INFO] ▶ Task fixpack_02_patch_worker_clean_llm_and_file
+[2026-01-28 21:58:08] [WARN] 🔁 Retry 1 for fixpack_02_patch_worker_clean_llm_and_file
+[2026-01-28 21:58:08] [INFO] ▶ Task fixpack_03_restart_service
+[2026-01-28 21:58:10] [INFO] ✅ Task fixpack_03_restart_service
+[2026-01-28 21:58:10] [INFO] ▶ Task fixpack_04_fix_events_app_files_extract_fenced
+[2026-01-28 21:59:49] [WARN] 🔁 Retry 1 for fixpack_04_fix_events_app_files_extract_fenced
+[2026-01-28 21:59:49] [INFO] ▶ Task fixpack_05_gate_compose_yaml_is_clean
+[2026-01-28 21:59:49] [WARN] 🔁 Retry 1 for fixpack_05_gate_compose_yaml_is_clean
+[2026-01-28 21:59:49] [WARN] 🛑 Pipeline fermata da gate
+[2026-01-28 21:59:59] [INFO] ▶ Task fixpack_01_backup_worker
+[2026-01-28 22:00:08] [INFO] ✅ Task fixpack_01_backup_worker
+[2026-01-28 22:00:08] [INFO] ▶ Task fixpack_02_patch_worker_clean_llm_and_file
+[2026-01-28 22:02:55] [WARN] 🔁 Retry 2 for fixpack_02_patch_worker_clean_llm_and_file
+[2026-01-28 22:02:55] [INFO] ▶ Task fixpack_04_fix_events_app_files_extract_fenced
+[2026-01-28 22:04:02] [INFO] ✅ Task fixpack_04_fix_events_app_files_extract_fenced
+[2026-01-28 22:04:02] [INFO] ▶ Task fixpack_05_gate_compose_yaml_is_clean
+[2026-01-28 22:04:02] [WARN] 🔁 Retry 2 for fixpack_05_gate_compose_yaml_is_clean
+[2026-01-28 22:04:02] [WARN] 🛑 Pipeline fermata da gate
+[2026-01-28 22:04:12] [INFO] ▶ Task fixpack_02_patch_worker_clean_llm_and_file
+[2026-01-28 22:06:32] [WARN] 🔁 Retry 3 for fixpack_02_patch_worker_clean_llm_and_file
+[2026-01-28 22:06:32] [INFO] ▶ Task fixpack_05_gate_compose_yaml_is_clean
+[2026-01-28 22:06:32] [WARN] 🔁 Retry 3 for fixpack_05_gate_compose_yaml_is_clean
+[2026-01-28 22:06:32] [WARN] 🛑 Pipeline fermata da gate
+[2026-01-28 22:06:42] [INFO] ▶ Task fixpack_02_patch_worker_clean_llm_and_file
+[2026-01-28 22:08:39] [INFO] ❌ Task fixpack_02_patch_worker_clean_llm_and_file
+[2026-01-28 22:08:39] [INFO] ▶ Task fixpack_05_gate_compose_yaml_is_clean
+[2026-01-28 22:08:39] [INFO] ❌ Task fixpack_05_gate_compose_yaml_is_clean
+[2026-01-28 22:08:39] [WARN] 🛑 Pipeline fermata da gate
+[2026-01-28 22:08:49] [INFO] ▶ Task fixpack_06_gate_no_backticks_in_ops
+[2026-01-28 22:08:49] [WARN] 🔁 Retry 1 for fixpack_06_gate_no_backticks_in_ops
+[2026-01-28 22:08:49] [WARN] 🛑 Pipeline fermata da gate
+[2026-01-28 22:08:59] [INFO] ▶ Task fixpack_06_gate_no_backticks_in_ops
+[2026-01-28 22:08:59] [WARN] 🔁 Retry 2 for fixpack_06_gate_no_backticks_in_ops
+[2026-01-28 22:08:59] [WARN] 🛑 Pipeline fermata da gate
+[2026-01-28 22:09:09] [INFO] ▶ Task fixpack_06_gate_no_backticks_in_ops
+[2026-01-28 22:09:09] [WARN] 🔁 Retry 3 for fixpack_06_gate_no_backticks_in_ops
+[2026-01-28 22:09:09] [WARN] 🛑 Pipeline fermata da gate
+[2026-01-28 22:09:19] [INFO] ▶ Task fixpack_06_gate_no_backticks_in_ops
+[2026-01-28 22:09:19] [INFO] ❌ Task fixpack_06_gate_no_backticks_in_ops
+[2026-01-28 22:09:19] [WARN] 🛑 Pipeline fermata da gate
+[2026-01-28 22:29:49] [INFO] ▶ Task fixpack_v3_01_backup_worker
+[2026-01-28 22:30:21] [WARN] 🔁 Retry 1 for fixpack_v3_01_backup_worker
+[2026-01-28 22:30:21] [INFO] ▶ Task fixpack_v3_02_patch_worker_clean_llm
+[2026-01-28 22:31:57] [INFO] ✅ Task fixpack_v3_02_patch_worker_clean_llm
+[2026-01-28 22:31:57] [INFO] ▶ Task fixpack_v3_03_restart_panda
+[2026-01-28 22:32:16] [WARN] 🔁 Retry 1 for fixpack_v3_03_restart_panda
+[2026-01-28 22:32:16] [INFO] ▶ Task fixpack_v3_04_force_clean_compose
+[2026-01-28 22:34:03] [WARN] 🔁 Retry 1 for fixpack_v3_04_force_clean_compose
+[2026-01-28 22:34:03] [INFO] ▶ Task fixpack_v3_05_sanitize_events_app_non_md
+[2026-01-28 22:34:18] [INFO] ✅ Task fixpack_v3_05_sanitize_events_app_non_md
+[2026-01-28 22:34:18] [INFO] ▶ Task fixpack_v3_05b_sanitize_events_app_non_md_oneliner
+[2026-01-28 22:34:41] [INFO] ✅ Task fixpack_v3_05b_sanitize_events_app_non_md_oneliner
+[2026-01-28 22:34:41] [INFO] ▶ Task fixpack_v3_05c_sanitize_events_app_non_md_real
+[2026-01-28 22:35:10] [WARN] 🔁 Retry 1 for fixpack_v3_05c_sanitize_events_app_non_md_real
+[2026-01-28 22:35:10] [INFO] ▶ Task fixpack_v3_05d_sanitize_events_app_non_md_final
+[2026-01-28 22:35:25] [WARN] 🔁 Retry 1 for fixpack_v3_05d_sanitize_events_app_non_md_final
+[2026-01-28 22:35:25] [INFO] ▶ Task fixpack_v3_05e_sanitize_events_app_non_md_exec
+[2026-01-28 22:35:38] [INFO] ✅ Task fixpack_v3_05e_sanitize_events_app_non_md_exec
+[2026-01-28 22:35:38] [INFO] ▶ Task fixpack_v3_06_sanitize_real_oneliner
+[2026-01-28 22:36:08] [INFO] ✅ Task fixpack_v3_06_sanitize_real_oneliner
+[2026-01-28 22:36:08] [INFO] ▶ Task fixpack_v3_06b_sanitize_events_app
+[2026-01-28 22:36:22] [INFO] ✅ Task fixpack_v3_06b_sanitize_events_app
+[2026-01-28 22:36:22] [INFO] ▶ Task fixpack_v3_06c_sanitize_events_app_working
+[2026-01-28 22:36:45] [WARN] 🔁 Retry 1 for fixpack_v3_06c_sanitize_events_app_working
+[2026-01-28 22:36:45] [INFO] ▶ Task fixpack_v3_06d_sanitize_events_app_final
+[2026-01-28 22:37:00] [INFO] ✅ Task fixpack_v3_06d_sanitize_events_app_final
+[2026-01-28 22:37:00] [INFO] ▶ Task fixpack_v3_06e_sanitize_events_app_exec
+[2026-01-28 22:37:13] [INFO] ✅ Task fixpack_v3_06e_sanitize_events_app_exec
+[2026-01-28 22:37:13] [INFO] ▶ Task fixpack_v3_07_gate_compose_clean
+[2026-01-28 22:37:13] [WARN] 🔁 Retry 1 for fixpack_v3_07_gate_compose_clean
+[2026-01-28 22:37:13] [WARN] 🛑 Pipeline fermata da gate
+[2026-01-28 22:37:23] [INFO] ▶ Task fixpack_v3_01_backup_worker
+[2026-01-28 22:38:17] [INFO] 🐼 PANDA Worker v3.1 avviato
+[2026-01-28 22:38:17] [INFO] ▶ Task fixpack_v3_01_backup_worker
+[2026-01-28 22:38:45] [WARN] 🔁 Retry 2 for fixpack_v3_01_backup_worker
+[2026-01-28 22:38:45] [INFO] ▶ Task fixpack_v3_03_restart_panda
+[2026-01-28 22:39:02] [WARN] 🔁 Retry 2 for fixpack_v3_03_restart_panda
+[2026-01-28 22:39:02] [INFO] ▶ Task fixpack_v3_04_force_clean_compose
+[2026-01-28 22:40:49] [WARN] 🔁 Retry 2 for fixpack_v3_04_force_clean_compose
+[2026-01-28 22:40:49] [INFO] ▶ Task fixpack_v3_05c_sanitize_events_app_non_md_real
+[2026-01-28 22:41:28] [WARN] 🔁 Retry 2 for fixpack_v3_05c_sanitize_events_app_non_md_real
+[2026-01-28 22:41:28] [INFO] ▶ Task fixpack_v3_05d_sanitize_events_app_non_md_final
+[2026-01-28 22:41:47] [WARN] 🔁 Retry 2 for fixpack_v3_05d_sanitize_events_app_non_md_final
+[2026-01-28 22:41:47] [INFO] ▶ Task fixpack_v3_06c_sanitize_events_app_working
+[2026-01-28 22:42:36] [WARN] 🔁 Retry 2 for fixpack_v3_06c_sanitize_events_app_working
+[2026-01-28 22:42:36] [INFO] ▶ Task fixpack_v3_07_gate_compose_clean
+[2026-01-28 22:42:36] [WARN] 🔁 Retry 2 for fixpack_v3_07_gate_compose_clean
+[2026-01-28 22:42:36] [WARN] 🛑 Pipeline fermata da gate
+[2026-01-28 22:42:46] [INFO] ▶ Task fixpack_v3_01_backup_worker
+[2026-01-28 22:43:03] [WARN] 🔁 Retry 3 for fixpack_v3_01_backup_worker
+[2026-01-28 22:43:03] [INFO] ▶ Task fixpack_v3_03_restart_panda
+[2026-01-28 22:43:06] [INFO] ✅ Task fixpack_v3_03_restart_panda
+[2026-01-28 22:43:06] [INFO] ▶ Task fixpack_v3_04_force_clean_compose
+[2026-01-28 22:43:17] [WARN] 🔁 Retry 2 for fixpack_v3_01_backup_worker
+[2026-01-28 22:43:17] [ERROR] Worker crash: [Errno 2] No such file or directory: '/home/michele/panda/tasks/task_1769635789_fixpack_v3_03_restart_panda.json'
+[2026-01-28 22:43:27] [INFO] ▶ Task fixpack_v3_01_backup_worker
+[2026-01-28 22:45:56] [WARN] 🔁 Retry 3 for fixpack_v3_01_backup_worker
+[2026-01-28 22:45:56] [INFO] ▶ Task fixpack_v3_04_force_clean_compose
+[2026-01-28 22:48:01] [INFO] ❌ Task fixpack_v3_04_force_clean_compose
+[2026-01-28 22:48:01] [INFO] ▶ Task fixpack_v3_05c_sanitize_events_app_non_md_real
+[2026-01-28 22:48:24] [WARN] 🔁 Retry 3 for fixpack_v3_05c_sanitize_events_app_non_md_real
+[2026-01-28 22:48:24] [INFO] ▶ Task fixpack_v3_05d_sanitize_events_app_non_md_final
+[2026-01-28 22:50:21] [WARN] 🔁 Retry 3 for fixpack_v3_05d_sanitize_events_app_non_md_final
+[2026-01-28 22:50:21] [INFO] ▶ Task fixpack_v3_06c_sanitize_events_app_working
+[2026-01-28 22:50:35] [INFO] ✅ Task fixpack_v3_06c_sanitize_events_app_working
+[2026-01-28 22:50:35] [INFO] ▶ Task fixpack_v3_07_gate_compose_clean
+[2026-01-28 22:50:35] [WARN] 🔁 Retry 3 for fixpack_v3_07_gate_compose_clean
+[2026-01-28 22:50:35] [WARN] 🛑 Pipeline fermata da gate
+[2026-01-28 22:50:45] [INFO] ▶ Task fixpack_v3_01_backup_worker
+[2026-01-28 22:51:43] [INFO] ❌ Task fixpack_v3_01_backup_worker
+[2026-01-28 22:51:43] [INFO] ▶ Task fixpack_v3_05c_sanitize_events_app_non_md_real
+[2026-01-28 22:52:18] [INFO] ❌ Task fixpack_v3_05c_sanitize_events_app_non_md_real
+[2026-01-28 22:52:18] [INFO] ▶ Task fixpack_v3_05d_sanitize_events_app_non_md_final
+[2026-01-28 22:52:31] [INFO] ✅ Task fixpack_v3_05d_sanitize_events_app_non_md_final
+[2026-01-28 22:52:31] [INFO] ▶ Task fixpack_v3_07_gate_compose_clean
+[2026-01-28 22:52:31] [INFO] ❌ Task fixpack_v3_07_gate_compose_clean
+[2026-01-28 22:52:31] [WARN] 🛑 Pipeline fermata da gate
+[2026-01-28 22:52:41] [INFO] ▶ Task fixpack_v3_08_gate_ops_no_backticks
+[2026-01-28 22:52:41] [WARN] 🔁 Retry 1 for fixpack_v3_08_gate_ops_no_backticks
+[2026-01-28 22:52:41] [WARN] 🛑 Pipeline fermata da gate
+[2026-01-28 22:52:51] [INFO] ▶ Task fixpack_v3_08_gate_ops_no_backticks
+[2026-01-28 22:52:51] [WARN] 🔁 Retry 2 for fixpack_v3_08_gate_ops_no_backticks
+[2026-01-28 22:52:51] [WARN] 🛑 Pipeline fermata da gate
+[2026-01-28 22:53:01] [INFO] ▶ Task fixpack_v3_08_gate_ops_no_backticks
+[2026-01-28 22:53:01] [WARN] 🔁 Retry 3 for fixpack_v3_08_gate_ops_no_backticks
+[2026-01-28 22:53:01] [WARN] 🛑 Pipeline fermata da gate
+[2026-01-28 22:53:11] [INFO] ▶ Task fixpack_v3_08_gate_ops_no_backticks
+[2026-01-28 22:53:11] [INFO] ❌ Task fixpack_v3_08_gate_ops_no_backticks
+[2026-01-28 22:53:11] [WARN] 🛑 Pipeline fermata da gate
+[2026-01-28 22:56:01] [INFO] ▶ Task fixpack_v4_01_stop_panda
+[2026-01-28 22:57:13] [INFO] 🐼 PANDA Worker v3.1 avviato
+[2026-01-28 22:57:13] [INFO] ▶ Task fixpack_v4_01_stop_panda
+[2026-01-28 22:57:16] [INFO] ✅ Task fixpack_v4_01_stop_panda
+[2026-01-28 22:57:16] [INFO] ▶ Task fixpack_v4_02_backup_worker
+[2026-01-28 22:57:42] [WARN] 🔁 Retry 1 for fixpack_v4_02_backup_worker
+[2026-01-28 22:57:42] [INFO] ▶ Task fixpack_v4_03_patch_worker_no_crash_on_missing_task
+[2026-01-28 22:58:04] [WARN] 🔁 Retry 1 for fixpack_v4_03_patch_worker_no_crash_on_missing_task
+[2026-01-28 22:58:04] [INFO] ▶ Task fixpack_v4_03b_patch_worker_missing_task_oneliner
+[2026-01-28 22:58:56] [WARN] 🔁 Retry 1 for fixpack_v4_03b_patch_worker_missing_task_oneliner
+[2026-01-28 22:58:56] [INFO] ▶ Task fixpack_v4_04_write_compose_via_file_task
+[2026-01-28 23:00:09] [INFO] ✅ Task fixpack_v4_04_write_compose_via_file_task
+[2026-01-28 23:00:09] [INFO] ▶ Task fixpack_v4_05_gate_compose_clean
+[2026-01-28 23:00:09] [WARN] 🔁 Retry 1 for fixpack_v4_05_gate_compose_clean
+[2026-01-28 23:00:09] [WARN] 🛑 Pipeline fermata da gate
+[2026-01-28 23:00:19] [INFO] ▶ Task fixpack_v4_02_backup_worker
+[2026-01-28 23:00:54] [WARN] 🔁 Retry 2 for fixpack_v4_02_backup_worker
+[2026-01-28 23:00:54] [INFO] ▶ Task fixpack_v4_03_patch_worker_no_crash_on_missing_task
+[2026-01-28 23:01:11] [WARN] 🔁 Retry 2 for fixpack_v4_03_patch_worker_no_crash_on_missing_task
+[2026-01-28 23:01:11] [INFO] ▶ Task fixpack_v4_03b_patch_worker_missing_task_oneliner
+[2026-01-28 23:02:03] [WARN] 🔁 Retry 2 for fixpack_v4_03b_patch_worker_missing_task_oneliner
+[2026-01-28 23:02:03] [INFO] ▶ Task fixpack_v4_05_gate_compose_clean
+[2026-01-28 23:02:03] [WARN] 🔁 Retry 2 for fixpack_v4_05_gate_compose_clean
+[2026-01-28 23:02:03] [WARN] 🛑 Pipeline fermata da gate
+[2026-01-28 23:02:13] [INFO] ▶ Task fixpack_v4_02_backup_worker
+[2026-01-28 23:02:57] [WARN] 🔁 Retry 3 for fixpack_v4_02_backup_worker
+[2026-01-28 23:02:57] [INFO] ▶ Task fixpack_v4_03_patch_worker_no_crash_on_missing_task
+[2026-01-28 23:03:22] [WARN] 🔁 Retry 3 for fixpack_v4_03_patch_worker_no_crash_on_missing_task
+[2026-01-28 23:03:22] [INFO] ▶ Task fixpack_v4_03b_patch_worker_missing_task_oneliner
+[2026-01-28 23:04:13] [WARN] 🔁 Retry 3 for fixpack_v4_03b_patch_worker_missing_task_oneliner
+[2026-01-28 23:04:13] [INFO] ▶ Task fixpack_v4_05_gate_compose_clean
+[2026-01-28 23:04:13] [WARN] 🔁 Retry 3 for fixpack_v4_05_gate_compose_clean
+[2026-01-28 23:04:13] [WARN] 🛑 Pipeline fermata da gate
+[2026-01-28 23:04:23] [INFO] ▶ Task fixpack_v4_02_backup_worker
+[2026-01-28 23:04:53] [INFO] ❌ Task fixpack_v4_02_backup_worker
+[2026-01-28 23:04:53] [INFO] ▶ Task fixpack_v4_03_patch_worker_no_crash_on_missing_task
+[2026-01-28 23:05:31] [INFO] ❌ Task fixpack_v4_03_patch_worker_no_crash_on_missing_task
+[2026-01-28 23:05:31] [INFO] ▶ Task fixpack_v4_03b_patch_worker_missing_task_oneliner
+[2026-01-28 23:06:28] [INFO] ❌ Task fixpack_v4_03b_patch_worker_missing_task_oneliner
+[2026-01-28 23:06:28] [INFO] ▶ Task fixpack_v4_05_gate_compose_clean
+[2026-01-28 23:06:28] [INFO] ❌ Task fixpack_v4_05_gate_compose_clean
+[2026-01-28 23:06:28] [WARN] 🛑 Pipeline fermata da gate
+[2026-01-28 23:06:38] [INFO] ▶ Task fixpack_v4_06_start_panda
+[2026-01-28 23:06:56] [WARN] 🔁 Retry 1 for fixpack_v4_06_start_panda
+[2026-01-28 23:07:06] [INFO] ▶ Task fixpack_v4_06_start_panda
+[2026-01-28 23:07:08] [INFO] ✅ Task fixpack_v4_06_start_panda
+[2026-01-28 23:27:14] [INFO] 🐼 PANDA Worker v3.1 avviato

@@ -1,0 +1,7 @@
+{
+  "id": "create_dashboard_server",
+  "type": "file",
+  "priority": 20,
+  "filepath": "~/panda/dashboard/server.py",
+  "prompt_file": "020_prompt.txt"
+}

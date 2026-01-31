@@ -1,0 +1,7 @@
+{
+  "id": "fix_dashboard_ui",
+  "type": "file",
+  "priority": 110,
+  "filepath": "~/panda/dashboard/templates/index.html",
+  "prompt_file": "110_prompt.txt"
+}

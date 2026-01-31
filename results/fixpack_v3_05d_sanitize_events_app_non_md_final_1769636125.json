@@ -1,0 +1,15 @@
+{
+  "task_id": "fixpack_v3_05d_sanitize_events_app_non_md_final",
+  "type": "bash",
+  "steps": [
+    {
+      "cmd": "Comando bash:",
+      "result": {
+        "success": false,
+        "stdout": "",
+        "stderr": "/bin/sh: 1: Comando: not found\n"
+      }
+    }
+  ],
+  "success": false
+}

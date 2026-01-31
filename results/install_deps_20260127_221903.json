@@ -1,0 +1,24 @@
+{
+  "task_id": "install_deps",
+  "task": {
+    "id": "install_deps",
+    "type": "bash",
+    "priority": 10,
+    "prompt": "Installa flask e flask-socketio con pip. Usa il flag --break-system-packages. Comando singolo."
+  },
+  "started_at": "2026-01-27T22:18:59.314431",
+  "steps": [
+    {
+      "type": "bash",
+      "command": "bash\npip install --break-system-packages flask flask-socketio",
+      "result": {
+        "success": false,
+        "stdout": "",
+        "stderr": "/bin/sh: 2: pip: not found\n",
+        "returncode": 127
+      }
+    }
+  ],
+  "success": false,
+  "finished_at": "2026-01-27T22:19:03.801454"
+}

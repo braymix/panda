@@ -1,0 +1,7 @@
+{
+  "id": "hello_spagnolo",
+  "type": "file",
+  "priority": 5,
+  "filepath": "~/panda/progetti/hello_world/spagnolo/index.html",
+  "prompt": "Crea una pagina HTML5 completa con titolo Hola Mundo, un h1 che dice Hola Mundo e un paragrafo che dice Bienvenido a mi sitio web in spagnolo. Stile: sfondo rosso scuro, testo bianco, font Arial, centrato"
+}

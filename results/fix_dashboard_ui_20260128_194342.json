@@ -1,0 +1,25 @@
+{
+  "task_id": "fix_dashboard_ui",
+  "task": {
+    "id": "fix_dashboard_ui",
+    "type": "file",
+    "priority": 110,
+    "filepath": "~/panda/dashboard/templates/index.html",
+    "prompt_file": "110_prompt.txt"
+  },
+  "prompt_preview": "Crea pagina HTML5 COMPLETA per dashboard PANDA. CSS e JavaScript tutto INLINE.\n\nSTRUTTURA HTML COMPLETA:\n<!DOCTYPE html>\n<html lang=\"it\">\n<head>\n<meta charset=\"UTF-8\">\n<meta name=\"viewport\" content=\"w...",
+  "started_at": "2026-01-28T19:36:54.330376",
+  "steps": [
+    {
+      "type": "file",
+      "filepath": "~/panda/dashboard/templates/index.html",
+      "size": 2696,
+      "result": {
+        "success": true,
+        "path": "/home/michele/panda/dashboard/templates/index.html"
+      }
+    }
+  ],
+  "success": true,
+  "finished_at": "2026-01-28T19:43:42.912367"
+}

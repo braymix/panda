@@ -1,0 +1,11 @@
+{
+  "task_id": "fixpack_06_gate_no_backticks_in_ops",
+  "type": "test",
+  "steps": [
+    {
+      "expected": "OK",
+      "actual": ""
+    }
+  ],
+  "success": false
+}

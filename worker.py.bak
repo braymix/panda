@@ -1,0 +1,388 @@
+#!/usr/bin/env python3
+"""
+PANDA Worker v3.0 - Pana Automating Never Death (on) Afterwork
+- Auto-fix risposte Ollama (rimuove "python", "bash", ecc.)
+- Scrive stato task corrente per dashboard
+- Retry automatico su fallimento
+- Log migliorati
+"""
+
+import json
+import os
+import sys
+import time
+import subprocess
+import requests
+from datetime import datetime
+from pathlib import Path
+import re
+
+PANDA_HOME = Path.home() / "panda"
+TASKS_DIR = PANDA_HOME / "tasks"
+RESULTS_DIR = PANDA_HOME / "results"
+LOGS_DIR = PANDA_HOME / "logs"
+STATUS_DIR = PANDA_HOME / "status"
+CONFIG_FILE = PANDA_HOME / "config" / "panda.json"
+CURRENT_STATUS_FILE = STATUS_DIR / "current.json"
+
+DEFAULT_CONFIG = {
+    "ollama_url": "http://localhost:11434",
+    "model": "qwen2.5-coder:3b",
+    "check_interval": 10,
+    "max_retries": 3,
+    "execute_code": True,
+    "execute_bash": True,
+    "modify_files": True
+}
+
+def log(message, level="INFO"):
+    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    log_line = f"[{timestamp}] [{level}] {message}"
+    print(log_line, flush=True)
+    log_file = LOGS_DIR / f"{datetime.now().strftime('%Y-%m-%d')}.log"
+    with open(log_file, "a") as f:
+        f.write(log_line + "\n")
+
+def update_status(task_id=None, task_type=None, status="idle", progress=None):
+    """Aggiorna stato corrente per la dashboard"""
+    STATUS_DIR.mkdir(exist_ok=True)
+    state = {
+        "current_task": task_id,
+        "task_type": task_type,
+        "status": status,
+        "progress": progress,
+        "updated_at": datetime.now().isoformat()
+    }
+    with open(CURRENT_STATUS_FILE, "w") as f:
+        json.dump(state, f)
+
+def load_config():
+    if CONFIG_FILE.exists():
+        with open(CONFIG_FILE) as f:
+            return {**DEFAULT_CONFIG, **json.load(f)}
+    return DEFAULT_CONFIG
+
+def save_default_config():
+    if not CONFIG_FILE.exists():
+        CONFIG_FILE.parent.mkdir(parents=True, exist_ok=True)
+        with open(CONFIG_FILE, "w") as f:
+            json.dump(DEFAULT_CONFIG, f, indent=2)
+
+def ask_ollama(prompt, config):
+    url = f"{config['ollama_url']}/api/generate"
+    payload = {"model": config["model"], "prompt": prompt, "stream": False}
+    try:
+        response = requests.post(url, json=payload, timeout=900)
+        response.raise_for_status()
+        return response.json().get("response", "")
+    except Exception as e:
+        log(f"Errore Ollama: {e}", "ERROR")
+        return None
+
+def clean_code_response(code, language=""):
+    """
+    Pulisce la risposta di Ollama:
+    - Rimuove prima riga se è solo "python", "bash", "html", ecc.
+    - Rimuove blocchi markdown ```
+    - Rimuove spazi extra
+    """
+    if not code:
+        return code
+    
+    code = code.strip()
+    lines = code.split('\n')
+    
+    # Rimuovi prima riga se è solo il nome del linguaggio
+    junk_first_lines = ['python', 'bash', 'sh', 'html', 'css', 'javascript', 'js', 'json', 'sql', 'yaml', 'xml']
+    if lines and lines[0].strip().lower() in junk_first_lines:
+        lines = lines[1:]
+        code = '\n'.join(lines)
+    
+    # Rimuovi blocchi markdown
+    code = code.strip()
+    markers = [f"```{language}", "```python", "```bash", "```sh", "```html", "```css", "```javascript", "```js", "```json", "```"]
+    for marker in markers:
+        if code.startswith(marker):
+            code = code[len(marker):]
+            break
+    if code.endswith("```"):
+        code = code[:-3]
+    
+    # Rimuovi ancora prima riga se è rimasto un linguaggio
+    lines = code.strip().split('\n')
+    if lines and lines[0].strip().lower() in junk_first_lines:
+        lines = lines[1:]
+        code = '\n'.join(lines)
+    
+    return code.strip()
+
+def execute_bash(command):
+    try:
+        result = subprocess.run(command, shell=True, capture_output=True, text=True, timeout=300)
+        return {"success": result.returncode == 0, "stdout": result.stdout, "stderr": result.stderr, "returncode": result.returncode}
+    except subprocess.TimeoutExpired:
+        return {"success": False, "error": "Timeout"}
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+def execute_python(code):
+    try:
+        temp_file = PANDA_HOME / "scripts" / f"temp_{int(time.time())}.py"
+        temp_file.parent.mkdir(parents=True, exist_ok=True)
+        with open(temp_file, "w") as f:
+            f.write(code)
+        result = subprocess.run([sys.executable, str(temp_file)], capture_output=True, text=True, timeout=300, cwd=str(PANDA_HOME))
+        return {"success": result.returncode == 0, "stdout": result.stdout, "stderr": result.stderr, "returncode": result.returncode}
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+def write_file(filepath, content):
+    try:
+        path = Path(filepath).expanduser()
+        path.parent.mkdir(parents=True, exist_ok=True)
+        with open(path, "w") as f:
+            f.write(content)
+        return {"success": True, "path": str(path)}
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+def get_prompt(task, task_file):
+    if "prompt_file" in task:
+        prompt_path = task["prompt_file"]
+        if not prompt_path.startswith("/") and not prompt_path.startswith("~"):
+            prompt_path = TASKS_DIR / prompt_path
+        else:
+            prompt_path = Path(prompt_path).expanduser()
+        try:
+            with open(prompt_path, "r") as f:
+                return f.read().strip()
+        except Exception as e:
+            log(f"Errore lettura prompt_file {prompt_path}: {e}", "ERROR")
+            return None
+    return task.get("prompt", "")
+
+def process_task(task_file, config):
+    log(f"▶ Processo task: {task_file.name}")
+    
+    try:
+        with open(task_file) as f:
+            task = json.load(f)
+    except Exception as e:
+        log(f"Errore lettura task: {e}", "ERROR")
+        return False
+    
+    task_id = task.get("id", task_file.stem)
+    task_type = task.get("type", "prompt")
+    prompt = get_prompt(task, task_file)
+    retry_count = task.get("_retry_count", 0)
+    max_retries = config.get("max_retries", 3)
+    
+    if prompt is None:
+        log(f"Impossibile ottenere prompt per task {task_id}", "ERROR")
+        return False
+    
+    # Aggiorna stato per dashboard
+    update_status(task_id, task_type, "running", "Elaborazione in corso...")
+    
+    result = {
+        "task_id": task_id,
+        "task": task,
+        "prompt_preview": prompt[:200] + "..." if len(prompt) > 200 else prompt,
+        "started_at": datetime.now().isoformat(),
+        "steps": []
+    }
+    
+    success = False
+    
+    if task_type == "prompt":
+        log(f"  📝 Invio prompt a Ollama...")
+        update_status(task_id, task_type, "running", "Attendo risposta Ollama...")
+        response = ask_ollama(prompt, config)
+        if response:
+            result["steps"].append({"type": "ollama", "response": response})
+            success = True
+        else:
+            result["error"] = "Ollama non ha risposto"
+    
+    elif task_type == "bash":
+        if not config["execute_bash"]:
+            result["error"] = "bash execution disabled"
+        else:
+            log(f"  🖥️ Chiedo comando bash a Ollama...")
+            update_status(task_id, task_type, "running", "Genero comando bash...")
+            llm_prompt = f"Genera SOLO il comando bash. Rispondi SOLO con il comando, senza spiegazioni, senza markdown, senza ```.\n\nTask: {prompt}\n\nComando:"
+            command = ask_ollama(llm_prompt, config)
+            if command:
+                command = clean_code_response(command, "bash")
+                # Prendi solo prima riga significativa
+                for line in command.split('\n'):
+                    line = line.strip()
+                    if line and not line.startswith('#'):
+                        command = line
+                        break
+                log(f"  ▶ Eseguo: {command}")
+                update_status(task_id, task_type, "running", f"Eseguo: {command[:50]}...")
+                exec_result = execute_bash(command)
+                result["steps"].append({"type": "bash", "command": command, "result": exec_result})
+                success = exec_result["success"]
+                if not success:
+                    log(f"  ❌ Errore: {exec_result.get('stderr', exec_result.get('error', 'unknown'))}", "ERROR")
+    
+    elif task_type == "python":
+        if not config["execute_code"]:
+            result["error"] = "code execution disabled"
+        else:
+            log(f"  🐍 Chiedo codice Python a Ollama...")
+            update_status(task_id, task_type, "running", "Genero codice Python...")
+            llm_prompt = f"Genera SOLO codice Python. Niente spiegazioni, niente markdown.\n\nTask: {prompt}\n\nCodice:"
+            code = ask_ollama(llm_prompt, config)
+            if code:
+                code = clean_code_response(code, "python")
+                log(f"  ▶ Eseguo Python ({len(code)} chars)")
+                update_status(task_id, task_type, "running", "Eseguo codice Python...")
+                exec_result = execute_python(code)
+                result["steps"].append({"type": "python", "code": code, "result": exec_result})
+                success = exec_result["success"]
+                if not success:
+                    log(f"  ❌ Errore: {exec_result.get('stderr', exec_result.get('error', 'unknown'))}", "ERROR")
+    
+    elif task_type == "file":
+        if not config["modify_files"]:
+            result["error"] = "file modification disabled"
+        else:
+            filepath = task.get("filepath", "")
+            if not filepath:
+                result["error"] = "filepath mancante"
+            else:
+                log(f"  📄 Genero contenuto per {filepath}...")
+                update_status(task_id, task_type, "running", f"Genero {Path(filepath).name}...")
+                llm_prompt = f"Genera SOLO il contenuto del file. Niente spiegazioni, niente markdown ```.\n\nTask: {prompt}\n\nContenuto:"
+                content = ask_ollama(llm_prompt, config)
+                if content:
+                    content = clean_code_response(content, "")
+                    log(f"  💾 Scrivo {filepath} ({len(content)} chars)")
+                    update_status(task_id, task_type, "running", f"Scrivo {Path(filepath).name}...")
+                    write_result = write_file(filepath, content)
+                    result["steps"].append({"type": "file", "filepath": filepath, "size": len(content), "result": write_result})
+                    success = write_result["success"]
+    
+    elif task_type == "multi":
+        steps = task.get("steps", [])
+        success = True
+        for i, step in enumerate(steps):
+            log(f"  📌 Step {i+1}/{len(steps)}")
+            update_status(task_id, task_type, "running", f"Step {i+1}/{len(steps)}")
+            step_task = {"id": f"{task_id}_step{i}", **step}
+            step_file = TASKS_DIR / f"_temp_step_{i}.json"
+            with open(step_file, "w") as f:
+                json.dump(step_task, f)
+            if not process_task(step_file, config):
+                success = False
+                break
+            step_file.unlink(missing_ok=True)
+    
+    elif task_type == "test":
+        # Tipo speciale per test automatici
+        log(f"  🧪 Eseguo test: {task.get('test_name', 'unknown')}")
+        update_status(task_id, task_type, "running", "Eseguo test...")
+        test_command = task.get("test_command", "")
+        expected = task.get("expected", "")
+        if test_command:
+            exec_result = execute_bash(test_command)
+            actual = exec_result.get("stdout", "").strip()
+            passed = expected in actual if expected else exec_result["success"]
+            result["steps"].append({
+                "type": "test",
+                "command": test_command,
+                "expected": expected,
+                "actual": actual,
+                "passed": passed
+            })
+            success = passed
+            log(f"  {'✅' if passed else '❌'} Test {'PASSED' if passed else 'FAILED'}")
+    
+    else:
+        log(f"Tipo task sconosciuto: {task_type}", "ERROR")
+        result["error"] = f"unknown task type: {task_type}"
+    
+    result["success"] = success
+    result["finished_at"] = datetime.now().isoformat()
+    
+    # Salva risultato
+    RESULTS_DIR.mkdir(exist_ok=True)
+    result_file = RESULTS_DIR / f"{task_id}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+    with open(result_file, "w") as f:
+        json.dump(result, f, indent=2, default=str)
+    
+    # Sposta task completato
+    done_dir = TASKS_DIR / "done"
+    done_dir.mkdir(exist_ok=True)
+    task_file.rename(done_dir / task_file.name)
+    
+    # Sposta anche prompt_file se esiste
+    if "prompt_file" in task:
+        pf = TASKS_DIR / task["prompt_file"]
+        if pf.exists():
+            pf.rename(done_dir / pf.name)
+    
+    # Aggiorna stato
+    update_status(None, None, "idle")
+    
+    status_emoji = "✅" if success else "❌"
+    log(f"{status_emoji} Task {task_id} completato: {'OK' if success else 'FALLITO'}")
+    
+    return success
+
+def get_pending_tasks():
+    tasks = []
+    for f in TASKS_DIR.glob("*.json"):
+        if f.name.startswith("_"):
+            continue
+        try:
+            with open(f) as file:
+                data = json.load(file)
+                priority = data.get("priority", 10)
+                tasks.append((priority, f))
+        except:
+            tasks.append((10, f))
+    tasks.sort(key=lambda x: x[0])
+    return [t[1] for t in tasks]
+
+def main():
+    log("=" * 60)
+    log("🐼 PANDA Worker v3.0 avviato!")
+    log("=" * 60)
+    log(f"📁 Home: {PANDA_HOME}")
+    log("✨ Features: auto-fix, stato live, retry, test")
+    log("")
+    
+    # Init
+    LOGS_DIR.mkdir(exist_ok=True)
+    RESULTS_DIR.mkdir(exist_ok=True)
+    STATUS_DIR.mkdir(exist_ok=True)
+    save_default_config()
+    update_status(None, None, "idle")
+    
+    while True:
+        try:
+            config = load_config()
+            pending = get_pending_tasks()
+            
+            if pending:
+                log(f"📋 Trovati {len(pending)} task pendenti")
+                for task_file in pending:
+                    process_task(task_file, config)
+                    config = load_config()  # Hot reload
+            
+            time.sleep(config["check_interval"])
+            
+        except KeyboardInterrupt:
+            log("🐼 PANDA Worker fermato")
+            update_status(None, None, "stopped")
+            break
+        except Exception as e:
+            log(f"Errore loop principale: {e}", "ERROR")
+            time.sleep(30)
+
+if __name__ == "__main__":
+    main()

@@ -1,0 +1,7 @@
+{
+  "id": "events_app_001_mkdir_root",
+  "type": "bash",
+  "priority": 1,
+  "pipeline": "events_app_v1",
+  "prompt": "mkdir -p ~/panda/projects/events-app"
+}

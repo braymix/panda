@@ -1,0 +1,8 @@
+{
+  "id": "test_finale",
+  "type": "test",
+  "priority": 45,
+  "test_name": "Dashboard risponde dopo restart",
+  "test_command": "sleep 3 && curl -s -o /dev/null -w '%{http_code}' http://localhost:5000/",
+  "expected": "200"
+}

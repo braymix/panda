@@ -1,0 +1,6 @@
+{
+  "id": "create_dashboard_structure",
+  "type": "bash",
+  "priority": 11,
+  "prompt": "Crea le cartelle ~/panda/dashboard e ~/panda/dashboard/templates e ~/panda/dashboard/static"
+}

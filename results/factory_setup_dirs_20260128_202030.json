@@ -1,0 +1,25 @@
+{
+  "task_id": "factory_setup_dirs",
+  "task": {
+    "id": "factory_setup_dirs",
+    "type": "bash",
+    "priority": 1,
+    "prompt": "mkdir -p ~/panda/factory/{input,work,output,report}"
+  },
+  "prompt_preview": "mkdir -p ~/panda/factory/{input,work,output,report}",
+  "started_at": "2026-01-28T20:20:22.025005",
+  "steps": [
+    {
+      "type": "bash",
+      "command": "mkdir -p ~/panda/factory/{input,work,output,report}",
+      "result": {
+        "success": true,
+        "stdout": "",
+        "stderr": "",
+        "returncode": 0
+      }
+    }
+  ],
+  "success": true,
+  "finished_at": "2026-01-28T20:20:30.976705"
+}

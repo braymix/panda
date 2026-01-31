@@ -1,0 +1,7 @@
+{
+  "id": "server_v3",
+  "type": "file",
+  "priority": 40,
+  "filepath": "~/panda/dashboard/server.py",
+  "prompt_file": "040_prompt.txt"
+}

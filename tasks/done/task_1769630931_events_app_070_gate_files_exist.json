@@ -1,0 +1,10 @@
+{
+  "id": "events_app_070_gate_files_exist",
+  "type": "test",
+  "priority": 70,
+  "pipeline": "events_app_v1",
+  "stop_on_fail": true,
+  "test_name": "Repo created gate",
+  "test_command": "test -f ~/panda/projects/events-app/backend/pom.xml && test -f ~/panda/projects/events-app/frontend/package.json && test -f ~/panda/projects/events-app/ops/docker-compose.yml && echo OK",
+  "expected": "OK"
+}

@@ -1,0 +1,24 @@
+{
+  "task_id": "start_dashboard",
+  "task": {
+    "id": "start_dashboard",
+    "type": "bash",
+    "priority": 16,
+    "prompt": "Abilita e avvia il servizio panda-dashboard con systemctl enable e systemctl start"
+  },
+  "started_at": "2026-01-27T22:19:17.047857",
+  "steps": [
+    {
+      "type": "bash",
+      "command": "sudo systemctl enable panda-dashboard && sudo systemctl start panda-dashboard",
+      "result": {
+        "success": false,
+        "stdout": "",
+        "stderr": "sudo: \u00e8 richiesto un terminale per leggere la password; utilizzare l'opzione -S per leggere dall'input standard o configurare uno strumento askpass\nsudo: \u00e8 necessaria una password\n",
+        "returncode": 1
+      }
+    }
+  ],
+  "success": false,
+  "finished_at": "2026-01-27T22:19:19.160061"
+}

@@ -1,0 +1,15 @@
+{
+  "task_id": "fixpack_v4_03_patch_worker_no_crash_on_missing_task",
+  "type": "bash",
+  "steps": [
+    {
+      "cmd": "\u00a1Claro! Aqu\u00ed tienes el comando bash que ejecuta lo que mencionaste:",
+      "result": {
+        "success": false,
+        "stdout": "",
+        "stderr": "/bin/sh: 1: \u00a1Claro!: not found\n"
+      }
+    }
+  ],
+  "success": false
+}

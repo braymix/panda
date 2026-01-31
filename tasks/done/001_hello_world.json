@@ -1,0 +1,6 @@
+{
+  "id": "hello_world",
+  "type": "python",
+  "priority": 1,
+  "prompt": "Scrivi un programma che stampa 'Ciao! PANDA è operativo!' e la data/ora corrente"
+}

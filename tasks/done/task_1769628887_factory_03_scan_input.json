@@ -1,0 +1,6 @@
+{
+  "id": "factory_03_scan_input",
+  "type": "bash",
+  "priority": 3,
+  "prompt": "find ~/panda/factory/input -type f > ~/panda/factory/work/files.txt"
+}

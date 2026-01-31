@@ -1,0 +1,15 @@
+{
+  "task_id": "sanitize_existing_files",
+  "type": "python",
+  "steps": [
+    {
+      "code": "Ecco lo script Python che soddisfa i tuoi requisiti:\n\n```python\nimport os\nimport re\n\n# Definisci la lista di estensioni da analizzare\nextensions = ['.py', '.html', '.md']\n\n# Funzione per rimuovere il testo non rilevante prima del codice\ndef remove_irrelevant_text(file_path):\n    with open(file_path, 'r', encoding='utf-8') as file:\n        content = file.readlines()\n\n    # Pattern per trovare le frasi di benvenuto seguite da spazio\n    pattern = re.compile(r'^(Ecco qua|Certamente|Sure|Here is)\\s*$')\n\n    # Indice del primo blocco di codice o markdown\n    code_start_index = None\n\n    for i, line in enumerate(content):\n        if pattern.match(line.strip()):\n            continue  # Ignora le righe che iniziano con frasi di benvenuto\n\n        if (line.strip().startswith('```') or line.strip().endswith('```')) and 'python' not in line:\n            code_start_index = i\n            break  # Trova il primo blocco di codice o markdown\n\n    # Se non viene trovato alcun blocco di codice, termina senza modifiche\n    if code_start_index is None:\n        return\n\n    # Scrivi solo il contenuto dal primo blocco di codice in poi\n    with open(file_path, 'w', encoding='utf-8') as file:\n        file.writelines(content[code_start_index:])\n\n# Percorso della cartella da analizzare\nproject_dir = os.path.expanduser(\"~/panda/projects/\")\n\n# Itera su tutti i file nella cartella e nelle sottocartelle\nfor root, dirs, files in os.walk(project_dir):\n    for file in files:\n        if any(file.endswith(ext) for ext in extensions):\n            file_path = os.path.join(root, file)\n            remove_irrelevant_text(file_path)\n\nprint(\"Processo completato.\")\n```\n\nQuesto script far\u00e0 quanto segue:\n\n1. Definisce le estensioni di file da analizzare (.py, .html, .md).\n2. Per ogni file nell'elenco, controlla se inizia con frasi tipiche di un chatbot.\n3. Se lo fa, cerca il primo blocco di codice o markdown (definito dal tag ```).\n4. Rimuove tutte le righe prima del blocco di codice.\n5. Sovrascrive il file con il contenuto modificato.\n\nNota: Assicurati che i tuoi script Python utilizzino encoding UTF-8 per gestire correttamente caratteri speciali.\n\nSalva questo script in un file separato (ad esempio, `clean_files.py`) e eseguilo con il comando `python clean_files.py` nel terminale.",
+      "result": {
+        "success": false,
+        "stdout": "",
+        "stderr": "  File \"/home/michele/panda/scripts/temp_1769879379.py\", line 53\n    2. Per ogni file nell'elenco, controlla se inizia con frasi tipiche di un chatbot.\n                         ^\nSyntaxError: unterminated string literal (detected at line 53)\n"
+      }
+    }
+  ],
+  "success": false
+}

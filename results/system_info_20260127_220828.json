@@ -1,0 +1,24 @@
+{
+  "task_id": "system_info",
+  "task": {
+    "id": "system_info",
+    "type": "bash",
+    "priority": 2,
+    "prompt": "Mostra informazioni sul sistema: hostname, uptime, memoria disponibile"
+  },
+  "started_at": "2026-01-27T22:08:25.162621",
+  "steps": [
+    {
+      "type": "bash",
+      "command": "hostnamectl | grep 'System Hostname' ; uptime ; free -h",
+      "result": {
+        "success": true,
+        "stdout": " 22:08:28 up  1:03,  1 user,  load average: 0,90, 0,63, 1,32\n               total        utiliz     liber     condiv buff/cache   disponibile\nMem:            15Gi       3,4Gi       4,5Gi       1,8Mi       7,4Gi        11Gi\nSwap:          2,0Gi       512Ki       2,0Gi\n",
+        "stderr": "",
+        "returncode": 0
+      }
+    }
+  ],
+  "success": true,
+  "finished_at": "2026-01-27T22:08:28.169868"
+}

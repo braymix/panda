@@ -1,0 +1,6 @@
+{
+  "id": "show_final_instructions",
+  "type": "python",
+  "priority": 23,
+  "prompt": "Scrivi un programma che stampa: 1) Dashboard creata in ~/panda/dashboard 2) Per attivare esegui: sudo cp ~/panda/dashboard/panda-dashboard.service /etc/systemd/system/ && sudo systemctl daemon-reload && sudo systemctl enable --now panda-dashboard 3) Poi accedi a http://IP:5000 4) Trova IP con: hostname -I"
+}

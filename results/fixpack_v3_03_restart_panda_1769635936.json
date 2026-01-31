@@ -1,0 +1,15 @@
+{
+  "task_id": "fixpack_v3_03_restart_panda",
+  "type": "bash",
+  "steps": [
+    {
+      "cmd": "Aqu\u00ed tienes el comando Bash que reinicia el servicio \"panda\":",
+      "result": {
+        "success": false,
+        "stdout": "",
+        "stderr": "/bin/sh: 1: Aqu\u00ed: not found\n"
+      }
+    }
+  ],
+  "success": false
+}

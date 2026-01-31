@@ -1,0 +1,15 @@
+{
+  "task_id": "fixpack_v3_01_backup_worker",
+  "type": "bash",
+  "steps": [
+    {
+      "cmd": "Here is the requested Bash command:",
+      "result": {
+        "success": false,
+        "stdout": "",
+        "stderr": "/bin/sh: 1: Here: not found\n"
+      }
+    }
+  ],
+  "success": false
+}

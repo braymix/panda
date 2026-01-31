@@ -1,0 +1,15 @@
+{
+  "task_id": "fixpack_v3_04_force_clean_compose",
+  "type": "bash",
+  "steps": [
+    {
+      "cmd": "Here is the bash command that you can use to run your python code:",
+      "result": {
+        "success": false,
+        "stdout": "",
+        "stderr": "/bin/sh: 1: Here: not found\n"
+      }
+    }
+  ],
+  "success": false
+}

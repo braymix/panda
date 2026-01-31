@@ -1,0 +1,7 @@
+{
+  "id": "pyhellofile",
+  "type": "file",
+  "priority": 1,
+  "prompt": "make a hello world in python",
+  "filepath": "~/prova/hello.py"
+}

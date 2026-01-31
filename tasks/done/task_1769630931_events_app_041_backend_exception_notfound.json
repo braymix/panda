@@ -1,0 +1,8 @@
+{
+  "id": "events_app_041_backend_exception_notfound",
+  "type": "file",
+  "priority": 41,
+  "pipeline": "events_app_v1",
+  "filepath": "~/panda/projects/events-app/backend/src/main/java/com/panda/events/exception/NotFoundException.java",
+  "prompt": "Crea eccezione runtime NotFoundException in package com.panda.events.exception con costruttore (String message). Solo codice."
+}

@@ -1,0 +1,11 @@
+{
+  "id": "fixpack_06_gate_no_backticks_in_ops",
+  "type": "test",
+  "priority": 6,
+  "pipeline": "panda_fixpack_v1",
+  "stop_on_fail": true,
+  "test_name": "nessun fenced block nei file ops",
+  "test_command": "! grep -R \"```\" -n ~/panda/projects/events-app/ops >/dev/null 2>&1 && echo OK",
+  "expected": "OK",
+  "_retry": 3
+}

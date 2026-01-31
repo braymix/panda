@@ -1,0 +1,7 @@
+{
+  "id": "create_readme",
+  "type": "file",
+  "priority": 3,
+  "filepath": "~/panda/README.md",
+  "prompt": "Crea un README per il progetto PANDA (Pana Automating Never Death on Afterwork). Spiega che è un sistema di automazione task con LLM locale che gira h24 su un mini PC Linux. Scrivi in italiano."
+}

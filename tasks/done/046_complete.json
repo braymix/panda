@@ -1,0 +1,6 @@
+{
+  "id": "upgrade_complete",
+  "type": "python",
+  "priority": 46,
+  "prompt": "Stampa un messaggio che dice: PANDA v3.0 UPGRADE COMPLETATO! Dashboard disponibile con: task in esecuzione live, form per aggiungere task, grafica migliorata, test automatici superati"
+}

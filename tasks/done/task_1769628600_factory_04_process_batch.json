@@ -1,0 +1,6 @@
+{
+  "id": "factory_04_process_batch",
+  "type": "python",
+  "priority": 4,
+  "prompt": "import time, pathlib\nbase = pathlib.Path('~/panda/factory').expanduser()\nfiles_path = base/'work'/'files.txt'\nfiles = files_path.read_text().splitlines() if files_path.exists() else []\nout = base/'output'\nout.mkdir(exist_ok=True)\nfor f in files:\n    time.sleep(10)\n    (out / (pathlib.Path(f).stem + '_done.txt')).write_text(f'OK {f}\\n')\nprint('BATCH_DONE')"
+}

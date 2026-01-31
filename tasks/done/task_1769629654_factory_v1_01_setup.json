@@ -1,0 +1,7 @@
+{
+  "id": "factory_v1_01_setup",
+  "type": "bash",
+  "priority": 1,
+  "pipeline": "factory_v1",
+  "prompt": "mkdir -p ~/panda/factory/input ~/panda/factory/work ~/panda/factory/output ~/panda/factory/report"
+}

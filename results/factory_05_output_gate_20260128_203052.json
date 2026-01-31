@@ -1,0 +1,24 @@
+{
+  "task_id": "factory_05_output_gate",
+  "task": {
+    "id": "factory_05_output_gate",
+    "type": "test",
+    "priority": 5,
+    "test_name": "Output generati (>=1)",
+    "test_command": "c=$(ls -1 ~/panda/factory/output 2>/dev/null | wc -l); test \"$c\" -ge 1 && echo OK || echo KO",
+    "expected": "OK"
+  },
+  "prompt_preview": "",
+  "started_at": "2026-01-28T20:30:52.535056",
+  "steps": [
+    {
+      "type": "test",
+      "command": "c=$(ls -1 ~/panda/factory/output 2>/dev/null | wc -l); test \"$c\" -ge 1 && echo OK || echo KO",
+      "expected": "OK",
+      "actual": "KO",
+      "passed": false
+    }
+  ],
+  "success": false,
+  "finished_at": "2026-01-28T20:30:52.537877"
+}

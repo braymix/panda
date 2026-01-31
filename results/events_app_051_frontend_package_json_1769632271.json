@@ -1,0 +1,10 @@
+{
+  "task_id": "events_app_051_frontend_package_json",
+  "type": "file",
+  "steps": [
+    {
+      "success": true
+    }
+  ],
+  "success": true
+}
