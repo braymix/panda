@@ -100,11 +100,80 @@ def ask_ollama(prompt, config):
         return None
 
 def clean_llm(code):
+    """
+    Pulisce la risposta LLM rimuovendo:
+    - Prefazioni (es: "Ecco il codice:", "Here is the code:", etc.)
+    - Blocchi markdown ```language ... ```
+    - Prima riga se è solo il nome del linguaggio
+    """
     if not code:
         return ""
+
     code = code.strip()
-    if code.startswith("```"):
-        code = code.split("```")[1]
+
+    # Pattern di prefazioni comuni da rimuovere (italiano e inglese)
+    preface_patterns = [
+        # Italiano
+        r"^[Ee]cco\s+(il|lo|la|i|gli|le|qui|qua)?\s*[^:]*[:\.]?\s*\n?",
+        r"^[Cc]ertamente[,\.]?\s*[^:]*[:\.]?\s*\n?",
+        r"^[Ss]icuramente[,\.]?\s*[^:]*[:\.]?\s*\n?",
+        r"^[Dd]i seguito[,\.]?\s*[^:]*[:\.]?\s*\n?",
+        r"^[Qq]ui (c'è|ci sono|trovi)[^:]*[:\.]?\s*\n?",
+        r"^[Ii]l (codice|comando|contenuto|file)[^:]*[:\.]?\s*\n?",
+        r"^[Cc]ome richiesto[,\.]?\s*[^:]*[:\.]?\s*\n?",
+        r"^[Vv]olentieri[,\.]?\s*[^:]*[:\.]?\s*\n?",
+        r"^[Pp]erfetto[,\.]?\s*[^:]*[:\.]?\s*\n?",
+        r"^[Oo]k[,\.]?\s*[^:]*[:\.]?\s*\n?",
+        r"^[Bb]ene[,\.]?\s*[^:]*[:\.]?\s*\n?",
+        # Inglese
+        r"^[Hh]ere['\u2019]?s?\s+(is|are)?\s*[^:]*[:\.]?\s*\n?",
+        r"^[Ss]ure[,\.]?\s*[^:]*[:\.]?\s*\n?",
+        r"^[Cc]ertainly[,\.]?\s*[^:]*[:\.]?\s*\n?",
+        r"^[Oo]f course[,\.]?\s*[^:]*[:\.]?\s*\n?",
+        r"^[Tt]he (code|command|content|file)[^:]*[:\.]?\s*\n?",
+        r"^[Bb]elow[^:]*[:\.]?\s*\n?",
+        r"^[Aa]s requested[,\.]?\s*[^:]*[:\.]?\s*\n?",
+        r"^[Ll]et me[^:]*[:\.]?\s*\n?",
+        r"^[Ii]\s*(will|'ll|can|'d)\s*[^:]*[:\.]?\s*\n?",
+        r"^[Hh]appy to[^:]*[:\.]?\s*\n?",
+        r"^[Aa]bsolutely[,\.]?\s*[^:]*[:\.]?\s*\n?",
+    ]
+
+    import re
+    for pattern in preface_patterns:
+        code = re.sub(pattern, "", code, count=1)
+    code = code.strip()
+
+    # Rimuovi blocchi markdown ``` con qualsiasi linguaggio
+    md_match = re.match(r"^```[\w\-]*\s*\n?([\s\S]*?)```\s*$", code, re.DOTALL)
+    if md_match:
+        code = md_match.group(1).strip()
+    elif code.startswith("```"):
+        # Fallback: split su ```
+        parts = code.split("```")
+        if len(parts) >= 2:
+            # Prendi il contenuto tra i primi due ```
+            content = parts[1]
+            # Rimuovi eventuale nome linguaggio dalla prima riga
+            lines = content.split("\n", 1)
+            if len(lines) > 1 and lines[0].strip().lower() in [
+                "python", "py", "bash", "sh", "shell", "html", "css",
+                "javascript", "js", "json", "yaml", "yml", "xml", "sql",
+                "dockerfile", "makefile", "markdown", "md", "txt", "text"
+            ]:
+                code = lines[1].strip()
+            else:
+                code = content.strip()
+
+    # Rimuovi prima riga se è solo il nome del linguaggio
+    lines = code.split("\n", 1)
+    if lines and lines[0].strip().lower() in [
+        "python", "py", "python3", "bash", "sh", "shell", "zsh",
+        "html", "html5", "css", "css3", "javascript", "js", "typescript", "ts",
+        "json", "yaml", "yml", "xml", "sql", "dockerfile", "makefile"
+    ]:
+        code = lines[1].strip() if len(lines) > 1 else ""
+
     return code.strip()
 
 # =========================
@@ -174,7 +243,13 @@ def process_task(task_file, config):
 
     if task_type == "bash":
         prompt = task.get("prompt", "")
-        llm = ask_ollama(f"Genera SOLO comando bash:\n{prompt}", config)
+        llm_prompt = (
+            "RISPONDI SOLO CON IL COMANDO, NIENTE ALTRO.\n"
+            "NO introduzioni, NO spiegazioni, NO commenti, NO markdown.\n"
+            "Genera il comando bash per:\n"
+            f"{prompt}"
+        )
+        llm = ask_ollama(llm_prompt, config)
         cmd = clean_llm(llm).splitlines()[0]
         res = exec_bash(cmd)
         result["steps"].append({"cmd": cmd, "result": res})
@@ -182,14 +257,27 @@ def process_task(task_file, config):
 
     elif task_type == "python":
         prompt = task.get("prompt", "")
-        llm = ask_ollama(f"Genera SOLO codice python:\n{prompt}", config)
+        llm_prompt = (
+            "RISPONDI SOLO CON IL CODICE, NIENTE ALTRO.\n"
+            "NO introduzioni, NO spiegazioni, NO markdown ```.\n"
+            "Scrivi il codice python per:\n"
+            f"{prompt}"
+        )
+        llm = ask_ollama(llm_prompt, config)
         code = clean_llm(llm)
         res = exec_python(code)
         result["steps"].append({"code": code, "result": res})
         success = res["success"]
 
     elif task_type == "file":
-        content = ask_ollama(task.get("prompt", ""), config)
+        user_prompt = task.get("prompt", "")
+        llm_prompt = (
+            "RISPONDI SOLO CON IL CONTENUTO DEL FILE, NIENTE ALTRO.\n"
+            "NO introduzioni come 'Ecco', 'Certamente', 'Here is'.\n"
+            "NO spiegazioni finali, NO markdown ```.\n"
+            f"{user_prompt}"
+        )
+        content = ask_ollama(llm_prompt, config)
         res = write_file(task["filepath"], clean_llm(content))
         result["steps"].append(res)
         success = res["success"]
