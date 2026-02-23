@@ -1,1 +1,20 @@
-{"ollama_url": "http://localhost:11434", "model": "qwen2.5-coder:7b", "check_interval": 10, "max_retries": 3, "execute_code": true, "execute_bash": true, "modify_files": true}
+{
+  "ollama_url": "http://localhost:11434",
+  "model": "qwen2.5-coder:14b-instruct-q4_K_M",
+  "model_fallback": "qwen2.5-coder:7b-instruct-q8_0",
+  "check_interval": 15,
+  "max_retries": 2,
+  "openscad_binary": "openscad",
+  "openscad_timeout": 300,
+  "stl_format": "asciistl",
+  "default_quality": "medium",
+  "quality_presets": {
+    "fast":   { "fn": 32,  "detail_level": "low" },
+    "medium": { "fn": 64,  "detail_level": "medium" },
+    "high":   { "fn": 128, "detail_level": "high" }
+  },
+  "default_dimensions": { "max_x": 200, "max_y": 200, "max_z": 200 },
+  "execute_bash": true,
+  "execute_code": true,
+  "modify_files": true
+}
