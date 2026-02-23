@@ -1,0 +1,3 @@
+Stai generando un oggetto semplice funzionale per stampa 3D.
+Priorità: semplicità, robustezza, facilità di stampa.
+Usa primitive di base (cube, cylinder, sphere) con operazioni CSG semplici.

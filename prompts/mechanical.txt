@@ -1,0 +1,8 @@
+Stai generando un componente meccanico per stampa 3D FDM.
+Requisiti aggiuntivi per componenti meccanici:
+- Tolleranze precise: usa variabili per tutte le misure critiche
+- Filetti e accoppiamenti: aggiungi clearance di 0.2-0.3mm
+- Supporti: progetta per minimizzare i supporti di stampa
+- Pareti minime: non meno di 1.2mm (2 perimetri a 0.4mm nozzle)
+- Robustezza: considera lo stress nelle direzioni di carico principali
+- Usa moduli OpenSCAD riutilizzabili per geometrie ripetute

@@ -1,0 +1,7 @@
+Stai generando un oggetto decorativo o artistico per stampa 3D.
+Requisiti per oggetti decorativi:
+- Priorità all'estetica mantenendo printability
+- Usa surface() o funzioni matematiche per pattern
+- Considera il vase mode se appropriato (wall thickness >= 1.2mm)
+- Dettagli superficiali: risoluzione minima 0.4mm (dimensione nozzle standard)
+- Base piatta per adesione al piano di stampa
