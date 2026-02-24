@@ -270,6 +270,55 @@ def api_models_info(filename):
     })
 
 
+@app.route('/api/models/<filename>/dimensions')
+def api_models_dimensions(filename):
+    """
+    Ritorna le dimensioni del bounding box del modello.
+    Prima controlla il result JSON (campo 'dimensions' salvato dal worker),
+    poi fa fallback al parsing diretto del file STL ASCII.
+    """
+    safe_name = _safe_name(filename)
+    stl_path = MODELS_STL_DIR / safe_name
+    if not stl_path.exists():
+        abort(404)
+
+    # 1. Prova dai dati già salvati nel result JSON
+    result_data = _get_result_for_stl(safe_name)
+    if result_data and result_data.get('dimensions'):
+        dims = result_data['dimensions']
+        return jsonify({
+            'filename': safe_name,
+            'dimensions_mm': dims,
+            'source': 'cached',
+        })
+
+    # 2. Fallback: parsa l'STL ASCII per estrarre min/max vertex
+    try:
+        content = stl_path.read_text(errors='replace')
+        xs, ys, zs = [], [], []
+        for line in content.splitlines():
+            line = line.strip()
+            if line.startswith('vertex '):
+                parts = line.split()
+                if len(parts) == 4:
+                    xs.append(float(parts[1]))
+                    ys.append(float(parts[2]))
+                    zs.append(float(parts[3]))
+        if not xs:
+            return jsonify({'filename': safe_name, 'dimensions_mm': None,
+                            'error': 'Nessun vertex trovato (STL vuoto o formato binario)'}), 200
+        dims = {
+            'x': round(max(xs) - min(xs), 3),
+            'y': round(max(ys) - min(ys), 3),
+            'z': round(max(zs) - min(zs), 3),
+            'min': {'x': round(min(xs), 3), 'y': round(min(ys), 3), 'z': round(min(zs), 3)},
+            'max': {'x': round(max(xs), 3), 'y': round(max(ys), 3), 'z': round(max(zs), 3)},
+        }
+        return jsonify({'filename': safe_name, 'dimensions_mm': dims, 'source': 'parsed'})
+    except Exception as e:
+        return jsonify({'filename': safe_name, 'dimensions_mm': None, 'error': str(e)}), 500
+
+
 @app.route('/api/models/<filename>', methods=['DELETE'])
 def api_models_delete(filename):
     safe_name = _safe_name(filename)

@@ -312,6 +312,36 @@ def _build_system_prompt(object_type):
     return "\n\n".join(parts)
 
 
+def _extract_bounding_box_from_stl(stl_path):
+    """
+    Estrae bounding box da un file STL ASCII parsando le coordinate vertex.
+    Ritorna dict {x, y, z, min, max} oppure None in caso di errore.
+    """
+    try:
+        content = Path(stl_path).read_text(errors="replace")
+        xs, ys, zs = [], [], []
+        for line in content.splitlines():
+            line = line.strip()
+            if line.startswith("vertex "):
+                parts = line.split()
+                if len(parts) == 4:
+                    xs.append(float(parts[1]))
+                    ys.append(float(parts[2]))
+                    zs.append(float(parts[3]))
+        if not xs:
+            return None
+        return {
+            "x": round(max(xs) - min(xs), 3),
+            "y": round(max(ys) - min(ys), 3),
+            "z": round(max(zs) - min(zs), 3),
+            "min": {"x": round(min(xs), 3), "y": round(min(ys), 3), "z": round(min(zs), 3)},
+            "max": {"x": round(max(xs), 3), "y": round(max(ys), 3), "z": round(max(zs), 3)},
+        }
+    except Exception as e:
+        log(f"Bounding box extraction error: {e}", "WARN")
+        return None
+
+
 def do_compile_scad(scad_path, output_name, config):
     """Compila un file .scad in .stl tramite openscad. Ritorna dict con risultato."""
     scad_path = Path(scad_path)
@@ -401,17 +431,11 @@ def handle_generate_3d(task, task_id, config):
 
     scad_code = clean_llm(raw_response)
 
-    # Validazione: deve contenere almeno una keyword OpenSCAD riconoscibile
-    valid_keywords = ("module", "cube", "cylinder", "sphere", "union", "difference", "intersection")
-    if not any(kw in scad_code for kw in valid_keywords):
-        log("Risposta LLM non sembra codice OpenSCAD valido", "ERROR")
-        return {
-            "success": False,
-            "error_message": "La risposta non contiene codice OpenSCAD riconoscibile",
-            "scad_file": None,
-            "stl_file": None,
-            "raw_response": raw_response[:500],
-        }
+    # Validazione pre-compilazione: controlla presenza di primitivi OpenSCAD o moduli
+    geom_primitives = ("cube(", "cylinder(", "sphere(", "polyhedron(", "module ")
+    if not any(kw in scad_code for kw in geom_primitives):
+        log("⚠️ Codice OpenSCAD sospetto — potrebbe non essere valido", "WARN")
+        # Compila comunque: l'LLM potrebbe usare funzioni custom non in questa lista
 
     # Salva il file .scad
     MODELS_SCAD_DIR.mkdir(parents=True, exist_ok=True)
@@ -421,8 +445,38 @@ def handle_generate_3d(task, task_id, config):
     scad_path.write_text(scad_code)
     log(f"💾 SCAD salvato: {scad_path}")
 
-    # Compila automaticamente il file .scad
+    # Compilazione principale
     compile_result = do_compile_scad(scad_path, scad_filename, config)
+
+    # Auto-correzione: se la compilazione fallisce, invia codice + errore a Ollama
+    auto_corrected = False
+    if not compile_result["success"]:
+        error_msg = compile_result.get("compile_log", "errore sconosciuto")
+        log(f"🔧 Compilazione fallita — tentativo auto-correzione")
+        correction_prompt = (
+            f"Il seguente codice OpenSCAD genera questo errore:\n"
+            f"{error_msg}\n\n"
+            f"Codice originale:\n{scad_code}\n\n"
+            f"Correggi il codice. Rispondi SOLO con il codice OpenSCAD corretto e completo."
+        )
+        corrected_raw = ask_ollama(correction_prompt, config, system_prompt=system_prompt)
+        if corrected_raw:
+            corrected_code = clean_llm(corrected_raw)
+            if corrected_code and corrected_code != scad_code:
+                scad_path.write_text(corrected_code)
+                compile_result = do_compile_scad(scad_path, scad_filename, config)
+                auto_corrected = True
+                if compile_result["success"]:
+                    log("🔧 Auto-correzione applicata con successo")
+                else:
+                    log("🔧 Auto-correzione applicata — compilazione ancora fallita", "WARN")
+
+    # Estrazione bounding box dopo compilazione riuscita
+    dimensions = None
+    if compile_result["success"] and compile_result.get("stl_file"):
+        dimensions = _extract_bounding_box_from_stl(compile_result["stl_file"])
+        if dimensions:
+            log(f"📐 Bounding box: {dimensions['x']}×{dimensions['y']}×{dimensions['z']} mm")
 
     return {
         "success": compile_result["success"],
@@ -431,6 +485,8 @@ def handle_generate_3d(task, task_id, config):
         "error_message": None if compile_result["success"] else compile_result.get("compile_log", ""),
         "compile_log": compile_result.get("compile_log", ""),
         "file_size_kb": compile_result.get("file_size_kb", 0),
+        "auto_corrected": auto_corrected,
+        "dimensions": dimensions,
     }
 
 

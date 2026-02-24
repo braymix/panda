@@ -11,3 +11,14 @@ REGOLE ASSOLUTE:
 - Aggiungi tolleranze appropriate per parti meccaniche (default: 0.2mm)
 - Il modello deve stare in un bounding box di 200x200x200mm salvo indicazioni diverse
 - Commenta il codice OpenSCAD con // per spiegare le sezioni principali
+
+ERRORI COMUNI DA EVITARE:
+- Non usare "echo" (non esiste in OpenSCAD standard)
+- Non usare variabili non definite
+- Ogni { deve avere il corrispondente }
+- rotate_extrude() richiede una shape 2D in z=0
+- linear_extrude() richiede una shape 2D
+- I loop for() in OpenSCAD hanno sintassi: for(i=[0:step:max])
+- Non usare "return" — OpenSCAD non è un linguaggio imperativo
+- Le funzioni restituiscono valori, i moduli generano geometria
+- Usa "module" per geometrie, "function" solo per calcoli scalari
