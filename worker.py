@@ -301,7 +301,14 @@ def _build_system_prompt(object_type):
     """Combina base_system.txt con il prompt specifico per il tipo di oggetto."""
     base = _load_prompt_file("base_system.txt")
     specific = _load_prompt_file(f"{object_type}.txt")
-    parts = [p for p in [base, specific] if p]
+    structure = (
+        "STRUTTURA RICHIESTA: Definisci variabili parametriche all'inizio "
+        "(es: width=50; height=30;). "
+        "Metti tutta la geometria in un modulo chiamato main_object(). "
+        "Ultima riga del file: main_object(); "
+        "NON usare include<> o use<>. Il file deve essere self-contained."
+    )
+    parts = [p for p in [base, specific, structure] if p]
     return "\n\n".join(parts)
 
 
