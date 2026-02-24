@@ -710,9 +710,35 @@ def get_pending():
 
 
 def main():
-    log("🐼 PANDA 3D Worker avviato")
+    import argparse
+    parser = argparse.ArgumentParser(description="PANDA 3D Worker")
+    parser.add_argument(
+        "--once",
+        action="store_true",
+        help="Processa tutti i task pending una sola volta e poi esce (utile per test)",
+    )
+    args = parser.parse_args()
+
+    log("🐼 PANDA 3D Worker avviato" + (" (modalità --once)" if args.once else ""))
     save_default_config()
     update_status()
+
+    if args.once:
+        # Modalità test: elabora la coda corrente una sola volta e poi esce
+        try:
+            config = load_config()
+            pending = get_pending()
+            if not pending:
+                log("Nessun task pending trovato — uscita")
+            for task_file in pending:
+                res = process_task(task_file, config)
+                if res.get("stop"):
+                    log("🛑 Pipeline fermata da gate", "WARN")
+                    break
+        except Exception as e:
+            log(f"Errore in modalità --once: {e}", "ERROR")
+        log("✅ Modalità --once completata — worker in uscita")
+        return
 
     while True:
         try:
