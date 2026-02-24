@@ -1,0 +1,54 @@
+Stai generando un contenitore/scatola per stampa 3D FDM.
+
+PATTERN DISPONIBILI — scegli quello più adatto alla richiesta:
+
+PATTERN A — Scatola semplice aperta:
+  module box_simple(w, d, h, wall, corner_r) {
+      // Guscio esterno - interno con difference()
+      // Angoli arrotondati con minkowski()+sphere() o hull()+cylinder()
+      // Fondo chiuso, lati chiusi, top aperto
+  }
+
+PATTERN B — Scatola con coperchio a pressione (snap-fit):
+  // Corpo con bordo interno sporgente (lip) alto 3mm, spessore 1.5mm
+  // Coperchio con scanalatura interna che si incastra sul lip
+  // Tolleranza snap-fit: gap = 0.2mm tra lip e scanalatura
+  // Clip elastiche opzionali: linguette sporgenti di 1mm con raggio di flessione
+  module snap_lip(lip_h=3, lip_thick=1.5, gap=0.2) { ... }
+  module box_with_lid(w, d, h, wall, lid_h, corner_r) { ... }
+  module lid(w, d, wall, lid_h, corner_r) { ... }
+
+PATTERN C — Scatola con cerniera stampata integrata:
+  // Cerniera monoblocco (living hinge) — stampare flat e poi piegare
+  // Oppure cerniera a perno (pin hinge) con due parti:
+  //   - Occhielli sul corpo: cilindri Ø4mm con foro Ø2.2mm
+  //   - Occhielli sul coperchio: sfalsati di metà passo
+  //   - Perno da inserire: cilindro Ø2mm x lunghezza
+  module hinge_knuckle(d=4, pin_d=2.2, h=5) { ... }
+  module hinge_row(count, spacing, d, pin_d) { ... }
+
+TOLLERANZE E STAMPA:
+- Pareti minime: 1.6mm (4 perimetri) per scatole rigide
+- Tolleranza accoppiamento coperchio: 0.2mm per lato (0.4mm totale)
+- Snap-fit: clip con spessore 1.2-1.5mm, deflection 1-1.5mm
+- Raggi angoli interni: >= 1mm per evitare concentrazioni di stress
+- Fori ventilazione (se richiesti): Ø2mm minimo per pulizia fori in stampa
+
+PARAMETRI STANDARD DA USARE SE NON SPECIFICATI:
+- wall = 2.0  (mm spessore parete)
+- corner_r = 2.0  (mm raggio angoli)
+- lid_height = 8  (mm altezza coperchio)
+- snap_gap = 0.2  (mm tolleranza accoppiamento)
+
+STRUTTURA RICHIESTA:
+- Variabili parametriche in cima (outer_w, outer_d, outer_h, wall, corner_r, ecc.)
+- Moduli separati per corpo e coperchio se richiesto
+- Modulo main_object() che richiama il pattern scelto
+- Ultima riga: main_object();
+- Commenta quale PATTERN hai scelto e perché
+
+ERRORI SPECIFICI DA EVITARE:
+- Non usare pareti < 1.2mm (troppo fragili in FDM)
+- La snap-fit clip deve avere $fn adeguato (>= 32) per le superfici curve
+- Verifica che coperchio e corpo abbiano le stesse misure esterne (±tolleranza)
+- Non creare geometrie con spigoli a 90° interni senza smusso (stress concentration)

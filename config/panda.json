@@ -1,7 +1,7 @@
 {
   "ollama_url": "http://localhost:11434",
-  "model": "qwen2.5-coder:14b-instruct-q4_K_M",
-  "model_fallback": "qwen2.5-coder:7b-instruct-q8_0",
+  "model": "qwen2.5-coder:1.5b",
+  "model_fallback": "qwen2.5-coder:1.5b",
   "check_interval": 15,
   "max_retries": 2,
   "openscad_binary": "openscad",

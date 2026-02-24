@@ -1,0 +1,260 @@
+================================================================================
+  PANDA 3D — Note di Prompt Engineering per OpenSCAD
+  Aggiornato: 2026-02
+================================================================================
+
+Queste note raccolgono i pattern che funzionano meglio per far generare all'LLM
+(qwen2.5-coder:14b) codice OpenSCAD valido e compilabile con `openscad --export-format asciistl`.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+1.  PATTERN CHE FUNZIONANO
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+▸ Specificare SEMPRE le unità in mm
+  L'LLM tende ad omettere l'unità e a usare valori ambigui.
+  ❌ "una base larga"
+  ✅ "una base larga 80mm"
+
+▸ Richiedere VARIABILI PARAMETRICHE all'inizio del file
+  Il modello capisce meglio le dimensioni quando le vede dichiarate come variabili.
+  Aggiunge: "Definisci variabili parametriche all'inizio: width=80; height=40; ..."
+  Risultato tipico:
+    width  = 80;   // mm
+    height = 40;   // mm
+    hole_d = 10;   // diametro foro
+
+▸ Chiedere un MODULO PRINCIPALE chiamato main_object()
+  Senza questo vincolo l'LLM scrive codice "piatto" che a volte non viene eseguito.
+  Aggiunge: "Metti tutta la geometria in un modulo chiamato main_object().
+             Ultima riga: main_object();"
+  Pattern che funziona bene per >85% dei casi testati.
+
+▸ Vietare include<> e use<>
+  L'LLM a volte importa librerie esterne (BOSL2, threads.scad, gears.scad) che
+  non sono installate nel sistema PANDA.
+  Aggiunge: "NON usare include<> o use<>. Il file deve essere self-contained."
+
+▸ Specificare TOLLERANZE esplicitamente per parti meccaniche
+  Aggiunge: "Tolleranze per accoppiamenti: 0.2mm (aggiungi 0.2mm ai fori, togli 0.2mm ai perni)"
+  Risultato: i fori risultano stampabili senza rilavoro.
+
+▸ Usare $fn come VARIABILE (non valore fisso)
+  ❌ $fn = 64 in mezzo al codice
+  ✅ fn_quality = 64; ... cylinder(r=r, h=h, $fn=fn_quality);
+  Permette override esterno senza modificare il codice.
+
+▸ Chiedere COMMENTI // nelle sezioni principali
+  I commenti aiutano il debug e spesso migliorano anche la qualità del codice
+  generato (il modello "ragiona" meglio strutturando la risposta).
+
+▸ Per oggetti SIMMETRICI, specificare metà + mirror
+  "Genera metà dell'oggetto e usa mirror([1,0,0]) per specchiarlo"
+  Riduce la complessità del prompt e aumenta la correttezza geometrica.
+
+▸ Per geometrie RIPETUTE, specificare il pattern
+  ❌ "metti 6 fori"
+  ✅ "6 fori equidistanti in pattern circolare usando for(i=[0:5]) rotate([0,0,i*60])"
+  Guida l'LLM verso il pattern corretto anziché lasciarlo inventare.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+2.  ERRORI COMUNI DELL'LLM E COME EVITARLI
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+▸ rotate_extrude senza path corretto
+  PROBLEMA: L'LLM usa rotate_extrude() su shape non centrate sull'asse Z,
+            producendo geometrie vuote o errate.
+  SOLUZIONE PROMPT: "Per rotate_extrude(), il profilo 2D deve essere nel piano XY
+                     con X >= 0. Usa polygon() o square() posizionato correttamente."
+  ESEMPIO CORRETTO:
+    rotate_extrude($fn=64)
+      translate([outer_r/2, 0, 0])
+        circle(r=tube_r, $fn=32);
+
+▸ Punto e virgola mancante
+  PROBLEMA: L'LLM omette ; dopo istruzioni, specialmente dopo la chiamata finale.
+  SOLUZIONE PROMPT: "Ogni istruzione OpenSCAD deve terminare con ; compresa l'ultima."
+  SOLUZIONE CODE: il clean_llm() del worker già gestisce alcuni casi;
+                  eventualmente aggiungere post-processing.
+
+▸ Funzioni inesistenti
+  PROBLEMA: L'LLM inventa funzioni come arc(), rounded_cube(), helix() che non
+            esistono in OpenSCAD standard.
+  ERRORE TIPICO: "ERROR: function 'arc' is not defined"
+  SOLUZIONE PROMPT: "Usa SOLO primitive standard OpenSCAD: cube, sphere, cylinder,
+                     polyhedron, linear_extrude, rotate_extrude, offset, hull,
+                     minkowski, mirror, rotate, translate, scale, union, difference,
+                     intersection, for, let, echo."
+
+▸ Parentesi graffe non chiuse
+  PROBLEMA: In geometrie complesse con molti livelli di annidamento l'LLM
+            dimentica di chiudere } di module o if.
+  ERRORE TIPICO: "ERROR: parse error in file ... at line N"
+  SOLUZIONE PROMPT: "Assicurati che ogni { abbia il corrispondente }. Verifica
+                     il bilanciamento delle parentesi prima di rispondere."
+
+▸ Geometrie non-manifold
+  PROBLEMA: union() di solidi che si toccano esattamente sul bordo producono
+            superfici non-manifold. OpenSCAD avvisa ma compila, però lo STL
+            potrebbe avere problemi di slicing.
+  ERRORE TIPICO: "WARNING: Object may not be a valid 2-manifold"
+  SOLUZIONE PROMPT: "Sovrapponi i solidi di almeno 0.01mm (overlap) prima di
+                     unirli con union() per evitare geometrie non-manifold."
+  ESEMPIO:
+    // Sbagliato: i cilindri si toccano sul bordo
+    union() {
+      cylinder(h=10, r=5);
+      translate([10,0,0]) cylinder(h=10, r=5);
+    }
+    // Corretto: overlap di 0.01mm
+    union() {
+      cylinder(h=10, r=5.01);
+      translate([9.99,0,0]) cylinder(h=10, r=5.01);
+    }
+
+▸ Z-fighting (piani complanari)
+  PROBLEMA: Due facce sullo stesso piano Z producono flickering/z-fighting.
+  SOLUZIONE PROMPT: "Quando usi difference() per fare fori passanti, estendi
+                     il solido da sottrarre di 0.1mm oltre i bordi del solido principale."
+  ESEMPIO:
+    // Corretto: foro esteso di 0.1mm sopra e sotto
+    difference() {
+      cube([20, 20, 20]);
+      translate([10, 10, -0.1])
+        cylinder(h=20.2, r=3, $fn=32);
+    }
+
+▸ Import di librerie esterne (BOSL2, NopSCADlib, threads.scad, gears.scad)
+  PROBLEMA: L'LLM usa include<BOSL2/std.scad> o use<gears.scad> che non sono
+            disponibili.
+  ERRORE TIPICO: "WARNING: Can't open library 'BOSL2/std.scad'"
+  SOLUZIONE PROMPT: "NON usare include<> o use<>. Implementa tutto from scratch."
+
+▸ linear_extrude con profilo non chiuso
+  PROBLEMA: Se il polygon() ha un buco che tocca il bordo esterno, la geometria
+            risultante è incorretta.
+  SOLUZIONE PROMPT: "Assicurati che il profilo per linear_extrude() sia un
+                     poligono chiuso e che i fori (paths) siano completamente
+                     contenuti nel contorno esterno."
+
+▸ Mancata chiamata al modulo finale
+  PROBLEMA: L'LLM definisce main_object() ma dimentica di chiamarlo, risultando
+            in un file SCAD che genera un STL vuoto (0 byte).
+  SOLUZIONE PROMPT: "L'ultima riga del file DEVE essere: main_object();"
+  SOLUZIONE CODE: nel post-processing, verificare che il codice contenga
+                  "main_object();" dopo la definizione del modulo.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+3.  PROMPT TEMPLATE EFFICACE (base)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Usa questo template come base nel system prompt o come parte del user prompt:
+
+────────────────────────────────────────────────────────────────────────────────
+Crea un file OpenSCAD parametrico per {oggetto}.
+
+STRUTTURA OBBLIGATORIA:
+1. Variabili all'inizio del file con valori di default:
+   {lista variabili, es: width=50; height=30; hole_d=10;}
+2. Tutta la geometria in un modulo chiamato main_object()
+3. Ultima riga del file: main_object();
+4. NON usare include<> o use<> — il file deve essere self-contained
+5. Sovrapposizione geometrie: 0.01mm per evitare non-manifold
+6. Fori passanti: estendi di 0.1mm oltre il solido (es: h=height+0.2, translate z=-0.1)
+7. Tolleranze per accoppiamenti: 0.2mm
+8. $fn = {quality_fn}
+────────────────────────────────────────────────────────────────────────────────
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+4.  ESEMPI DI PROMPT EFFICACI
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+── OGGETTI MECCANICI ──────────────────────────────────────────────────────────
+
+✅ BUONO — supporto con foro filettato:
+"Crea un supporto a L in OpenSCAD con:
+ - base 80x60x5mm
+ - parete verticale 60x60x5mm
+ - foro da M6 (diametro 6.2mm) centrato sulla parete verticale a 30mm dall'alto
+ Variabili: base_w=80; base_d=60; wall_h=60; thickness=5; bolt_d=6.2;
+ Modulo: main_object(). Tolleranza 0.2mm. $fn=64."
+
+✅ BUONO — ingranaggio semplice:
+"Crea un ingranaggio a denti dritti in OpenSCAD.
+ Variabili: teeth=20; module_m=2; thickness=10; bore_d=5;
+ pitch_r = teeth * module_m / 2;
+ I denti sono approssimati con cylinder() in pattern circolare.
+ Foro centrale bore_d=5mm con tolleranza +0.2mm.
+ Modulo: main_object(). $fn=32."
+
+❌ CATTIVO — troppo vago:
+"Crea un supporto metallico con viti"
+(nessuna dimensione, nessun materiale, nessuna struttura)
+
+── OGGETTI DECORATIVI ─────────────────────────────────────────────────────────
+
+✅ BUONO — vaso con pattern:
+"Crea un vaso cilindrico in OpenSCAD con pareti ondulate.
+ Variabili: base_r=40; top_r=35; height=100; wall=2; waves=8; amplitude=3;
+ Usa linear_extrude con twist=0 oppure polyhedron per le ondulazioni.
+ Base piatta per adesione al piano stampa (5mm solid bottom).
+ Modulo: main_object(). $fn=128."
+
+✅ BUONO — portafoto:
+"Crea una cornice portafoto in OpenSCAD.
+ Variabili: photo_w=100; photo_h=150; frame_w=10; frame_d=5; back_thick=2;
+ La cornice ha uno scanalatura interna per il vetro (2mm profonda, 1mm larga).
+ Base piatta. Modulo: main_object(). $fn=32."
+
+❌ CATTIVO — richiesta di libreria:
+"Usa BOSL2 per creare un engranaggio con profilo evolvente"
+(BOSL2 non è disponibile; l'LLM cercherà di importarla)
+
+── OGGETTI SEMPLICI ───────────────────────────────────────────────────────────
+
+✅ BUONO — portapenne:
+"Portapenne da scrivania con 6 fori per penne.
+ Variabili: base_w=90; base_d=90; height=120; hole_d=12; hole_r_arr=30; wall=3;
+ I 6 fori sono disposti in cerchio di raggio hole_r_arr usando for(i=[0:5]).
+ Usa difference() per i fori. Modulo: main_object(). $fn=64."
+
+✅ BUONO — clip per cavi:
+"Clip per cavi da scrivania, si aggancia al bordo di un tavolo spesso 20-25mm.
+ Variabili: cable_d=6; clamp_thick=20; desk_thick=22; tab_w=30; tab_h=15;
+ Tolleranza aggancio: +0.3mm. Modulo: main_object(). $fn=32."
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+5.  CHECKLIST POST-GENERAZIONE (workflow automatico in worker.py)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Verifiche automatiche nel worker (in ordine di esecuzione):
+
+[1] clean_llm() — rimuove prefazioni e blocchi markdown
+[2] keyword check — deve contenere almeno una primitiva OpenSCAD
+[3] Compilazione openscad — il codice deve compilare senza errori
+[4] File size > 0 — lo STL deve avere byte > 0 (geometria non vuota)
+
+Verifiche aggiuntive da implementare in futuro:
+[ ] Controllo che main_object() sia definito E chiamato
+[ ] Warning count < soglia (es: < 5 warning di manifold)
+[ ] STL size ragionevole (tra 1 KB e 50 MB)
+[ ] Bounding box STL entro i limiti configurati (200x200x200mm)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+6.  MODELLI LLM — CONFRONTO COMPORTAMENTO
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+qwen2.5-coder:14b (default PANDA):
+  + Segue bene le istruzioni strutturali (main_object, variabili)
+  + Buona conoscenza primitivi OpenSCAD
+  - Tende a usare BOSL2 senza istruzioni esplicite
+  - Qualche volta omette la chiamata finale main_object()
+  - Gli ingranaggi "a profilo evolvente" spesso sbagliati → usare approssimazione
+
+qwen2.5-coder:7b (fallback):
+  + Più veloce (metà tempo)
+  - Codice meno elaborato, oggetti semplici OK, meccanici spesso errati
+  - Più propenso a inventare funzioni inesistenti
+
+Consiglio: per test rapidi usa quality=fast + model=7b; per produzione usa 14b.
+
+================================================================================

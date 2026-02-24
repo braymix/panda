@@ -1,23 +1,35 @@
 #!/usr/bin/env python3
 """
-PANDA Worker v3.1
-Pana Automating Never Death (on) Afterwork
+PANDA 3D Worker
+Pana Automating Never Death (on) Afterwork — 3D Model Generator
 
 Features:
-- Task execution (bash, python, file, test)
+- Generazione modelli 3D via Ollama + OpenSCAD
+- Task types 3D: generate_3d, compile_scad, validate_scad, list_models
+- Task types legacy: bash, python, file, test, prompt
 - Retry automatico
 - Pipeline stop su gate fallito
 - Stato live per dashboard
 - Long-running safe
 """
 
+import hashlib
 import json
+import re
 import sys
+import threading
 import time
 import subprocess
-import requests
-from datetime import datetime
+from datetime import datetime, timedelta
 from pathlib import Path
+
+import requests
+
+try:
+    import psutil
+    _HAS_PSUTIL = True
+except ImportError:
+    _HAS_PSUTIL = False
 
 # =========================
 # PATHS
@@ -30,6 +42,11 @@ LOGS_DIR = PANDA_HOME / "logs"
 STATUS_DIR = PANDA_HOME / "status"
 CONFIG_FILE = PANDA_HOME / "config" / "panda.json"
 CURRENT_STATUS_FILE = STATUS_DIR / "current.json"
+PROMPTS_DIR = PANDA_HOME / "prompts"
+MODELS_SCAD_DIR = PANDA_HOME / "models" / "scad"
+MODELS_STL_DIR = PANDA_HOME / "models" / "stl"
+CACHE_DIR = PANDA_HOME / "cache"
+CACHE_MAX_AGE_DAYS = 7
 
 # =========================
 # CONFIG
@@ -37,13 +54,24 @@ CURRENT_STATUS_FILE = STATUS_DIR / "current.json"
 
 DEFAULT_CONFIG = {
     "ollama_url": "http://localhost:11434",
-    "model": "qwen2.5-coder:3b",
-    "check_interval": 10,
-    "max_retries": 3,
+    "model": "qwen2.5-coder:14b-instruct-q4_K_M",
+    "model_fallback": "qwen2.5-coder:7b-instruct-q8_0",
+    "check_interval": 15,
+    "max_retries": 2,
+    "openscad_binary": "openscad",
+    "openscad_timeout": 300,
+    "stl_format": "asciistl",
+    "default_quality": "medium",
+    "quality_presets": {
+        "fast":   {"fn": 32,  "detail_level": "low"},
+        "medium": {"fn": 64,  "detail_level": "medium"},
+        "high":   {"fn": 128, "detail_level": "high"},
+    },
+    "default_dimensions": {"max_x": 200, "max_y": 200, "max_z": 200},
     "execute_bash": True,
     "execute_code": True,
     "modify_files": True,
-    "stop_on_test_fail": False
+    "stop_on_test_fail": False,
 }
 
 # =========================
@@ -58,6 +86,24 @@ def log(msg, level="INFO"):
     with open(LOGS_DIR / f"{datetime.now().strftime('%Y-%m-%d')}.log", "a") as f:
         f.write(line + "\n")
 
+
+def _count_stl_models():
+    if MODELS_STL_DIR.exists():
+        return len(list(MODELS_STL_DIR.glob("*.stl")))
+    return 0
+
+
+def _last_stl_model():
+    if not MODELS_STL_DIR.exists():
+        return None
+    stl_files = sorted(
+        MODELS_STL_DIR.glob("*.stl"),
+        key=lambda p: p.stat().st_mtime,
+        reverse=True,
+    )
+    return stl_files[0].name if stl_files else None
+
+
 def update_status(task_id=None, task_type=None, status="idle", progress=None):
     STATUS_DIR.mkdir(exist_ok=True)
     payload = {
@@ -65,16 +111,20 @@ def update_status(task_id=None, task_type=None, status="idle", progress=None):
         "task_type": task_type,
         "status": status,
         "progress": progress,
-        "updated_at": datetime.now().isoformat()
+        "updated_at": datetime.now().isoformat(),
+        "last_model": _last_stl_model(),
+        "models_count": _count_stl_models(),
     }
     with open(CURRENT_STATUS_FILE, "w") as f:
         json.dump(payload, f)
+
 
 def load_config():
     if CONFIG_FILE.exists():
         with open(CONFIG_FILE) as f:
             return {**DEFAULT_CONFIG, **json.load(f)}
     return DEFAULT_CONFIG.copy()
+
 
 def save_default_config():
     if not CONFIG_FILE.exists():
@@ -86,18 +136,51 @@ def save_default_config():
 # OLLAMA
 # =========================
 
-def ask_ollama(prompt, config):
+def ask_ollama(prompt, config, system_prompt=None):
+    start_time = time.time()
+    stop_event = threading.Event()
+
+    def progress_logger():
+        while not stop_event.wait(30):
+            elapsed = time.time() - start_time
+            mins = int(elapsed // 60)
+            secs = int(elapsed % 60)
+            log(f"⏳ Ollama sta elaborando... ({mins}min {secs}s)")
+
+    progress_thread = threading.Thread(target=progress_logger, daemon=True)
+    progress_thread.start()
+
     try:
-        r = requests.post(
-            f"{config['ollama_url']}/api/generate",
-            json={"model": config["model"], "prompt": prompt, "stream": False},
-            timeout=900
-        )
-        r.raise_for_status()
-        return r.json().get("response", "")
+        if system_prompt:
+            r = requests.post(
+                f"{config['ollama_url']}/api/chat",
+                json={
+                    "model": config["model"],
+                    "messages": [
+                        {"role": "system", "content": system_prompt},
+                        {"role": "user", "content": prompt},
+                    ],
+                    "stream": False,
+                },
+                timeout=3600,
+            )
+            r.raise_for_status()
+            return r.json().get("message", {}).get("content", "")
+        else:
+            r = requests.post(
+                f"{config['ollama_url']}/api/generate",
+                json={"model": config["model"], "prompt": prompt, "stream": False},
+                timeout=3600,
+            )
+            r.raise_for_status()
+            return r.json().get("response", "")
     except Exception as e:
         log(f"Ollama error: {e}", "ERROR")
         return None
+    finally:
+        stop_event.set()
+        progress_thread.join(timeout=1)
+
 
 def clean_llm(code):
     """
@@ -139,7 +222,6 @@ def clean_llm(code):
         r"^[Aa]bsolutely[,\.]?\s*[^:]*[:\.]?\s*\n?",
     ]
 
-    import re
     for pattern in preface_patterns:
         code = re.sub(pattern, "", code, count=1)
     code = code.strip()
@@ -177,7 +259,7 @@ def clean_llm(code):
     return code.strip()
 
 # =========================
-# EXECUTION
+# EXECUTION HELPERS
 # =========================
 
 def exec_bash(cmd):
@@ -186,6 +268,7 @@ def exec_bash(cmd):
         return {"success": p.returncode == 0, "stdout": p.stdout, "stderr": p.stderr}
     except Exception as e:
         return {"success": False, "error": str(e)}
+
 
 def exec_python(code):
     temp = PANDA_HOME / "scripts" / f"temp_{int(time.time())}.py"
@@ -203,6 +286,7 @@ def exec_python(code):
     except Exception as e:
         return {"success": False, "error": str(e)}
 
+
 def write_file(path, content):
     try:
         p = Path(path).expanduser()
@@ -211,6 +295,429 @@ def write_file(path, content):
         return {"success": True}
     except Exception as e:
         return {"success": False, "error": str(e)}
+
+# =========================
+# 3D TASK HANDLERS
+# =========================
+
+def _load_prompt_file(name):
+    """Carica un file di prompt, ritorna stringa vuota se non esiste."""
+    p = PROMPTS_DIR / name
+    return p.read_text().strip() if p.exists() else ""
+
+
+# Mappa keyword → file prompt specializzato (in prompts/objects/)
+_KEYWORD_PROMPT_MAP = [
+    (
+        ["ingranaggio", "ingranaggi", "dente", "denti", "gear", "gears",
+         "ruota dentata", "pignone", "cremagliera"],
+        "gears",
+    ),
+    (
+        ["scatola", "contenitore", "box", "enclosure", "coperchio",
+         "cassetta", "astuccio", "custodia"],
+        "enclosures",
+    ),
+    (
+        ["staffa", "staffe", "supporto", "bracket", "gancio", "mensola",
+         "parete", "mount", "holder", "morsetto"],
+        "brackets",
+    ),
+    (
+        ["filetto", "filetti", "vite", "dado", "thread", "threading",
+         "M3", "M4", "M5", "M6", "M8", "M10", "metrico", "avvitare"],
+        "threads",
+    ),
+]
+
+# Mappa object_category esplicita (dal task JSON) → file prompt
+_CATEGORY_PROMPT_MAP = {
+    "gear":      "gears",
+    "enclosure": "enclosures",
+    "bracket":   "brackets",
+    "thread":    "threads",
+    "gears":     "gears",
+    "enclosures":"enclosures",
+    "brackets":  "brackets",
+    "threads":   "threads",
+}
+
+
+def _select_specialized_prompt(description: str, object_category: str = "") -> str:
+    """
+    Seleziona il prompt specializzato più adatto.
+    Priorità: object_category esplicita > keyword nella description.
+    Ritorna il contenuto del file prompt oppure "" se non trovato.
+    """
+    # 1. Campo object_category esplicito nel task JSON
+    if object_category:
+        key = _CATEGORY_PROMPT_MAP.get(object_category.lower(), "")
+        if key:
+            content = _load_prompt_file(f"objects/{key}.txt")
+            if content:
+                log(f"📋 Prompt specializzato (category): objects/{key}.txt")
+                return content
+
+    # 2. Ricerca per keyword nella description (case-insensitive)
+    desc_lower = description.lower()
+    for keywords, prompt_key in _KEYWORD_PROMPT_MAP:
+        if any(kw.lower() in desc_lower for kw in keywords):
+            content = _load_prompt_file(f"objects/{prompt_key}.txt")
+            if content:
+                log(f"📋 Prompt specializzato (keyword): objects/{prompt_key}.txt")
+                return content
+
+    return ""
+
+
+def _build_system_prompt(object_type, description="", object_category=""):
+    """
+    Combina i layer di prompt:
+      base_system.txt + {object_type}.txt + objects/{specialized}.txt + struttura
+    """
+    base = _load_prompt_file("base_system.txt")
+    specific = _load_prompt_file(f"{object_type}.txt")
+    specialized = _select_specialized_prompt(description, object_category)
+    structure = (
+        "STRUTTURA RICHIESTA: Definisci variabili parametriche all'inizio "
+        "(es: width=50; height=30;). "
+        "Metti tutta la geometria in un modulo chiamato main_object(). "
+        "Ultima riga del file: main_object(); "
+        "NON usare include<> o use<>. Il file deve essere self-contained."
+    )
+    parts = [p for p in [base, specific, specialized, structure] if p]
+    return "\n\n".join(parts)
+
+
+def _extract_bounding_box_from_stl(stl_path):
+    """
+    Estrae bounding box da un file STL ASCII parsando le coordinate vertex.
+    Ritorna dict {x, y, z, min, max} oppure None in caso di errore.
+    """
+    try:
+        content = Path(stl_path).read_text(errors="replace")
+        xs, ys, zs = [], [], []
+        for line in content.splitlines():
+            line = line.strip()
+            if line.startswith("vertex "):
+                parts = line.split()
+                if len(parts) == 4:
+                    xs.append(float(parts[1]))
+                    ys.append(float(parts[2]))
+                    zs.append(float(parts[3]))
+        if not xs:
+            return None
+        return {
+            "x": round(max(xs) - min(xs), 3),
+            "y": round(max(ys) - min(ys), 3),
+            "z": round(max(zs) - min(zs), 3),
+            "min": {"x": round(min(xs), 3), "y": round(min(ys), 3), "z": round(min(zs), 3)},
+            "max": {"x": round(max(xs), 3), "y": round(max(ys), 3), "z": round(max(zs), 3)},
+        }
+    except Exception as e:
+        log(f"Bounding box extraction error: {e}", "WARN")
+        return None
+
+
+def do_compile_scad(scad_path, output_name, config):
+    """Compila un file .scad in .stl tramite openscad. Ritorna dict con risultato."""
+    scad_path = Path(scad_path)
+    MODELS_STL_DIR.mkdir(parents=True, exist_ok=True)
+
+    stem = Path(output_name).stem if output_name else scad_path.stem
+    stl_path = MODELS_STL_DIR / f"{stem}.stl"
+
+    openscad_bin = config.get("openscad_binary", "openscad")
+    stl_format = config.get("stl_format", "asciistl")
+    timeout = config.get("openscad_timeout", 300)
+
+    cmd = [openscad_bin, "--export-format", stl_format, "-o", str(stl_path), str(scad_path)]
+    log(f"🔧 Compilando: {' '.join(cmd)}")
+
+    try:
+        p = subprocess.run(cmd, capture_output=True, text=True, timeout=timeout)
+        compile_log = (p.stdout + p.stderr).strip()
+        success = p.returncode == 0 and stl_path.exists()
+        file_size_kb = round(stl_path.stat().st_size / 1024, 2) if stl_path.exists() else 0
+
+        if not success:
+            log(f"OpenSCAD error (rc={p.returncode}): {compile_log}", "ERROR")
+
+        return {
+            "stl_file": str(stl_path) if success else None,
+            "success": success,
+            "compile_log": compile_log,
+            "file_size_kb": file_size_kb,
+        }
+    except subprocess.TimeoutExpired:
+        log(f"OpenSCAD timeout dopo {timeout}s", "ERROR")
+        return {
+            "stl_file": None,
+            "success": False,
+            "compile_log": f"Timeout after {timeout}s",
+            "file_size_kb": 0,
+        }
+    except FileNotFoundError:
+        log(f"openscad non trovato: {openscad_bin}", "ERROR")
+        return {
+            "stl_file": None,
+            "success": False,
+            "compile_log": "openscad binary not found",
+            "file_size_kb": 0,
+        }
+
+
+def _check_prompt_cache(prompt_key: str) -> str | None:
+    """
+    Cerca in CACHE_DIR un file .scad con hash MD5 del prompt.
+    Ritorna il contenuto SCAD se trovato e non scaduto (< CACHE_MAX_AGE_DAYS giorni),
+    altrimenti None.
+    """
+    CACHE_DIR.mkdir(parents=True, exist_ok=True)
+    cache_file = CACHE_DIR / f"{prompt_key}.scad"
+    if not cache_file.exists():
+        return None
+    age = datetime.now() - datetime.fromtimestamp(cache_file.stat().st_mtime)
+    if age > timedelta(days=CACHE_MAX_AGE_DAYS):
+        log(f"Cache scaduta ({age.days}g) per {prompt_key[:8]}… — ignoro", "INFO")
+        return None
+    return cache_file.read_text()
+
+
+def _save_prompt_cache(prompt_key: str, scad_code: str):
+    """Salva il codice SCAD nella cache per riuso futuro."""
+    CACHE_DIR.mkdir(parents=True, exist_ok=True)
+    (CACHE_DIR / f"{prompt_key}.scad").write_text(scad_code)
+
+
+def _check_ram_warning():
+    """Logga un warning se la RAM disponibile è inferiore a 2 GB."""
+    if not _HAS_PSUTIL:
+        return
+    try:
+        mem = psutil.virtual_memory()
+        available_mb = mem.available // (1024 * 1024)
+        if available_mb < 2048:
+            log(f"⚠️ RAM bassa ({available_mb} MB disponibile) — Ollama potrebbe essere lento", "WARN")
+    except Exception:
+        pass
+
+
+def _fmt_duration(seconds: float) -> str:
+    """Formatta durata in Xmin Ys oppure Xs."""
+    if seconds >= 60:
+        m, s = divmod(int(seconds), 60)
+        return f"{m}min {s}s"
+    return f"{seconds:.1f}s"
+
+
+def handle_generate_3d(task, task_id, config):
+    description = task.get("description", "")
+    parameters = task.get("parameters", {})
+    object_type = task.get("object_type", "simple")
+    object_category = task.get("object_category", "")
+    quality = task.get("quality", config.get("default_quality", "medium"))
+
+    if object_type not in ("mechanical", "decorative", "simple"):
+        object_type = "simple"
+    if quality not in ("fast", "medium", "high"):
+        quality = "medium"
+
+    quality_presets = config.get("quality_presets", DEFAULT_CONFIG["quality_presets"])
+    fn_value = quality_presets.get(quality, {}).get("fn", 64)
+    dims = config.get("default_dimensions", {"max_x": 200, "max_y": 200, "max_z": 200})
+
+    system_prompt = _build_system_prompt(object_type, description, object_category)
+
+    # Costruzione prompt utente
+    user_parts = [f"Genera un modello OpenSCAD per: {description}"]
+    if parameters:
+        params_str = "\n".join(f"  - {k}: {v}" for k, v in parameters.items())
+        user_parts.append(f"Parametri specificati:\n{params_str}")
+    user_parts.append(
+        f"Qualità: {quality} ($fn={fn_value}). "
+        f"Bounding box massimo: {dims['max_x']}x{dims['max_y']}x{dims['max_z']}mm."
+    )
+    user_prompt = "\n".join(user_parts)
+
+    # Calcola la chiave cache come MD5 del prompt completo (system + user)
+    full_prompt = (system_prompt or "") + "\n\n" + user_prompt
+    prompt_md5 = hashlib.md5(full_prompt.encode()).hexdigest()
+
+    # ── Cache check ────────────────────────────────────────────────────────
+    from_cache = False
+    cached_scad = _check_prompt_cache(prompt_md5)
+    if cached_scad:
+        log(f"💾 Cache hit per {task_id} ({prompt_md5[:8]}…) — skip Ollama")
+        scad_code = cached_scad
+        llm_secs = 0.0
+        from_cache = True
+    else:
+        # ── RAM warning prima di chiamare Ollama ───────────────────────────
+        _check_ram_warning()
+
+        log(f"🤖 Chiamata Ollama per generate_3d (type={object_type}, quality={quality}, fn={fn_value})")
+        t_llm_start = time.time()
+        raw_response = ask_ollama(user_prompt, config, system_prompt=system_prompt)
+        llm_secs = round(time.time() - t_llm_start, 1)
+        log(f"⏱️ Tempo LLM: {_fmt_duration(llm_secs)}")
+
+        if not raw_response:
+            return {
+                "success": False,
+                "error_message": "Nessuna risposta da Ollama",
+                "scad_file": None,
+                "stl_file": None,
+                "timing": {"llm_s": llm_secs, "compile_s": 0, "total_s": llm_secs},
+            }
+
+        scad_code = clean_llm(raw_response)
+
+    # Validazione pre-compilazione: controlla presenza di primitivi OpenSCAD o moduli
+    geom_primitives = ("cube(", "cylinder(", "sphere(", "polyhedron(", "module ")
+    if not any(kw in scad_code for kw in geom_primitives):
+        log("⚠️ Codice OpenSCAD sospetto — potrebbe non essere valido", "WARN")
+
+    # Salva il file .scad
+    MODELS_SCAD_DIR.mkdir(parents=True, exist_ok=True)
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    scad_filename = f"{task_id}_{timestamp}.scad"
+    scad_path = MODELS_SCAD_DIR / scad_filename
+    scad_path.write_text(scad_code)
+    log(f"💾 SCAD salvato: {scad_path}")
+
+    # Compilazione principale
+    t_compile_start = time.time()
+    compile_result = do_compile_scad(scad_path, scad_filename, config)
+    compile_secs = round(time.time() - t_compile_start, 1)
+    log(f"⏱️ Tempo compilazione OpenSCAD: {_fmt_duration(compile_secs)}")
+
+    # Auto-correzione: se la compilazione fallisce, invia codice + errore a Ollama
+    auto_corrected = False
+    if not compile_result["success"] and not from_cache:
+        error_msg = compile_result.get("compile_log", "errore sconosciuto")
+        log(f"🔧 Compilazione fallita — tentativo auto-correzione")
+        correction_prompt = (
+            f"Il seguente codice OpenSCAD genera questo errore:\n"
+            f"{error_msg}\n\n"
+            f"Codice originale:\n{scad_code}\n\n"
+            f"Correggi il codice. Rispondi SOLO con il codice OpenSCAD corretto e completo."
+        )
+        _check_ram_warning()
+        t_corr_start = time.time()
+        corrected_raw = ask_ollama(correction_prompt, config, system_prompt=system_prompt)
+        llm_secs += round(time.time() - t_corr_start, 1)
+        if corrected_raw:
+            corrected_code = clean_llm(corrected_raw)
+            if corrected_code and corrected_code != scad_code:
+                scad_path.write_text(corrected_code)
+                t_c2 = time.time()
+                compile_result = do_compile_scad(scad_path, scad_filename, config)
+                compile_secs += round(time.time() - t_c2, 1)
+                auto_corrected = True
+                if compile_result["success"]:
+                    log("🔧 Auto-correzione applicata con successo")
+                else:
+                    log("🔧 Auto-correzione applicata — compilazione ancora fallita", "WARN")
+
+    # Salva in cache se la compilazione è riuscita (e non era già in cache)
+    if compile_result["success"] and not from_cache:
+        _save_prompt_cache(prompt_md5, scad_path.read_text())
+
+    # Estrazione bounding box
+    dimensions = None
+    if compile_result["success"] and compile_result.get("stl_file"):
+        dimensions = _extract_bounding_box_from_stl(compile_result["stl_file"])
+        if dimensions:
+            log(f"📐 Bounding box: {dimensions['x']}×{dimensions['y']}×{dimensions['z']} mm")
+
+    total_secs = round(llm_secs + compile_secs, 1)
+    log(f"⏱️ Totale: {_fmt_duration(total_secs)} (LLM {_fmt_duration(llm_secs)} + SCAD {_fmt_duration(compile_secs)})")
+
+    return {
+        "success": compile_result["success"],
+        "scad_file": str(scad_path),
+        "stl_file": compile_result.get("stl_file"),
+        "error_message": None if compile_result["success"] else compile_result.get("compile_log", ""),
+        "compile_log": compile_result.get("compile_log", ""),
+        "file_size_kb": compile_result.get("file_size_kb", 0),
+        "auto_corrected": auto_corrected,
+        "from_cache": from_cache,
+        "dimensions": dimensions,
+        "timing": {
+            "llm_s":     llm_secs,
+            "compile_s": compile_secs,
+            "total_s":   total_secs,
+        },
+    }
+
+
+def handle_compile_scad(task, config):
+    scad_file = task.get("scad_file", "")
+    output_name = task.get("output_name")
+
+    if not scad_file:
+        return {"success": False, "stl_file": None, "compile_log": "scad_file mancante", "file_size_kb": 0}
+
+    scad_path = Path(scad_file).expanduser()
+    if not scad_path.exists():
+        return {
+            "success": False,
+            "stl_file": None,
+            "compile_log": f"File non trovato: {scad_path}",
+            "file_size_kb": 0,
+        }
+
+    return do_compile_scad(scad_path, output_name, config)
+
+
+def handle_validate_scad(task, config):
+    scad_file = task.get("scad_file", "")
+
+    if not scad_file:
+        return {"valid": False, "warnings": [], "errors": ["scad_file mancante"]}
+
+    scad_path = Path(scad_file).expanduser()
+    if not scad_path.exists():
+        return {"valid": False, "warnings": [], "errors": [f"File non trovato: {scad_path}"]}
+
+    openscad_bin = config.get("openscad_binary", "openscad")
+    timeout = config.get("openscad_timeout", 300)
+
+    try:
+        p = subprocess.run(
+            [openscad_bin, "--check-parameter-ranges", str(scad_path)],
+            capture_output=True,
+            text=True,
+            timeout=timeout,
+        )
+        output = (p.stdout + p.stderr).strip()
+        lines = output.splitlines() if output else []
+        warnings = [l for l in lines if "WARNING" in l.upper()]
+        errors = [l for l in lines if "ERROR" in l.upper()]
+        return {"valid": p.returncode == 0, "warnings": warnings, "errors": errors}
+    except subprocess.TimeoutExpired:
+        return {"valid": False, "warnings": [], "errors": [f"Timeout after {timeout}s"]}
+    except FileNotFoundError:
+        return {"valid": False, "warnings": [], "errors": ["openscad binary not found"]}
+
+
+def handle_list_models():
+    if not MODELS_STL_DIR.exists():
+        return {"models": []}
+
+    models = []
+    for stl in sorted(MODELS_STL_DIR.glob("*.stl"), key=lambda p: p.stat().st_mtime, reverse=True):
+        stat = stl.stat()
+        scad_available = (MODELS_SCAD_DIR / (stl.stem + ".scad")).exists()
+        models.append({
+            "filename": stl.name,
+            "size_kb": round(stat.st_size / 1024, 2),
+            "created_at": datetime.fromtimestamp(stat.st_mtime).isoformat(),
+            "scad_available": scad_available,
+        })
+
+    return {"models": models}
 
 # =========================
 # TASK CORE
@@ -225,6 +732,7 @@ def should_stop(task, task_type, success, config):
         return True
     return False
 
+
 def process_task(task_file, config):
     with open(task_file) as f:
         task = json.load(f)
@@ -233,15 +741,37 @@ def process_task(task_file, config):
     task_type = task.get("type", "prompt")
     retry = task.get("_retry", 0)
 
-    log(f"▶ Task {task_id}")
+    log(f"▶ Task {task_id} [{task_type}]")
     update_status(task_id, task_type, "running")
 
-    result = {"task_id": task_id, "type": task_type, "steps": []}
+    result = {"task_id": task_id, "type": task_type}
     success = False
 
-    # ---- TASK TYPES ----
+    # ---- 3D TASK TYPES ----
 
-    if task_type == "bash":
+    if task_type == "generate_3d":
+        res = handle_generate_3d(task, task_id, config)
+        result.update(res)
+        success = res.get("success", False)
+
+    elif task_type == "compile_scad":
+        res = handle_compile_scad(task, config)
+        result.update(res)
+        success = res.get("success", False)
+
+    elif task_type == "validate_scad":
+        res = handle_validate_scad(task, config)
+        result.update(res)
+        success = res.get("valid", False)
+
+    elif task_type == "list_models":
+        res = handle_list_models()
+        result.update(res)
+        success = True
+
+    # ---- LEGACY TASK TYPES ----
+
+    elif task_type == "bash":
         prompt = task.get("prompt", "")
         llm_prompt = (
             "RISPONDI SOLO CON IL COMANDO, NIENTE ALTRO.\n"
@@ -252,7 +782,7 @@ def process_task(task_file, config):
         llm = ask_ollama(llm_prompt, config)
         cmd = clean_llm(llm).splitlines()[0]
         res = exec_bash(cmd)
-        result["steps"].append({"cmd": cmd, "result": res})
+        result["steps"] = [{"cmd": cmd, "result": res}]
         success = res["success"]
 
     elif task_type == "python":
@@ -266,7 +796,7 @@ def process_task(task_file, config):
         llm = ask_ollama(llm_prompt, config)
         code = clean_llm(llm)
         res = exec_python(code)
-        result["steps"].append({"code": code, "result": res})
+        result["steps"] = [{"code": code, "result": res}]
         success = res["success"]
 
     elif task_type == "file":
@@ -279,7 +809,7 @@ def process_task(task_file, config):
         )
         content = ask_ollama(llm_prompt, config)
         res = write_file(task["filepath"], clean_llm(content))
-        result["steps"].append(res)
+        result["steps"] = [res]
         success = res["success"]
 
     elif task_type == "test":
@@ -287,10 +817,16 @@ def process_task(task_file, config):
         expected = task.get("expected", "")
         actual = res.get("stdout", "").strip()
         success = expected in actual if expected else res["success"]
-        result["steps"].append({"expected": expected, "actual": actual})
+        result["steps"] = [{"expected": expected, "actual": actual}]
+
+    elif task_type == "prompt":
+        prompt = task.get("prompt", "")
+        response = ask_ollama(prompt, config)
+        result["response"] = response
+        success = response is not None
 
     else:
-        result["error"] = f"Unknown task type {task_type}"
+        result["error"] = f"Unknown task type: {task_type}"
 
     # ---- RESULT ----
 
@@ -305,7 +841,7 @@ def process_task(task_file, config):
         task["_retry"] = retry + 1
         with open(task_file, "w") as f:
             json.dump(task, f, indent=2)
-        log(f"🔁 Retry {task['_retry']} for {task_id}", "WARN")
+        log(f"🔁 Retry {task['_retry']}/{config['max_retries']} for {task_id}", "WARN")
         return {"stop": stop}
 
     # move to done
@@ -325,16 +861,46 @@ def process_task(task_file, config):
 def get_pending():
     tasks = []
     for f in TASKS_DIR.glob("*.json"):
-        with open(f) as jf:
-            prio = json.load(jf).get("priority", 10)
+        try:
+            with open(f) as jf:
+                prio = json.load(jf).get("priority", 10)
+        except Exception:
+            prio = 10
         tasks.append((prio, f))
     tasks.sort(key=lambda x: x[0])
     return [t[1] for t in tasks]
 
+
 def main():
-    log("🐼 PANDA Worker v3.1 avviato")
+    import argparse
+    parser = argparse.ArgumentParser(description="PANDA 3D Worker")
+    parser.add_argument(
+        "--once",
+        action="store_true",
+        help="Processa tutti i task pending una sola volta e poi esce (utile per test)",
+    )
+    args = parser.parse_args()
+
+    log("🐼 PANDA 3D Worker avviato" + (" (modalità --once)" if args.once else ""))
     save_default_config()
     update_status()
+
+    if args.once:
+        # Modalità test: elabora la coda corrente una sola volta e poi esce
+        try:
+            config = load_config()
+            pending = get_pending()
+            if not pending:
+                log("Nessun task pending trovato — uscita")
+            for task_file in pending:
+                res = process_task(task_file, config)
+                if res.get("stop"):
+                    log("🛑 Pipeline fermata da gate", "WARN")
+                    break
+        except Exception as e:
+            log(f"Errore in modalità --once: {e}", "ERROR")
+        log("✅ Modalità --once completata — worker in uscita")
+        return
 
     while True:
         try:
@@ -356,6 +922,6 @@ def main():
             log(f"Worker crash: {e}", "ERROR")
             time.sleep(10)
 
+
 if __name__ == "__main__":
     main()
-

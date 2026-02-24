@@ -1,0 +1,55 @@
+{
+  "tasks": [
+    {
+      "id": "porta_spezie",
+      "type": "generate_3d",
+      "priority": 4,
+      "description": "Porta spezie da parete con 5 slot orizzontali per vasetti rotondi, ogni slot diametro interno 55mm profondita 50mm, distanza tra slot 10mm, piastra di montaggio posteriore 40x300mm con 3 fori da 4mm per viti a parete, il tutto stampabile in PLA senza supporti",
+      "parameters": {
+        "slots": 5,
+        "jar_d": 55,
+        "slot_depth": 50,
+        "spacing": 10,
+        "mount_h": 40,
+        "screw_d": 4
+      },
+      "object_type": "simple",
+      "quality": "medium"
+    },
+    {
+      "id": "supporto_tagliere",
+      "type": "generate_3d",
+      "priority": 4,
+      "description": "Supporto verticale per tagliere da cucina, base stabile 120x60mm alta 15mm con 2 scanalature verticali parallele distanziate 20mm larghe 6mm profonde 30mm per tenere il tagliere in piedi, pareti esterne 4mm, angoli arrotondati 3mm",
+      "parameters": {
+        "base_w": 120,
+        "base_d": 60,
+        "base_h": 15,
+        "slot_w": 6,
+        "slot_depth": 30,
+        "slot_spacing": 20,
+        "wall": 4,
+        "corner_r": 3
+      },
+      "object_type": "simple",
+      "quality": "medium"
+    },
+    {
+      "id": "porta_sacchetti",
+      "type": "generate_3d",
+      "priority": 5,
+      "description": "Porta sacchetti richiudibili da parete (tipo zip-lock), dispenser a scatola aperta sul fronte, dimensioni interne 280x200x80mm per contenere sacchetti standard, piastra di fissaggio posteriore con 4 fori da 4mm, apertura frontale ampia per estrarre facilmente i sacchetti, fondo inclinato 10 gradi per far scivolare i sacchetti verso l'apertura",
+      "parameters": {
+        "inner_w": 280,
+        "inner_h": 200,
+        "inner_d": 80,
+        "wall": 3,
+        "screw_d": 4,
+        "front_opening_h": 150,
+        "bottom_angle_deg": 10
+      },
+      "object_type": "simple",
+      "quality": "medium"
+    }
+  ]
+}

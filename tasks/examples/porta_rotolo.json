@@ -1,0 +1,19 @@
+{
+  "id": "porta_rotolo",
+  "type": "generate_3d",
+  "priority": 4,
+  "description": "Porta rotolo carta igienica da parete, staffa a forma di C capovolta: piastra di montaggio verticale 80x40mm con 2 fori da 5mm per viti, braccio orizzontale lungo 130mm con perno cilindrico diametro 22mm su cui si infila il rotolo (diametro interno rotolo 40mm), il perno ha un cappuccio removibile da 30mm di diametro per tenere il rotolo in sede",
+  "parameters": {
+    "mount_w": 40,
+    "mount_h": 80,
+    "mount_thick": 4,
+    "arm_length": 130,
+    "arm_thick": 8,
+    "pin_d": 22,
+    "pin_cap_d": 30,
+    "screw_hole_d": 5,
+    "roll_inner_d": 40
+  },
+  "object_type": "simple",
+  "quality": "medium"
+}

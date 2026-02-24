@@ -1,0 +1,77 @@
+Stai generando un oggetto con filetto metrico per stampa 3D FDM.
+
+⚠️ AVVISO TOLLERANZE FDM:
+I filetti stampati 3D richiedono tolleranze MAGGIORI rispetto ai filetti metallici.
+Aggiungi sempre +0.3mm al diametro nominale per filetti esterni (maschio).
+Aggiungi sempre -0.3mm (cioè +0.3mm al foro) per filetti interni (femmina).
+Esempio M6: maschio → Ø5.7mm, femmina → Ø6.3mm (foro pilota)
+
+FILETTI METRICI STANDARD ISO:
+  M3:  d_nom=3,  passo=0.5,  chiave=5.5,  h_dado=2.4
+  M4:  d_nom=4,  passo=0.7,  chiave=7.0,  h_dado=3.2
+  M5:  d_nom=5,  passo=0.8,  chiave=8.0,  h_dado=4.0
+  M6:  d_nom=6,  passo=1.0,  chiave=10.0, h_dado=5.0
+  M8:  d_nom=8,  passo=1.25, chiave=13.0, h_dado=6.5
+  M10: d_nom=10, passo=1.5,  chiave=17.0, h_dado=8.0
+
+IMPLEMENTAZIONE FILETTO (self-contained, NO include<>):
+Usa linear_extrude con twist per creare l'elica del filetto:
+
+  // Filetto esterno semplificato (profilo triangolare):
+  module thread_external(d_nom, pitch, length, tolerance=0.3) {
+      d_eff = d_nom - tolerance;  // ridotto per FDM
+      thread_h = pitch * 0.6495;  // altezza profilo ISO 60°
+      turns = length / pitch;
+      // Nucleo cilindrico
+      cylinder(d=d_eff - 2*thread_h, h=length, $fn=64);
+      // Elica filetto: ruota un profilo triangolare lungo l'asse
+      linear_extrude(height=length, twist=-360*turns, slices=turns*32, $fn=64)
+          translate([d_eff/2 - thread_h, 0, 0])
+              polygon([[0,0],[thread_h, pitch/2],[0, pitch]]);
+  }
+
+  // Filetto interno (foro filettato):
+  module thread_internal(d_nom, pitch, depth, tolerance=0.3) {
+      d_eff = d_nom + tolerance;
+      thread_h = pitch * 0.6495;
+      turns = depth / pitch;
+      difference() {
+          // Il solido ospitante viene fornito dall'oggetto chiamante
+          children();
+          // Foro principale
+          cylinder(d=d_eff, h=depth+1, $fn=64);
+          // Elica filetto interno
+          linear_extrude(height=depth, twist=-360*turns, slices=turns*32, $fn=64)
+              translate([d_eff/2, 0, 0])
+                  polygon([[0,0],[-thread_h, pitch/2],[0, pitch]]);
+      }
+  }
+
+ALTERNATIVE PIÙ SEMPLICI (preferisci queste per oggetti funzionali):
+
+  OPZIONE 1 — Foro liscio + inserto termoinduttivo (raccomandata):
+    // Genera solo il foro pilota, usa un inserto in ottone (heat-set insert)
+    // M3 inserto: Ø4.6mm × 5.7mm — foro: Ø4.4mm (tight fit)
+    // M4 inserto: Ø5.6mm × 7.0mm — foro: Ø5.4mm
+    // M5 inserto: Ø6.3mm × 9.5mm — foro: Ø6.1mm
+    // M6 inserto: Ø9.5mm × 10.0mm — foro: Ø9.3mm
+
+  OPZIONE 2 — Dado esagonale integrato (pocket):
+    // Tasca esagonale nella plastica per bloccare un dado standard
+    module hex_pocket(key_size, depth, tolerance=0.2) {
+        cylinder(d=(key_size + tolerance) / cos(30), h=depth, $fn=6);
+    }
+
+STRUTTURA RICHIESTA:
+- Variabili in cima: d_nom, pitch, length/depth, tolerance (default 0.3)
+- Commenta chiaramente se si usa filetto stampato, inserto o dado intrappolato
+- Modulo main_object() con l'oggetto completo
+- Ultima riga: main_object();
+- Aggiungi sempre smusso 45° all'inizio del filetto (chamfer) per facilitare l'avvitamento
+
+ERRORI SPECIFICI DA EVITARE:
+- Non usare slices < 20 per giro di filetto (filetto sgranato)
+- Non omettere la tolleranza FDM (+0.3mm) — il filetto non si avviterà
+- linear_extrude con twist richiede una shape 2D nel piano XY
+- Per filetti lunghi (> 20mm) aumenta slices proporzionalmente
+- Il profilo del filetto deve essere un polygon 2D chiuso nel quadrante positivo X

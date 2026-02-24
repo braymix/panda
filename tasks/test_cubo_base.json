@@ -1,0 +1,13 @@
+{
+  "id": "test_cubo_base",
+  "type": "generate_3d",
+  "priority": 1,
+  "description": "Cubo semplice 30x30x30mm con angoli smussati (fillet 2mm)",
+  "parameters": {
+    "size": 30,
+    "fillet": 2
+  },
+  "object_type": "simple",
+  "quality": "fast",
+  "_retry": 1
+}
