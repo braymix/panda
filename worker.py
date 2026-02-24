@@ -297,10 +297,78 @@ def _load_prompt_file(name):
     return p.read_text().strip() if p.exists() else ""
 
 
-def _build_system_prompt(object_type):
-    """Combina base_system.txt con il prompt specifico per il tipo di oggetto."""
+# Mappa keyword → file prompt specializzato (in prompts/objects/)
+_KEYWORD_PROMPT_MAP = [
+    (
+        ["ingranaggio", "ingranaggi", "dente", "denti", "gear", "gears",
+         "ruota dentata", "pignone", "cremagliera"],
+        "gears",
+    ),
+    (
+        ["scatola", "contenitore", "box", "enclosure", "coperchio",
+         "cassetta", "astuccio", "custodia"],
+        "enclosures",
+    ),
+    (
+        ["staffa", "staffe", "supporto", "bracket", "gancio", "mensola",
+         "parete", "mount", "holder", "morsetto"],
+        "brackets",
+    ),
+    (
+        ["filetto", "filetti", "vite", "dado", "thread", "threading",
+         "M3", "M4", "M5", "M6", "M8", "M10", "metrico", "avvitare"],
+        "threads",
+    ),
+]
+
+# Mappa object_category esplicita (dal task JSON) → file prompt
+_CATEGORY_PROMPT_MAP = {
+    "gear":      "gears",
+    "enclosure": "enclosures",
+    "bracket":   "brackets",
+    "thread":    "threads",
+    "gears":     "gears",
+    "enclosures":"enclosures",
+    "brackets":  "brackets",
+    "threads":   "threads",
+}
+
+
+def _select_specialized_prompt(description: str, object_category: str = "") -> str:
+    """
+    Seleziona il prompt specializzato più adatto.
+    Priorità: object_category esplicita > keyword nella description.
+    Ritorna il contenuto del file prompt oppure "" se non trovato.
+    """
+    # 1. Campo object_category esplicito nel task JSON
+    if object_category:
+        key = _CATEGORY_PROMPT_MAP.get(object_category.lower(), "")
+        if key:
+            content = _load_prompt_file(f"objects/{key}.txt")
+            if content:
+                log(f"📋 Prompt specializzato (category): objects/{key}.txt")
+                return content
+
+    # 2. Ricerca per keyword nella description (case-insensitive)
+    desc_lower = description.lower()
+    for keywords, prompt_key in _KEYWORD_PROMPT_MAP:
+        if any(kw.lower() in desc_lower for kw in keywords):
+            content = _load_prompt_file(f"objects/{prompt_key}.txt")
+            if content:
+                log(f"📋 Prompt specializzato (keyword): objects/{prompt_key}.txt")
+                return content
+
+    return ""
+
+
+def _build_system_prompt(object_type, description="", object_category=""):
+    """
+    Combina i layer di prompt:
+      base_system.txt + {object_type}.txt + objects/{specialized}.txt + struttura
+    """
     base = _load_prompt_file("base_system.txt")
     specific = _load_prompt_file(f"{object_type}.txt")
+    specialized = _select_specialized_prompt(description, object_category)
     structure = (
         "STRUTTURA RICHIESTA: Definisci variabili parametriche all'inizio "
         "(es: width=50; height=30;). "
@@ -308,7 +376,7 @@ def _build_system_prompt(object_type):
         "Ultima riga del file: main_object(); "
         "NON usare include<> o use<>. Il file deve essere self-contained."
     )
-    parts = [p for p in [base, specific, structure] if p]
+    parts = [p for p in [base, specific, specialized, structure] if p]
     return "\n\n".join(parts)
 
 
@@ -394,6 +462,7 @@ def handle_generate_3d(task, task_id, config):
     description = task.get("description", "")
     parameters = task.get("parameters", {})
     object_type = task.get("object_type", "simple")
+    object_category = task.get("object_category", "")
     quality = task.get("quality", config.get("default_quality", "medium"))
 
     if object_type not in ("mechanical", "decorative", "simple"):
@@ -405,7 +474,7 @@ def handle_generate_3d(task, task_id, config):
     fn_value = quality_presets.get(quality, {}).get("fn", 64)
     dims = config.get("default_dimensions", {"max_x": 200, "max_y": 200, "max_z": 200})
 
-    system_prompt = _build_system_prompt(object_type)
+    system_prompt = _build_system_prompt(object_type, description, object_category)
 
     # Costruzione prompt utente
     user_parts = [f"Genera un modello OpenSCAD per: {description}"]

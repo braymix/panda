@@ -1,0 +1,75 @@
+Stai generando una staffa / supporto strutturale per stampa 3D FDM.
+
+TIPI DI STAFFA — scegli in base alla richiesta:
+
+TIPO L — Staffa ad L (angolo 90°):
+  // Due piatti rettangolari a 90°, uno verticale (parete) e uno orizzontale (piano)
+  // Rinforzo triangolare sul raccordo interno (nervatura diagonale)
+  module l_bracket(vert_h, horiz_d, width, thick, rib_thick) {
+      // Piatto verticale: [thick x width x vert_h]
+      // Piatto orizzontale: [horiz_d x width x thick]
+      // Nervatura: triangolo con linear_extrude(width) di un polygon 2D
+  }
+
+TIPO U — Supporto a canale (U-shape):
+  // Per sostenere tubi, cavi, binari
+  // Apertura superiore, due pareti laterali, fondo piatto
+  module u_bracket(inner_w, inner_d, height, wall) { ... }
+
+TIPO Z — Staffa a Z (offset):
+  // Collega due piani paralleli sfalsati verticalmente
+  module z_bracket(offset_h, horiz_d, width, thick) { ... }
+
+FORI VITI STANDARD (usa sempre questi diametri):
+  // Fori passanti (per bullone + testa):
+  M3: d_hole=3.4,  d_head=6.5,  h_head=3.0
+  M4: d_hole=4.5,  d_head=8.5,  h_head=4.0
+  M5: d_hole=5.5,  d_head=10.0, h_head=5.0
+  M6: d_hole=6.6,  d_head=11.5, h_head=6.0
+  // Fori per viti da legno/parete: d = 5.0-6.0mm, svasatura a 90° opzionale
+
+  module screw_hole(d_hole, d_head, h_head, thick) {
+      // Cilindro passante + alloggiamento testa (cilindro più largo e meno profondo)
+      cylinder(d=d_hole, h=thick+1);
+      translate([0,0,thick-h_head]) cylinder(d=d_head, h=h_head+1);
+  }
+
+RINFORZI STRUTTURALI (distribuire il materiale):
+  // Nervature triangolari: altezza = 60-70% della distanza da rinforzare
+  // Spessore nervatura: uguale allo spessore parete (1.5-3mm)
+  // Triangolazione: disponi 2-3 nervature equidistanti sulla lunghezza
+
+  module rib(base, height, thick) {
+      // Triangolo rettangolo come polygon 2D + linear_extrude(thick)
+      linear_extrude(thick)
+          polygon([[0,0],[base,0],[0,height]]);
+  }
+
+  // Pattern grigliato per risparmiare materiale mantenendo rigidità:
+  // Usa difference() con array di cilindri o fori rettangolari
+  // Passo griglia: 15-20mm, dimensione foro: 8-12mm, parete residua: 2mm
+
+PARAMETRI STANDARD DA USARE SE NON SPECIFICATI:
+- thick = 4.0  (mm spessore piatto principale)
+- rib_thick = 3.0  (mm spessore nervature)
+- hole_margin = 8.0  (mm distanza foro dal bordo, >= 2×d_foro)
+- fillet_r = 3.0  (mm raccordo tra i piatti)
+
+CONSIDERAZIONI STAMPA:
+- Orienta lo stl con le superfici piane sul piano di stampa (meno supporti)
+- Fori orizzontali > Ø5mm richiedono bridging — preferisci fori verticali
+- La direzione del carico principale deve essere perpendicolare ai layer
+- Pareti minime: 2mm per staffe caricate (3-4mm per carichi pesanti)
+
+STRUTTURA RICHIESTA:
+- Variabili parametriche in cima
+- Modulo screw_hole() se ci sono fori viti
+- Modulo rib() se ci sono nervature
+- Modulo main_object() che assembla tutto
+- Ultima riga: main_object();
+
+ERRORI SPECIFICI DA EVITARE:
+- Fori viti troppo vicini al bordo (< 2× diametro foro)
+- Nervature troppo sottili (< 1.5mm) che non stampano bene
+- Non dimenticare la svasatura testa vite (countersink) se richiesta
+- Angolo di raccordo interno tra i piatti deve avere raggio >= 2mm

@@ -351,6 +351,8 @@ def api_generate():
         'quality': data.get('quality', 'medium'),
         'priority': data.get('priority', 1),
     }
+    if data.get('object_category'):
+        task['object_category'] = data['object_category'].strip()
     TASKS_DIR.mkdir(exist_ok=True)
     (TASKS_DIR / filename).write_text(json.dumps(task, indent=2))
     return jsonify({'success': True, 'task_id': task_id, 'filename': filename})

@@ -1,0 +1,54 @@
+Stai generando un ingranaggio a denti evolventi per stampa 3D FDM.
+
+TEORIA INGRANAGGI (usa queste formule):
+- Raggio primitivo:   r  = (denti * modulo) / 2
+- Raggio base:        rb = r * cos(pressione)       // pressione standard = 20°
+- Addendum:           a  = modulo
+- Dedendum:           d  = 1.25 * modulo
+- Raggio esterno:     ra = r + a
+- Raggio fondo dente: rf = r - d
+
+IMPLEMENTAZIONE INVOLUTA (self-contained, NO include<>):
+Usa questo schema per generare il profilo evolvente:
+
+  function involute(rb, t) = [
+      rb * (cos(t) + t * sin(t)),
+      rb * (sin(t) - t * cos(t))
+  ];
+
+  module involute_gear(teeth, modul, thickness, hole_d, pressure=20) {
+      r  = (teeth * modul) / 2;
+      rb = r * cos(pressure);
+      ra = r + modul;
+      rf = max(r - 1.25*modul, rb);
+      pitch_angle = 360 / teeth;
+      // Profilo singolo dente come polygon() con punti evolventi
+      // Poi rotate_copy per tutti i denti
+      // Estrusione con linear_extrude(thickness)
+  }
+
+STRUTTURA RICHIESTA:
+- Variabili parametriche in cima: teeth, modul, thickness, hole_d, pressure_angle
+- Modulo involute_gear() con il profilo completo
+- Modulo main_object() che chiama involute_gear()
+- Ultima riga: main_object();
+
+REQUISITI QUALITÀ:
+- $fn >= 64 per profili rotondi fluidi
+- Tolleranza accoppiamento tra ingranaggi: +0.1mm sul raggio primitivo
+- Foro centrale: sempre con tolleranza +0.2mm rispetto al diametro nominale
+- Spessore minimo dente alla base: almeno 1.5mm
+- Se hole_d > 0: aggiungi key-way (scanalatura) opzionale
+- Smussi 45° sugli spigoli superiori/inferiori per ridurre l'elefantiasi in stampa
+
+PARAMETRI STANDARD DA USARE SE NON SPECIFICATI:
+- pressure_angle = 20 (gradi, standard ISO)
+- modulo = 2 (mm — definisce la dimensione dei denti)
+- spessore = 10 (mm)
+- foro_centrale = 5 (mm diametro)
+
+ERRORI SPECIFICI DA EVITARE:
+- Non generare denti con polygon() con meno di 8 punti per lato
+- Non usare hull() per il profilo dei denti (impreciso)
+- Il modulo gear deve produrre geometria centrata in [0,0,0]
+- linear_extrude deve partire da una shape 2D chiusa e valida

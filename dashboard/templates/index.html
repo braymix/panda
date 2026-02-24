@@ -667,8 +667,8 @@ details.section-details[open] > summary::after { content: '▲'; }
         </div>
       </details>
 
-      <!-- Dropdowns -->
-      <div class="form-row-3">
+      <!-- Dropdowns riga 1: Tipo oggetto + Qualità -->
+      <div class="form-row-2">
         <div>
           <label>Tipo oggetto</label>
           <select id="obj-type">
@@ -685,6 +685,27 @@ details.section-details[open] > summary::after { content: '▲'; }
             <option value="high">Alta ($fn=128)</option>
           </select>
           <div class="quality-note" id="quality-note"></div>
+        </div>
+      </div>
+
+      <!-- Dropdowns riga 2: Categoria oggetto + Priorità -->
+      <div class="form-row-2">
+        <div>
+          <label for="obj-category">Categoria oggetto</label>
+          <select id="obj-category" onchange="onCategoryChange(this.value)">
+            <option value="">Automatico (rilevamento da testo)</option>
+            <option value="gear">⚙️ Ingranaggio</option>
+            <option value="enclosure">📦 Scatola / Contenitore</option>
+            <option value="bracket">🔩 Staffa / Supporto</option>
+            <option value="thread">🔧 Oggetto con filetti</option>
+            <option value="decorative">🎨 Decorativo</option>
+            <option value="custom">✏️ Personalizzato...</option>
+          </select>
+          <div id="custom-category-wrap" style="display:none;margin-top:6px">
+            <input type="text" id="custom-category"
+                   placeholder="nome categoria o parola chiave prompt..."
+                   style="width:100%;box-sizing:border-box">
+          </div>
         </div>
         <div>
           <label>Priorità coda</label>
@@ -1157,6 +1178,11 @@ document.getElementById('quality').addEventListener('change', function() {
   note.textContent = this.value === 'high' ? '⚠️ Alta = molto lento (diversi minuti)' : '';
 });
 
+function onCategoryChange(val) {
+  document.getElementById('custom-category-wrap').style.display =
+    val === 'custom' ? 'block' : 'none';
+}
+
 async function handleGenerate(e) {
   e.preventDefault();
   const desc = document.getElementById('desc-input').value.trim();
@@ -1185,6 +1211,15 @@ async function handleGenerate(e) {
     priority:     parseInt(document.getElementById('gen-priority').value),
   };
 
+  // Categoria oggetto: aggiunge object_category solo se non è "Automatico"
+  const catSel   = document.getElementById('obj-category').value;
+  const catCustom = document.getElementById('custom-category').value.trim();
+  if (catSel === 'custom' && catCustom) {
+    body.object_category = catCustom;
+  } else if (catSel && catSel !== 'custom') {
+    body.object_category = catSel;
+  }
+
   try {
     const btn = e.submitter;
     btn.disabled = true;
@@ -1203,6 +1238,7 @@ async function handleGenerate(e) {
       showToast('✅ Task ' + res.task_id + ' in coda!');
       document.getElementById('gen-form').reset();
       document.getElementById('quality-note').textContent = '';
+      document.getElementById('custom-category-wrap').style.display = 'none';
       fetchPending();
     } else {
       showToast(res.error || 'Errore nella creazione del task', 'err');
