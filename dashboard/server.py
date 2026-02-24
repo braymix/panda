@@ -1,9 +1,16 @@
 from flask import Flask, jsonify, request, render_template, send_file, abort
 import json
+import shutil
 import subprocess
 import time
-from datetime import datetime
+from datetime import datetime, date
 from pathlib import Path
+
+try:
+    import psutil
+    _HAS_PSUTIL = True
+except ImportError:
+    _HAS_PSUTIL = False
 
 app = Flask(__name__)
 
@@ -356,6 +363,93 @@ def api_generate():
     TASKS_DIR.mkdir(exist_ok=True)
     (TASKS_DIR / filename).write_text(json.dumps(task, indent=2))
     return jsonify({'success': True, 'task_id': task_id, 'filename': filename})
+
+
+# =========================
+# SYSTEM PERFORMANCE API
+# =========================
+
+@app.route('/api/system')
+def api_system():
+    """
+    Dati di sistema per il Performance Monitor della dashboard.
+    Aggiornato ogni 10s dal frontend.
+    """
+    data = {}
+
+    # ── RAM ───────────────────────────────────────────────────────────────
+    if _HAS_PSUTIL:
+        mem = psutil.virtual_memory()
+        data['ram'] = {
+            'used_mb':      round(mem.used    / 1_048_576),
+            'total_mb':     round(mem.total   / 1_048_576),
+            'available_mb': round(mem.available / 1_048_576),
+            'percent':      mem.percent,
+        }
+        # ── CPU ───────────────────────────────────────────────────────────
+        cpu = psutil.cpu_percent(interval=1)
+        data['cpu'] = {'percent': cpu}
+    else:
+        data['ram'] = None
+        data['cpu'] = None
+
+    # ── Spazio disco ~/panda/ ─────────────────────────────────────────────
+    try:
+        usage = shutil.disk_usage(PANDA_HOME)
+        data['disk'] = {
+            'used_mb':  round(usage.used  / 1_048_576),
+            'total_mb': round(usage.total / 1_048_576),
+            'free_mb':  round(usage.free  / 1_048_576),
+            'percent':  round(usage.used / usage.total * 100, 1),
+        }
+    except Exception:
+        data['disk'] = None
+
+    # ── Modelli generati oggi ─────────────────────────────────────────────
+    today = date.today()
+    models_today = 0
+    if MODELS_STL_DIR.exists():
+        for stl in MODELS_STL_DIR.glob('*.stl'):
+            if date.fromtimestamp(stl.stat().st_mtime) == today:
+                models_today += 1
+    data['models_today'] = models_today
+    data['models_total'] = len(list(MODELS_STL_DIR.glob('*.stl'))) if MODELS_STL_DIR.exists() else 0
+
+    # ── Tempo medio di generazione (dai results JSON) ─────────────────────
+    durations = []
+    if RESULTS_DIR.exists():
+        for rfile in RESULTS_DIR.glob('*.json'):
+            try:
+                d = json.loads(rfile.read_text())
+                timing = d.get('timing', {})
+                total = timing.get('total_s')
+                if total and total > 0:
+                    durations.append(total)
+            except Exception:
+                continue
+    if durations:
+        data['avg_generation_s'] = round(sum(durations) / len(durations), 1)
+        data['min_generation_s'] = round(min(durations), 1)
+        data['max_generation_s'] = round(max(durations), 1)
+        data['generation_samples'] = len(durations)
+    else:
+        data['avg_generation_s'] = None
+        data['generation_samples'] = 0
+
+    # ── Cache ─────────────────────────────────────────────────────────────
+    cache_dir = PANDA_HOME / 'cache'
+    if cache_dir.exists():
+        cache_files = list(cache_dir.glob('*.scad'))
+        cache_size  = sum(f.stat().st_size for f in cache_files)
+        data['cache'] = {
+            'entries': len(cache_files),
+            'size_kb': round(cache_size / 1024, 1),
+        }
+    else:
+        data['cache'] = {'entries': 0, 'size_kb': 0}
+
+    data['timestamp'] = datetime.now().isoformat()
+    return jsonify(data)
 
 
 if __name__ == '__main__':

@@ -13,16 +13,23 @@ Features:
 - Long-running safe
 """
 
+import hashlib
 import json
 import re
 import sys
 import threading
 import time
 import subprocess
-from datetime import datetime
+from datetime import datetime, timedelta
 from pathlib import Path
 
 import requests
+
+try:
+    import psutil
+    _HAS_PSUTIL = True
+except ImportError:
+    _HAS_PSUTIL = False
 
 # =========================
 # PATHS
@@ -38,6 +45,8 @@ CURRENT_STATUS_FILE = STATUS_DIR / "current.json"
 PROMPTS_DIR = PANDA_HOME / "prompts"
 MODELS_SCAD_DIR = PANDA_HOME / "models" / "scad"
 MODELS_STL_DIR = PANDA_HOME / "models" / "stl"
+CACHE_DIR = PANDA_HOME / "cache"
+CACHE_MAX_AGE_DAYS = 7
 
 # =========================
 # CONFIG
@@ -458,6 +467,50 @@ def do_compile_scad(scad_path, output_name, config):
         }
 
 
+def _check_prompt_cache(prompt_key: str) -> str | None:
+    """
+    Cerca in CACHE_DIR un file .scad con hash MD5 del prompt.
+    Ritorna il contenuto SCAD se trovato e non scaduto (< CACHE_MAX_AGE_DAYS giorni),
+    altrimenti None.
+    """
+    CACHE_DIR.mkdir(parents=True, exist_ok=True)
+    cache_file = CACHE_DIR / f"{prompt_key}.scad"
+    if not cache_file.exists():
+        return None
+    age = datetime.now() - datetime.fromtimestamp(cache_file.stat().st_mtime)
+    if age > timedelta(days=CACHE_MAX_AGE_DAYS):
+        log(f"Cache scaduta ({age.days}g) per {prompt_key[:8]}… — ignoro", "INFO")
+        return None
+    return cache_file.read_text()
+
+
+def _save_prompt_cache(prompt_key: str, scad_code: str):
+    """Salva il codice SCAD nella cache per riuso futuro."""
+    CACHE_DIR.mkdir(parents=True, exist_ok=True)
+    (CACHE_DIR / f"{prompt_key}.scad").write_text(scad_code)
+
+
+def _check_ram_warning():
+    """Logga un warning se la RAM disponibile è inferiore a 2 GB."""
+    if not _HAS_PSUTIL:
+        return
+    try:
+        mem = psutil.virtual_memory()
+        available_mb = mem.available // (1024 * 1024)
+        if available_mb < 2048:
+            log(f"⚠️ RAM bassa ({available_mb} MB disponibile) — Ollama potrebbe essere lento", "WARN")
+    except Exception:
+        pass
+
+
+def _fmt_duration(seconds: float) -> str:
+    """Formatta durata in Xmin Ys oppure Xs."""
+    if seconds >= 60:
+        m, s = divmod(int(seconds), 60)
+        return f"{m}min {s}s"
+    return f"{seconds:.1f}s"
+
+
 def handle_generate_3d(task, task_id, config):
     description = task.get("description", "")
     parameters = task.get("parameters", {})
@@ -487,24 +540,43 @@ def handle_generate_3d(task, task_id, config):
     )
     user_prompt = "\n".join(user_parts)
 
-    log(f"🤖 Chiamata Ollama per generate_3d (type={object_type}, quality={quality}, fn={fn_value})")
-    raw_response = ask_ollama(user_prompt, config, system_prompt=system_prompt)
+    # Calcola la chiave cache come MD5 del prompt completo (system + user)
+    full_prompt = (system_prompt or "") + "\n\n" + user_prompt
+    prompt_md5 = hashlib.md5(full_prompt.encode()).hexdigest()
 
-    if not raw_response:
-        return {
-            "success": False,
-            "error_message": "Nessuna risposta da Ollama",
-            "scad_file": None,
-            "stl_file": None,
-        }
+    # ── Cache check ────────────────────────────────────────────────────────
+    from_cache = False
+    cached_scad = _check_prompt_cache(prompt_md5)
+    if cached_scad:
+        log(f"💾 Cache hit per {task_id} ({prompt_md5[:8]}…) — skip Ollama")
+        scad_code = cached_scad
+        llm_secs = 0.0
+        from_cache = True
+    else:
+        # ── RAM warning prima di chiamare Ollama ───────────────────────────
+        _check_ram_warning()
 
-    scad_code = clean_llm(raw_response)
+        log(f"🤖 Chiamata Ollama per generate_3d (type={object_type}, quality={quality}, fn={fn_value})")
+        t_llm_start = time.time()
+        raw_response = ask_ollama(user_prompt, config, system_prompt=system_prompt)
+        llm_secs = round(time.time() - t_llm_start, 1)
+        log(f"⏱️ Tempo LLM: {_fmt_duration(llm_secs)}")
+
+        if not raw_response:
+            return {
+                "success": False,
+                "error_message": "Nessuna risposta da Ollama",
+                "scad_file": None,
+                "stl_file": None,
+                "timing": {"llm_s": llm_secs, "compile_s": 0, "total_s": llm_secs},
+            }
+
+        scad_code = clean_llm(raw_response)
 
     # Validazione pre-compilazione: controlla presenza di primitivi OpenSCAD o moduli
     geom_primitives = ("cube(", "cylinder(", "sphere(", "polyhedron(", "module ")
     if not any(kw in scad_code for kw in geom_primitives):
         log("⚠️ Codice OpenSCAD sospetto — potrebbe non essere valido", "WARN")
-        # Compila comunque: l'LLM potrebbe usare funzioni custom non in questa lista
 
     # Salva il file .scad
     MODELS_SCAD_DIR.mkdir(parents=True, exist_ok=True)
@@ -515,11 +587,14 @@ def handle_generate_3d(task, task_id, config):
     log(f"💾 SCAD salvato: {scad_path}")
 
     # Compilazione principale
+    t_compile_start = time.time()
     compile_result = do_compile_scad(scad_path, scad_filename, config)
+    compile_secs = round(time.time() - t_compile_start, 1)
+    log(f"⏱️ Tempo compilazione OpenSCAD: {_fmt_duration(compile_secs)}")
 
     # Auto-correzione: se la compilazione fallisce, invia codice + errore a Ollama
     auto_corrected = False
-    if not compile_result["success"]:
+    if not compile_result["success"] and not from_cache:
         error_msg = compile_result.get("compile_log", "errore sconosciuto")
         log(f"🔧 Compilazione fallita — tentativo auto-correzione")
         correction_prompt = (
@@ -528,24 +603,36 @@ def handle_generate_3d(task, task_id, config):
             f"Codice originale:\n{scad_code}\n\n"
             f"Correggi il codice. Rispondi SOLO con il codice OpenSCAD corretto e completo."
         )
+        _check_ram_warning()
+        t_corr_start = time.time()
         corrected_raw = ask_ollama(correction_prompt, config, system_prompt=system_prompt)
+        llm_secs += round(time.time() - t_corr_start, 1)
         if corrected_raw:
             corrected_code = clean_llm(corrected_raw)
             if corrected_code and corrected_code != scad_code:
                 scad_path.write_text(corrected_code)
+                t_c2 = time.time()
                 compile_result = do_compile_scad(scad_path, scad_filename, config)
+                compile_secs += round(time.time() - t_c2, 1)
                 auto_corrected = True
                 if compile_result["success"]:
                     log("🔧 Auto-correzione applicata con successo")
                 else:
                     log("🔧 Auto-correzione applicata — compilazione ancora fallita", "WARN")
 
-    # Estrazione bounding box dopo compilazione riuscita
+    # Salva in cache se la compilazione è riuscita (e non era già in cache)
+    if compile_result["success"] and not from_cache:
+        _save_prompt_cache(prompt_md5, scad_path.read_text())
+
+    # Estrazione bounding box
     dimensions = None
     if compile_result["success"] and compile_result.get("stl_file"):
         dimensions = _extract_bounding_box_from_stl(compile_result["stl_file"])
         if dimensions:
             log(f"📐 Bounding box: {dimensions['x']}×{dimensions['y']}×{dimensions['z']} mm")
+
+    total_secs = round(llm_secs + compile_secs, 1)
+    log(f"⏱️ Totale: {_fmt_duration(total_secs)} (LLM {_fmt_duration(llm_secs)} + SCAD {_fmt_duration(compile_secs)})")
 
     return {
         "success": compile_result["success"],
@@ -555,7 +642,13 @@ def handle_generate_3d(task, task_id, config):
         "compile_log": compile_result.get("compile_log", ""),
         "file_size_kb": compile_result.get("file_size_kb", 0),
         "auto_corrected": auto_corrected,
+        "from_cache": from_cache,
         "dimensions": dimensions,
+        "timing": {
+            "llm_s":     llm_secs,
+            "compile_s": compile_secs,
+            "total_s":   total_secs,
+        },
     }
 
 

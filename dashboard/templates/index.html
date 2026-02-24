@@ -411,6 +411,40 @@ details.params-details > summary::-webkit-details-marker { display: none; }
 .empty-gallery .emo { font-size: 2.5em; margin-bottom: 12px; }
 
 /* ─── Collapsible Sections ─── */
+/* ─── Performance Monitor ─── */
+.perf-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-top: 6px;
+}
+@media(max-width: 700px) { .perf-grid { grid-template-columns: 1fr 1fr; } }
+@media(max-width: 450px) { .perf-grid { grid-template-columns: 1fr; } }
+.perf-card {
+  background: var(--bg2);
+  border-radius: 10px;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+}
+.perf-label { font-size: 0.76em; color: var(--text-dim); margin-bottom: 6px; }
+.perf-bar-wrap {
+  background: var(--bg3, #111);
+  border-radius: 6px;
+  height: 8px;
+  overflow: hidden;
+  margin-bottom: 5px;
+}
+.perf-bar {
+  height: 100%;
+  background: var(--green);
+  border-radius: 6px;
+  transition: width 0.6s ease, background 0.4s;
+}
+.perf-bar.warn  { background: var(--orange); }
+.perf-bar.crit  { background: var(--red); }
+.perf-val  { font-size: 0.85em; color: var(--text); }
+.perf-big  { font-size: 1.1em; font-weight: 600; margin-top: 4px; }
+
 details.section-details { margin-bottom: 14px; }
 details.section-details > summary {
   background: var(--bg3);
@@ -735,6 +769,55 @@ details.section-details[open] > summary::after { content: '▲'; }
   </div>
 
 </div><!-- /main-grid -->
+
+<!-- ─── Performance Monitor ─── -->
+<details class="section-details" id="perf-section">
+  <summary>📊 Performance Monitor <span id="perf-badge" style="font-size:0.78em;font-weight:400;color:var(--text-dim);margin-left:8px">aggiornamento ogni 10s</span></summary>
+  <div class="section-body">
+    <div class="perf-grid">
+
+      <div class="perf-card">
+        <div class="perf-label">🧠 RAM</div>
+        <div class="perf-bar-wrap">
+          <div class="perf-bar" id="ram-bar" style="width:0%"></div>
+        </div>
+        <div class="perf-val" id="ram-val">—</div>
+      </div>
+
+      <div class="perf-card">
+        <div class="perf-label">⚡ CPU</div>
+        <div class="perf-bar-wrap">
+          <div class="perf-bar" id="cpu-bar" style="width:0%"></div>
+        </div>
+        <div class="perf-val" id="cpu-val">—</div>
+      </div>
+
+      <div class="perf-card">
+        <div class="perf-label">💾 Disco ~/panda</div>
+        <div class="perf-bar-wrap">
+          <div class="perf-bar" id="disk-bar" style="width:0%"></div>
+        </div>
+        <div class="perf-val" id="disk-val">—</div>
+      </div>
+
+      <div class="perf-card">
+        <div class="perf-label">🖨️ Modelli oggi / totale</div>
+        <div class="perf-val perf-big" id="models-today-val">—</div>
+      </div>
+
+      <div class="perf-card">
+        <div class="perf-label">⏱️ Tempo medio generazione</div>
+        <div class="perf-val perf-big" id="avg-gen-val">—</div>
+      </div>
+
+      <div class="perf-card">
+        <div class="perf-label">📦 Cache prompt (SCAD)</div>
+        <div class="perf-val perf-big" id="cache-val">—</div>
+      </div>
+
+    </div>
+  </div>
+</details>
 
 <!-- ─── Models Gallery ─── -->
 <section>
@@ -1337,12 +1420,68 @@ function clearLogDisplay() {
 // ════════════════════════════════════════════
 //  INIT
 // ════════════════════════════════════════════
+// ════════════════════════════════════════════
+//  PERFORMANCE MONITOR
+// ════════════════════════════════════════════
+function _setBar(id, pct) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.style.width = Math.min(pct, 100) + '%';
+  el.className = 'perf-bar' + (pct > 85 ? ' crit' : pct > 60 ? ' warn' : '');
+}
+function _fmtSecs(s) {
+  if (s === null || s === undefined) return '—';
+  if (s >= 60) { const m = Math.floor(s/60); return m + 'min ' + Math.round(s%60) + 's'; }
+  return s.toFixed(1) + 's';
+}
+
+async function fetchSystem() {
+  try {
+    const d = await fetch('/api/system').then(r => r.json());
+
+    // RAM
+    if (d.ram) {
+      _setBar('ram-bar', d.ram.percent);
+      document.getElementById('ram-val').textContent =
+        d.ram.used_mb + ' MB / ' + d.ram.total_mb + ' MB  (' + d.ram.percent + '%)';
+    }
+    // CPU
+    if (d.cpu) {
+      _setBar('cpu-bar', d.cpu.percent);
+      document.getElementById('cpu-val').textContent = d.cpu.percent + '%';
+    }
+    // Disco
+    if (d.disk) {
+      _setBar('disk-bar', d.disk.percent);
+      document.getElementById('disk-val').textContent =
+        d.disk.used_mb + ' MB usati — ' + d.disk.free_mb + ' MB liberi  (' + d.disk.percent + '%)';
+    }
+    // Modelli
+    document.getElementById('models-today-val').textContent =
+      d.models_today + ' oggi / ' + d.models_total + ' tot.';
+    // Tempi generazione
+    document.getElementById('avg-gen-val').textContent =
+      d.avg_generation_s !== null
+        ? _fmtSecs(d.avg_generation_s) + ' avg  (' + d.generation_samples + ' campioni)'
+        : 'nessun dato ancora';
+    // Cache
+    document.getElementById('cache-val').textContent =
+      d.cache.entries + ' entry — ' + d.cache.size_kb + ' KB';
+
+    document.getElementById('perf-badge').textContent =
+      'agg. ' + new Date(d.timestamp).toLocaleTimeString();
+  } catch(e) {
+    document.getElementById('perf-badge').textContent = 'errore aggiornamento';
+  }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   // Initial
   fetchStatus();
   fetchPending();
   fetchModels();
   fetchLogs();
+  fetchSystem();
 
   // Autoscroll button init
   document.getElementById('autoscroll-btn').style.background = 'var(--blue)';
@@ -1353,6 +1492,7 @@ document.addEventListener('DOMContentLoaded', () => {
   setInterval(fetchPending, 4000);
   setInterval(fetchModels,  5000);
   setInterval(fetchLogs,    3000);
+  setInterval(fetchSystem, 10000);
 });
 </script>
 </body>

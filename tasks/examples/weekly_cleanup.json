@@ -1,0 +1,9 @@
+{
+  "id": "weekly_cleanup",
+  "type": "run_script",
+  "priority": 99,
+  "description": "Pulizia settimanale automatica: cache SCAD >7gg, script temp >1gg, results >30gg, logs >30gg",
+  "script": "scripts/cleanup_cache.py",
+  "args": ["--execute", "--quiet"],
+  "schedule": "weekly"
+}
