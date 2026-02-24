@@ -1,0 +1,15 @@
+{
+  "id": "dado_m6",
+  "type": "generate_3d",
+  "priority": 5,
+  "description": "Dado esagonale M6 misure standard ISO 4032, poligono esagonale con chiave da 10mm (distanza tra facce parallele), altezza 5mm, foro centrale diametro 6.2mm (M6 con tolleranza di stampa +0.2mm), smusso a 45 gradi sugli spigoli superiori e inferiori del dado per aspetto standard",
+  "parameters": {
+    "key_size": 10,
+    "height": 5,
+    "thread_d": 6.2,
+    "chamfer_h": 0.8,
+    "tolerance": 0.2
+  },
+  "object_type": "mechanical",
+  "quality": "medium"
+}

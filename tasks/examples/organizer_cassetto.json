@@ -1,0 +1,19 @@
+{
+  "id": "organizer_cassetto",
+  "type": "generate_3d",
+  "priority": 3,
+  "description": "Organizer da cassetto con dimensioni esterne 200x100x50mm, 6 scomparti rettangolari disposti in 2 righe x 3 colonne di dimensioni uguali, pareti interne 2mm, fondo 2mm, pareti esterne 3mm, angoli arrotondati 2mm per stampa pulita",
+  "parameters": {
+    "total_w": 200,
+    "total_d": 100,
+    "total_h": 50,
+    "wall_inner": 2,
+    "wall_outer": 3,
+    "bottom": 2,
+    "compartments_x": 3,
+    "compartments_y": 2,
+    "corner_r": 2
+  },
+  "object_type": "simple",
+  "quality": "medium"
+}

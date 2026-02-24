@@ -1,0 +1,18 @@
+{
+  "id": "vite_m6",
+  "type": "generate_3d",
+  "priority": 5,
+  "description": "Vite M6 con testa esagonale standard ISO 4017, gambo lungo 30mm, filetto metrico M6 semplificato (elica approssimata con difference di cilindri sfalsati o groove), diametro nominale 6mm, passo filetto 1.0mm, testa esagonale chiave 10mm altezza 4mm, smusso 45 gradi sotto testa e in cima al gambo",
+  "parameters": {
+    "diameter": 6,
+    "length": 30,
+    "head_h": 4,
+    "head_key_size": 10,
+    "thread_pitch": 1.0,
+    "thread_depth": 0.6,
+    "chamfer": 0.5,
+    "tolerance": 0.2
+  },
+  "object_type": "mechanical",
+  "quality": "medium"
+}

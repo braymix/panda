@@ -1,0 +1,20 @@
+{
+  "id": "supporto_telefono",
+  "type": "generate_3d",
+  "priority": 3,
+  "description": "Supporto telefono da scrivania con angolo di inclinazione 70 gradi, base 80x80mm antiscivolo, slot laterale per cavo di ricarica da 12mm di larghezza, appoggio posteriore con fermo per evitare che il telefono scivoli, spessore pareti 3mm",
+  "parameters": {
+    "base_w": 80,
+    "base_d": 80,
+    "base_h": 5,
+    "angle_deg": 70,
+    "cable_slot_w": 12,
+    "cable_slot_h": 8,
+    "phone_max_w": 80,
+    "phone_max_thick": 12,
+    "wall": 3,
+    "fermo_h": 10
+  },
+  "object_type": "simple",
+  "quality": "medium"
+}
